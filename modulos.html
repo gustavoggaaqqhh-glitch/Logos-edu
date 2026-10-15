@@ -179,8 +179,6 @@
         const fechaRetro = sim.fecha_retroalimentacion ? new Date(sim.fecha_retroalimentacion) : null;
         const yaPresento = intentosRealizados.has(sim.id);
 
-        const subcarpeta = obtenerCarpetaArea(sim.area || 'sociales');
-
         let badgeHtml = "";
         let botonHtml = "";
         let bordeClase = "border-slate-200 bg-white/95 backdrop-blur-md";
@@ -203,7 +201,7 @@
         } else {
           bordeClase = "border-blue-400 bg-white/95 backdrop-blur-md ring-1 ring-blue-100";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 mb-2">• DISPONIBLE AHORA</span>`;
-          botonHtml = `<button onclick="window.location.href='${subcarpeta}/Prueba${sim.id}.html'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
+          botonHtml = `<button onclick="window.location.href='Prueba${sim.id}.html'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
         }
 
         let subtextoFecha = "";
