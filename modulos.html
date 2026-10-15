@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logos Edu | Ruta Saber 11</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+
+    /* Fondo hero-portada completo y suavizado para lectura */
+    .bg-portada-clara {
+      background-image: 
+        linear-gradient(180deg, rgba(248, 250, 252, 0.90) 0%, rgba(241, 245, 249, 0.88) 50%, rgba(248, 250, 252, 0.94) 100%),
+        url('hero-portada.jpg');
+      background-size: cover;
+      background-position: center top;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+  </style>
+</head>
+<body class="bg-portada-clara text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Encabezado de Navegación -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="index.html" class="flex items-center space-x-3">
+          <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-10 w-auto object-contain">
+          <div>
+            <span class="font-bold text-lg text-slate-900 tracking-tight">Logos <span class="text-blue-600">Edu</span></span>
+            <span class="text-[10px] block text-slate-400 font-bold tracking-wider uppercase">Saber 11 • Formación Rural y Equidad</span>
+          </div>
+        </a>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <div class="text-right">
+          <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Estudiante Activo</span>
+          <span id="txt-nombre-estudiante" class="text-sm font-semibold text-slate-800 capitalize">Cargando...</span>
+        </div>
+        <button id="btn-cerrar-sesion" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-medium transition border border-slate-200 cursor-pointer">
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-6 flex-1 w-full">
+
+    <!-- Banner Hero con Botón Integrado -->
+    <section class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+      <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="max-w-2xl">
+          <span class="inline-block px-3 py-1 rounded-full bg-blue-500/30 text-blue-200 text-xs font-semibold tracking-wide uppercase mb-3 border border-blue-400/20">
+            Ecosistema Integral Saber 11
+          </span>
+          <h1 class="text-3xl font-extrabold tracking-tight mb-2">
+            Ruta de Entrenamiento por Áreas Nucleares
+          </h1>
+          <p class="text-blue-200/90 text-sm leading-relaxed mb-4 md:mb-0">
+            Selecciona el área evaluativa para ver los simulacros programados. El progreso es secuencial y cada prueba cuenta con un intento único regulado con retroalimentación formativa.
+          </p>
+        </div>
+        
+        <!-- Botón de Clases Sincrónicas para Estudiantes -->
+        <div class="w-full md:w-auto shrink-0 border-t md:border-t-0 md:border-l border-blue-700/50 pt-4 md:pt-0 md:pl-6">
+          <p class="text-[10px] text-blue-300 font-bold uppercase tracking-widest mb-2 text-center md:text-left">Salas de Encuentro</p>
+          <a href="clases.html" class="flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-extrabold rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all cursor-pointer transform hover:scale-105 border border-emerald-400">
+            <span class="text-lg">🎥</span> Clases en Vivo
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filtros de Área Interactivos -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="contenedor-filtros">
+      <button onclick="cambiarFiltro('todas', this)" class="btn-filtro px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold shadow-sm flex items-center gap-1.5 whitespace-nowrap transition cursor-pointer">
+        <span>🗺️</span> Todas las Áreas
+      </button>
+      <button onclick="cambiarFiltro('sociales', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+        <span>🏛️</span> Sociales y Ciudadanas
+      </button>
+      <button onclick="cambiarFiltro('lectura', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+        <span>📖</span> Lectura Crítica
+      </button>
+      <button onclick="cambiarFiltro('matematicas', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+        <span>📐</span> Matemáticas
+      </button>
+      <button onclick="cambiarFiltro('ciencias', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+        <span>🔬</span> Ciencias Naturales
+      </button>
+      <button onclick="cambiarFiltro('ingles', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+        <span>🌐</span> Inglés
+      </button>
+    </div>
+
+    <!-- Lista Dinámica de Simulacros -->
+    <div id="lista-simulacros" class="space-y-4">
+      <div class="p-8 text-center text-slate-400 text-sm bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200">
+        Sincronizando estado con Supabase...
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bg-slate-900/95 backdrop-blur-md text-slate-400 py-8 border-t border-slate-800 flex flex-col items-center gap-6 mt-8">
+    <p class="text-xs text-center">© Logos Edu • Formación y Equidad Rural. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    // Configuración de Supabase
+    const SUPABASE_URL = "https://uinctluqbmdrehazuyog.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpbmN0bHVxYm1kcmVoYXp1eW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDM2NDUsImV4cCI6MjEwNzQ3OTY0NX0.ANXAyoauMGWAXEKpDYjcAGvCImE738aygvA7JwTEfyI";
+
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let todosLosSimulacros = [];
+    let intentosRealizados = new Set();
+    let areaActual = 'todas';
+
+    // Mapeo dinámico
+    function obtenerCarpetaArea(area) {
+      const mapa = {
+        'sociales': 'Sociales',
+        'lectura': 'Lectura Critica',
+        'matematicas': 'Matematicas',
+        'ciencias': 'Biologia',
+        'ingles': 'Ingles'
+      };
+      return mapa[area] || 'Sociales';
+    }
+
+    function formatearFecha(fechaStr) {
+      if (!fechaStr) return '';
+      const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+      return new Date(fechaStr).toLocaleDateString('es-CO', opciones);
+    }
+
+    // Alternar filtros de materia
+    function cambiarFiltro(area, botonPulsado) {
+      areaActual = area;
+      const botones = document.querySelectorAll('.btn-filtro');
+      botones.forEach(btn => {
+        btn.className = "btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer";
+      });
+      botonPulsado.className = "btn-filtro px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold shadow-sm flex items-center gap-1.5 whitespace-nowrap transition cursor-pointer";
+      renderizarTarjetas();
+    }
+
+    function renderizarTarjetas() {
+      const contenedor = document.getElementById("lista-simulacros");
+      contenedor.innerHTML = "";
+
+      const simulacrosFiltrados = areaActual === 'todas'
+        ? todosLosSimulacros
+        : todosLosSimulacros.filter(s => (s.area || 'sociales') === areaActual);
+
+      if (simulacrosFiltrados.length === 0) {
+        contenedor.innerHTML = `
+          <div class="p-12 text-center bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200">
+            <span class="text-3xl block mb-2">📂</span>
+            <p class="text-sm font-semibold text-slate-700">No hay simulacros programados en esta área aún.</p>
+            <p class="text-xs text-slate-400 mt-1">Se habilitarán conforme avance el calendario formativo.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const ahora = new Date();
+
+      simulacrosFiltrados.forEach(sim => {
+        const fechaInicio = sim.fecha_inicio ? new Date(sim.fecha_inicio) : null;
+        const fechaFin = sim.fecha_fin ? new Date(sim.fecha_fin) : null;
+        const fechaRetro = sim.fecha_retroalimentacion ? new Date(sim.fecha_retroalimentacion) : null;
+        const yaPresento = intentosRealizados.has(sim.id);
+
+        const subcarpeta = obtenerCarpetaArea(sim.area || 'sociales');
+
+        let badgeHtml = "";
+        let botonHtml = "";
+        let bordeClase = "border-slate-200 bg-white/95 backdrop-blur-md";
+
+        if (yaPresento) {
+          bordeClase = "border-emerald-300 bg-emerald-50/70 backdrop-blur-md";
+          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
+          if (fechaRetro && ahora >= fechaRetro) {
+            botonHtml = `<button onclick="window.location.href='retroalimentacion.html?id=${sim.id}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
+          } else {
+            botonHtml = `<button disabled class="px-6 py-2.5 bg-slate-100 text-slate-400 font-semibold rounded-xl text-sm border border-slate-200 cursor-not-allowed">Prueba Finalizada</button>`;
+          }
+        } else if (!sim.activo || (fechaInicio && ahora < fechaInicio)) {
+          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200 mb-2">⏳ PRÓXIMAMENTE</span>`;
+          botonHtml = `<button disabled class="px-6 py-2.5 bg-slate-100 text-slate-400 font-semibold rounded-xl text-sm border border-slate-200 cursor-not-allowed">No disponible aún</button>`;
+        } else if (fechaFin && ahora > fechaFin) {
+          bordeClase = "border-rose-200 bg-rose-50/70 backdrop-blur-md";
+          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200 mb-2">⚠️ PLAZO VENCIDO</span>`;
+          botonHtml = `<button disabled class="px-6 py-2.5 bg-slate-100 text-slate-400 font-semibold rounded-xl text-sm border border-slate-200 cursor-not-allowed">Plazo Vencido</button>`;
+        } else {
+          bordeClase = "border-blue-400 bg-white/95 backdrop-blur-md ring-1 ring-blue-100";
+          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 mb-2">• DISPONIBLE AHORA</span>`;
+          botonHtml = `<button onclick="window.location.href='${subcarpeta}/Prueba${sim.id}.html'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
+        }
+
+        let subtextoFecha = "";
+        if (yaPresento && fechaRetro) {
+          subtextoFecha = `<p class="text-xs text-slate-500 mt-1">🗓️ Retroalimentación diagnóstica: ${formatearFecha(fechaRetro)}</p>`;
+        } else if (!yaPresento && fechaInicio && ahora < fechaInicio) {
+          subtextoFecha = `<p class="text-xs text-slate-500 mt-1">🗓️ Habilitación: ${formatearFecha(fechaInicio)}</p>`;
+        }
+
+        const card = document.createElement("div");
+        card.className = `p-5 rounded-2xl border ${bordeClase} shadow-sm transition flex flex-col md:flex-row md:items-center justify-between gap-4`;
+        card.innerHTML = `
+          <div>
+            ${badgeHtml}
+            <h3 class="text-base font-bold text-slate-900">${sim.nombre}</h3>
+            <p class="text-xs text-slate-500">${sim.descripcion || ''}</p>
+            ${subtextoFecha}
+          </div>
+          <div class="flex items-center md:justify-end">
+            ${botonHtml}
+          </div>
+        `;
+        contenedor.appendChild(card);
+      });
+    }
+
+    async function iniciar() {
+      const { data: { session } } = await client.auth.getSession();
+      let userId = null;
+      if (session && session.user) {
+        userId = session.user.id;
+        const metadata = session.user.user_metadata || {};
+        const nombre = metadata.full_name || metadata.documento || session.user.email.split('@')[0];
+        document.getElementById("txt-nombre-estudiante").textContent = nombre;
+      } else {
+        document.getElementById("txt-nombre-estudiante").textContent = "Estudiante";
+      }
+
+      document.getElementById("btn-cerrar-sesion").addEventListener("click", async () => {
+        await client.auth.signOut();
+        window.location.href = "index.html";
+      });
+
+      const { data: simulacros, error: errSim } = await client
+        .from('simulacros')
+        .select('*')
+        .order('id', { ascending: true });
+
+      if (errSim || !simulacros) {
+        console.error("Error al cargar:", errSim);
+        document.getElementById("lista-simulacros").innerHTML = `<div class="p-6 text-center text-red-500 text-sm">Error de conexión con la base de datos</div>`;
+        return;
+      }
+
+      todosLosSimulacros = simulacros;
+
+      if (userId) {
+        const { data: intentos } = await client
+          .from('intentos')
+          .select('simulacro_id, finalizado')
+          .eq('user_id', userId);
+
+        if (intentos) {
+          intentosRealizados = new Set(intentos.filter(i => i.finalizado).map(i => i.simulacro_id));
+        }
+      }
+      renderizarTarjetas();
+    }
+
+    iniciar();
+  </script>
+</body>
+</html>

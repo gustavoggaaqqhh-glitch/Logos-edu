@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logos Edu | Ciencias Sociales y Competencias Ciudadanas - Prueba 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .context-area { line-height: 1.6; text-align: justify; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 min-h-screen">
+
+    <!-- Pantalla de Inicio -->
+    <div id="welcome-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-200">
+            <div class="text-center mb-8">
+                <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-20 w-auto mx-auto mb-3 object-contain block">
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Logos <span class="text-blue-600">Edu</span></h1>
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mt-1">Saber 11 • Formación y Equidad Rural</p>
+                <div class="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-xl">
+                    <span class="text-xs font-bold text-blue-800 uppercase block">Prueba 1</span>
+                    <span class="text-sm font-semibold text-blue-950">Ciencias Sociales y Competencias Ciudadanas</span>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Estudiante Evaluado</label>
+                    <input type="text" id="student-name-input" 
+                        class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                        placeholder="Escribe tu nombre si está vacío...">
+                </div>
+
+                <div class="bg-slate-100 border border-slate-200 rounded-2xl p-4 flex gap-3 text-sm text-slate-700">
+                    <span class="text-blue-600 text-lg font-bold">ℹ</span>
+                    <ul class="list-disc ml-4 space-y-1 text-xs">
+                        <li>Tiempo límite: <strong>60 minutos continuos</strong>.</li>
+                        <li><strong>20 preguntas</strong> de selección múltiple con única respuesta.</li>
+                        <li>Intento único regulado por el sistema institucional.</li>
+                    </ul>
+                </div>
+
+                <button onclick="startQuiz()" id="start-btn" 
+                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl font-black text-white text-base transition-all transform active:scale-95 shadow-lg shadow-blue-500/20 cursor-pointer">
+                    Comenzar Prueba 1
+                </button>
+                <div class="text-center">
+                    <a href="../modulos.html" class="text-xs text-slate-400 hover:text-slate-600 font-semibold underline">Volver a la Ruta de Módulos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla del Examen -->
+    <div id="quiz-screen" class="hidden min-h-screen p-4 md:p-8 flex flex-col items-center">
+        <div class="max-w-4xl w-full bg-white rounded-2xl shadow-md border border-slate-200 p-4 mb-6 flex justify-between items-center sticky top-4 z-10">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-10 w-auto object-contain">
+                <div id="q-number-circle" class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-blue-700 font-black">1</div>
+                <div>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Logos Edu • Saber 11</p>
+                    <p id="q-counter-text" class="text-sm font-bold text-slate-800">Pregunta 1 de 20</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div id="timer-box" class="flex items-center gap-2 px-4 py-2 rounded-xl border bg-slate-50 border-slate-200 text-slate-700 font-bold transition-colors">
+                    <span class="text-blue-600">⏱</span>
+                    <span id="timer-display" class="font-mono text-lg font-black">60:00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-4xl w-full h-2.5 bg-slate-200 rounded-full mb-8 overflow-hidden">
+            <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-500" style="width: 5%"></div>
+        </div>
+
+        <div class="max-w-4xl w-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="p-8">
+                <h2 id="q-title" class="text-xl font-extrabold text-slate-900 mb-6">Cargando...</h2>
+
+                <div id="q-text" class="prose prose-slate max-w-none mb-8 text-slate-700 leading-relaxed whitespace-pre-wrap font-normal text-base bg-slate-50 p-6 rounded-2xl border border-slate-200 context-area"></div>
+
+                <div id="q-prompt" class="bg-blue-50/70 p-6 rounded-2xl border border-blue-100 mb-8 italic text-slate-900 font-semibold text-base"></div>
+
+                <div id="options-container" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Finalización -->
+    <div id="results-screen" class="hidden min-h-screen bg-slate-50 flex items-center justify-center p-6">
+        <div class="max-w-xl w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-200 text-center space-y-6">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-3xl flex items-center justify-center mx-auto shadow-sm text-3xl font-black">
+                ✓
+            </div>
+
+            <div class="space-y-2">
+                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-black uppercase px-3 py-1 rounded-full">
+                    Intento Registrado Oficialmente
+                </span>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">¡Prueba 1 Finalizada con Éxito!</h1>
+                <p class="text-sm text-slate-500 leading-relaxed">
+                    Estudiante: <strong id="res-student-name" class="text-slate-800 uppercase"></strong><br>
+                    Tus respuestas y el dictamen pedagógico han sido asegurados en el sistema de Logos Edu.
+                </p>
+            </div>
+
+            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 text-left space-y-2">
+                <div class="flex items-center gap-2 text-blue-700 font-bold text-sm">
+                    <span>📅</span>
+                    <span>Retroalimentación Pedagógica Programada</span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    El informe individual y la retroalimentación cualitativa estarán disponibles en la plataforma a partir de la fecha de cierre programada en el calendario.
+                </p>
+            </div>
+
+            <div>
+                <a href="../modulos.html" class="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl font-black text-white text-sm transition-all inline-flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95 cursor-pointer">
+                    ← Volver a la Ruta de Módulos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://uinctluqbmdrehazuyog.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpbmN0bHVxYm1kcmVoYXp1eW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDM2NDUsImV4cCI6MjEwNzQ3OTY0NX0.ANXAyoauMGWAXEKpDYjcAGvCImE738aygvA7JwTEfyI";
+        const GEMINI_API_KEY = "AIzaSyDSypb-t82azUtj1CBKjxGg4DHFZRKp-kE";
+        const SIMULACRO_ID = 1;
+
+        const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let currentUser = null;
+
+        const questions = [
+            {
+                id: 1,
+                title: "1. Polémica entre centralistas y federalistas",
+                text: "A continuación, se presentan dos textos escritos por Antonio Nariño sobre la polémica entre centralistas y federalistas durante la independencia de la Nueva Granada. El primero fue escrito en 1811, cuando acababan de ocurrir los primeros gritos de independencia a lo largo de todo el reino. El segundo, mucho más tardío, se publicó en 1823, cuando las últimas acciones militares contra los españoles se estaban librando en lo que entonces era ya Colombia.\n\n1. \"[...] el sistema de convertir nuestras provincias en estados soberanos para hacer la federación es una locura hija de la precipitación de nuestros juicios y de una ambición mal entendida. No es la extensión del terreno, no es la población, no son las riquezas ni las luces que forman la fuerza de un imperio por sí solas: la suma total de todas estas cosas forman su fuerza; y si nosotros en lugar de acumular nuestras luces, nuestras riquezas y nuestras fuerzas, las dividimos en otras tantas partes como tenemos de provincias, ¿cuál será el resultado?\".\nTomado y adaptado de: Nariño, A. (1811). La Bagatela N.º 5.\n\n2. \"[...] el Gobierno federal es [...] el más adecuado para la libertad y el menos expuesto al abuso por el contrapeso que oponen las partes federadas. De aquí se deduce que, mientras tengamos sobre nosotros el Gobierno español, mientras este no reconozca nuestra independencia, lo que nos conviene es unidad de acción y el sistema centralista; pero que reconocida la independencia por la España, hallándonos sin peligros y con los elementos necesarios, la federación será la llama de la libertad\".\nTomado y adaptado de: Nariño, A. (1823). Los toros de Fucha.",
+                prompt: "En el plazo de doce años, Antonio Nariño cambió su percepción sobre el sistema federalista: pasó de atacarlo en 1811 a defenderlo en 1823. ¿Qué razón explica el cambio de perspectiva del prócer de la independencia sobre este modelo político?",
+                options: [
+                    { id: 'A', text: "Porque, para Nariño, el modelo centralista garantizaba la unión de fuerzas de todas las provincias en la guerra contra España, algo necesario en 1823." },
+                    { id: 'B', text: "Porque, para Nariño, el modelo federalista velaba por las libertades individuales, pero imponía límites en el ejercicio del poder de cada provincia federada." },
+                    { id: 'C', text: "Porque, para Nariño, el modelo centralista era adecuado para la Nueva Granada, ya que se asemejaba al modelo de administración que tenía la Corona española." },
+                    { id: 'D', text: "Porque, para Nariño, el modelo federalista era útil en países libres y, por tanto, lo rechaza en 1811, pero lo defiende en 1823 con la independencia consolidada." }
+                ],
+                correct: 'D'
+            },
+            {
+                id: 2,
+                title: "2. Conflicto en cabildo indígena",
+                text: "Las autoridades de un cabildo indígena prohibieron la caza del jaguar en su territorio, pues en su cosmovisión este animal tiene un valor espiritual y cumple un papel esencial para el equilibrio ecológico. Pedro, un campesino que no pertenece a la comunidad indígena, fue sorprendido cazando un jaguar en el territorio del cabildo, por lo que fue condenado por las autoridades indígenas a una multa para compensar a la comunidad por el daño causado. Pedro se opone a la condena porque no hace parte de la comunidad indígena y el jaguar atacaba con frecuencia el ganado de su propiedad.",
+                prompt: "¿Cuáles dimensiones se encuentran en conflicto en la problemática presentada?",
+                options: [
+                    { id: 'A', text: "La cultural y la ambiental, porque la cosmovisión del cabildo indígena respecto al jaguar se opone al interés de Pedro en el cuidado del medio ambiente." },
+                    { id: 'B', text: "La jurisdiccional y la cultural, porque al interés de la comunidad indígena de imponer una sanción se opone el hecho de que Pedro no pertenece a esa comunidad." },
+                    { id: 'C', text: "La ambiental y la religiosa, porque el interés del cabildo indígena en la protección del jaguar se opone a su cosmovisión respecto al valor espiritual de este animal." },
+                    { id: 'D', text: "La económica y la ambiental, porque el interés del cabildo indígena de imponer una sanción económica va en contra de la protección del jaguar en su territorio." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 3,
+                title: "3. Libertad de prensa",
+                text: "Un periodista ha estado divulgando notas de prensa con el fin de acusar de actos de corrupción a la alcaldesa de un municipio, sin haber verificado la credibilidad de las fuentes consultadas para elaborar los señalamientos.\nAnte el reclamo que le hizo la alcaldesa, el periodista argumentó que podía seguir publicando estas acusaciones porque en el país existe la libertad de prensa y él, como periodista, puede difundir todo lo que considere importante para la opinión pública, así no haya sido verificado.",
+                prompt: "De las siguientes opciones, ¿cuál representa un argumento que contradice lo señalado por el periodista con respecto a la libertad de prensa en el país?",
+                options: [
+                    { id: 'A', text: "La libertad de prensa en el país protege a los periodistas cuando divulgan información de manera veraz e imparcial." },
+                    { id: 'B', text: "La libertad de expresión es un derecho constitucional que respalda la actividad periodística en el país sin restricción alguna." },
+                    { id: 'C', text: "La libertad de prensa sobre hechos políticos es una de las bases que sostiene la libertad y la democracia de cualquier país." },
+                    { id: 'D', text: "Existe persecución a los periodistas cuando las noticias que publican ellos son cuestionadas por actores políticos." }
+                ],
+                correct: 'A'
+            },
+            {
+                id: 4,
+                title: "4. Construcción de la represa Gibe",
+                text: "\"La construcción de la represa Gibe puede convertirse en un evento trascendental para el continente africano. Se espera que esta represa sea la más grande de África y que funcione como una hidroeléctrica que genere grandes ingresos, al brindar empleo y llevar electricidad a muchas partes del continente. Sin embargo, para su construcción, es necesario hacer varias intervenciones en el río Omo, algo que alarma a algunas entidades, pues este río es uno de los más biodiversos del planeta y su intervención podría acabar con miles de animales y plantas nativas\".",
+                prompt: "¿Cuáles de las siguientes dimensiones están presentes en la anterior descripción de la situación?",
+                options: [
+                    { id: 'A', text: "La social y la cultural." },
+                    { id: 'B', text: "La económica y la social." },
+                    { id: 'C', text: "La cultural y la ambiental." },
+                    { id: 'D', text: "La ambiental y la económica." }
+                ],
+                correct: 'D'
+            },
+            {
+                id: 5,
+                title: "5. Discursos tras atentados en Francia",
+                text: "Los siguientes son reportes periodísticos sobre dos discursos diferentes pronunciados acerca de los atentados terroristas ocurridos en Francia, en 2015. Léalos detenidamente:\nFragmento A. \"Aunque el presidente francés dijo que el Gobierno ha hecho grandes avances aprobando nuevas leyes y reforzando la seguridad, de acuerdo con el Gobierno, el nivel de alerta sigue siendo alto [...] Igualmente, explicó que en el último año [...] se dictaron medidas contra medio centenar de extranjeros a fin de impedir que puedan entrar en territorio francés por sospechas terroristas\".\nFragmento B. \"[...] el presidente francés se dirige por segunda vez en 48 horas a la nación, para condenar los hechos, y llamar a la calma y la unidad sin fisuras. El miércoles calificó a las víctimas como héroes que habían muerto por defender los valores de la República y pidió que los franceses dejaran a un lado sus diferencias ('nada puede dividirnos')\".",
+                prompt: "A partir de la información contenida en los dos discursos, es correcto afirmar que se pronunció primero:",
+                options: [
+                    { id: 'A', text: "el fragmento A, porque promueve el caos y la confusión inmediata luego de los atentados; el B se refiere a un momento de calma y unidad que solo se logra después de un consenso nacional." },
+                    { id: 'B', text: "el fragmento B, porque este garantiza el cubrimiento inmediato de la noticia de los atentados; el A se refiere a un momento en el que ya se ha superado la crisis que se desató a raíz de los atentados." },
+                    { id: 'C', text: "el fragmento A, porque es una respuesta que hace un llamado a la prevención en contra de los extranjeros; el B habla sobre procesos a largo plazo, como fortalecer la sociedad a futuro." },
+                    { id: 'D', text: "el fragmento B porque es una respuesta inmediata que hace un llamado a la calma y la unidad; el A habla sobre procesos a largo plazo, como la aprobación de leyes y políticas de seguridad." }
+                ],
+                correct: 'D'
+            },
+            {
+                id: 6,
+                title: "6. Erradicación de cultivos ilícitos",
+                text: "La erradicación de cultivos ilícitos, como la coca, es una de las principales problemáticas que vive Colombia... En esta problemática confluyen varios actores e intereses: El Estado (eliminar cultivos), GAO (financiar delincuencia), Campesinos (obligados a cultivar), Naciones Unidas (informes) y Estados Unidos (financiación).",
+                prompt: "Si se lleva a cabo la estrategia de erradicación manual de cultivos ilícitos, ¿entre quiénes es probable que se dé un conflicto?",
+                options: [
+                    { id: 'A', text: "Los campesinos víctimas de los GAO y las Naciones Unidas." },
+                    { id: 'B', text: "Los Estados Unidos y las Naciones Unidas." },
+                    { id: 'C', text: "La fuerza pública y los campesinos víctimas de los GAO." },
+                    { id: 'D', text: "La fuerza pública y los grupos armados organizados." }
+                ],
+                correct: 'D'
+            },
+            {
+                id: 7,
+                title: "7. Clientelismo",
+                text: "El clientelismo consiste en un arreglo de intercambios entre gobernantes y terceros, de manera que ambos pueden beneficiarse recíprocamente: los primeros, al recibir apoyo político, y los segundos, al recibir bienes y servicios o un tratamiento privilegiado o excepcional en ciertos asuntos.",
+                prompt: "Teniendo en cuenta esta definición, el clientelismo justifica la creación de entes de control a los gobernantes, porque",
+                options: [
+                    { id: 'A', text: "es antiético que un gobernante o dirigente político busque beneficiarse electoralmente de un grupo de ciudadanos." },
+                    { id: 'B', text: "es inconveniente que un gobernante haga alianzas políticas con otros dirigentes para mantenerse en el poder." },
+                    { id: 'C', text: "es necesario evitar que los gobernantes usen su posición privilegiada para ser elegidos con favores, a cambio de votos." },
+                    { id: 'D', text: "es reprochable que los gobernantes adopten medidas populares para aumentar su aceptación entre los ciudadanos." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 8,
+                title: "8. Familia y Matrimonio en Colombia",
+                text: "En el 2011, la Corte Constitucional de Colombia estableció que las parejas conformadas por personas del mismo sexo sí constituyen una familia. Cinco años después, la misma entidad reconoció la validez del matrimonio igualitario para estas mismas parejas. Antes de eso, solo las parejas heterosexuales podían casarse legalmente...",
+                prompt: "Con base en la información anterior, ¿cuál de las siguientes afirmaciones es una de las razones por las cuales se modificó el concepto legal de matrimonio y familia en Colombia?",
+                options: [
+                    { id: 'A', text: "Para restringir los derechos de las familias católicas, ya que, al considerar todos los matrimonios como iguales, se reduce la dimensión sagrada del matrimonio." },
+                    { id: 'B', text: "Para privilegiar los derechos de los homosexuales, ya que estas personas ahora recibirán un trato preferencial por su orientación sexual." },
+                    { id: 'C', text: "Para facilitar la convivencia en una sociedad cambiante, ya que las normas deben adaptarse a las transformaciones sociales." },
+                    { id: 'D', text: "Para priorizar los valores de la sociedad, ya que estos son el centro de la vida en comunidad y no deberían modificarse." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 9,
+                title: "9. Minería artesanal y mercurio",
+                text: "En un municipio, un grupo de mineros artesanales ha aumentado sus ingresos al encontrar un punto del río en el cual se puede extraer oro con la ayuda de mercurio. La comunidad del municipio aledaño se ha visto afectada por esta situación, porque el río se ha contaminado con los desechos tóxicos que genera la actividad minera y es la única fuente de agua que tienen los habitantes para el consumo e irrigación de cultivos. Ante esto, la alcaldesa del municipio considera necesario establecer una normatividad que regule este tipo de actividades.",
+                prompt: "¿Cuál es la razón que mejor justifica por qué debería establecerse allí una normatividad que regule las actividades de extracción minera en el municipio?",
+                options: [
+                    { id: 'A', text: "Para que los mineros busquen más lugares de extracción de oro sin tener problemas con las autoridades." },
+                    { id: 'B', text: "Para garantizar los derechos a la salud y a un ambiente sano de los pobladores y el derecho de los mineros al trabajo." },
+                    { id: 'C', text: "Para que se pueda subsidiar la compra de agua para los pobladores, por medio de las ganancias que genera la explotación minera." },
+                    { id: 'D', text: "Para establecer periodos de alternancia en la extracción del oro, para que los mineros descansen y permitan que el agua no se contamine tanto." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 10,
+                title: "10. El Manifiesto Comunista",
+                text: "\"Un fantasma recorre Europa: el fantasma del comunismo. Todas las fuerzas de la vieja Europa se han unido en santa cruzada para acosar a ese fantasma [...] No hay un solo partido de oposición a quien los adversarios gobernantes no motjen de comunista [...] De este hecho, se desprenden dos consecuencias: la primera es que el comunismo se halla ya reconocido como una potencia por todas las potencias europeas. La segunda, que ya es hora de que los comunistas expresen a la luz del día y ante el mundo entero sus ideas, sus tendencias, sus aspiraciones, saliendo así al paso de esa leyenda del espectro comunista, con un manifiesto de su partido [...]\".",
+                prompt: "¿Este texto fue escrito en el siglo XX?",
+                options: [
+                    { id: 'A', text: "No, ya que fue escrito en el siglo XIX como respuesta a las transformaciones provocadas por la Revolución Industrial en Europa." },
+                    { id: 'B', text: "Sí, porque el texto describe cómo el Partido Comunista empezó a obtener el poder en varias potencias europeas y a perseguir cualquier fuerza política opositora." },
+                    { id: 'C', text: "No, porque el comunismo solo tuvo relevancia después de la segunda mitad del siglo XX, durante el enfrentamiento entre la Unión Soviética y los países capitalistas en la Guerra Fría." },
+                    { id: 'D', text: "Sí, porque el contexto del escrito es la consolidación del comunismo en Europa como fuerza política y, por tanto, el rechazo del mismo por los regímenes gobernantes y sus aliados." }
+                ],
+                correct: 'A'
+            },
+            {
+                id: 11,
+                title: "11. Plan de Ordenamiento Territorial (POT)",
+                text: "En Colombia, se debe tener un Plan de Ordenamiento Territorial (POT) en cada uno de los municipios, para organizar y planear el desarrollo físico del territorio. “Un POT se define como el conjunto de objetivos, directrices, políticas, estrategias, metas, programas, actuaciones y normas adoptadas para orientar y administrar el desarrollo físico del territorio y la utilización del suelo. Señala, pues, los derroteros de las diferentes acciones urbanísticas posibles que pueden emprenderse. Las ciudades deben crecer ordenadamente, de manera tal que los recursos con que se cuenta para el desarrollo de la comunidad, se empleen eficientemente y de manera sostenible en el tiempo. El POT nos pone de presente que no todo está permitido y que lo que sí lo está, debe ser en función de la obtención del desarrollo más equitativo posible”.",
+                prompt: "¿Cuál de los siguientes conceptos se aplica en la anterior definición de un POT?",
+                options: [
+                    { id: 'A', text: "Desarrollo equitativo y sustentable." },
+                    { id: 'B', text: "Capital político y social." },
+                    { id: 'C', text: "Participación política." },
+                    { id: 'D', text: "Crecimiento económico." }
+                ],
+                correct: 'A'
+            },
+            {
+                id: 12,
+                title: "12. Energía eólica en Colombia",
+                text: "En España, se han instalado miles de generadores de energía eólica... se está analizando la posibilidad de instalar este tipo de generadores en una región desértica en el norte de Colombia, para satisfacer las necesidades energéticas de la población del lugar. Esta población produce la mayor parte de la energía que consume a partir de la quema de madera, lo que genera problemas de contaminación y deforestación.",
+                prompt: "¿Cuál de las siguientes condiciones NO sería necesaria para implementar esta medida, de energía eólica, en dicha región del territorio colombiano?",
+                options: [
+                    { id: 'A', text: "Que sea posible convencer a la población de los efectos negativos de la quema de madera para que abandone dicha práctica." },
+                    { id: 'B', text: "Que la población no se vea incomodada por el impacto que tendría la instalación de los generadores en el paisaje." },
+                    { id: 'C', text: "Que sea posible reforestar las selvas de donde se ha extraído la madera que la población ha utilizado tradicionalmente para generar energía." },
+                    { id: 'D', text: "Que la capacidad de producción de los generadores eólicos que se instalarían sea suficiente para satisfacer las necesidades energéticas de la población." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 13,
+                title: "13. Inseguridad y Xenofobia",
+                text: "Un político de una ciudad del país se encuentra muy preocupado por el aumento en la inseguridad que se ha venido presentando en los últimos años... afirma el político: \"Ya se han registrado muchos casos de personas atracadas por estos ciudadanos inmigrantes. Recomiendo a la población tener mucho cuidado al momento de relacionarse en la calle con cualquier persona que parezca tener un acento del país vecino. También, hago un llamado a la comunidad para que continúe denunciando los casos de atraco que cometen las personas de ese país\".",
+                prompt: "Ahora bien, en esta situación, las palabras pronunciadas por el político",
+                options: [
+                    { id: 'A', text: "promueven el rechazo hacia los inmigrantes del país vecino porque la gente va a tratarlos con sospecha, sean o no atracadores." },
+                    { id: 'B', text: "ignoran que el origen de la inseguridad puede deberse a las necesidades económicas que atraviesan los inmigrantes." },
+                    { id: 'C', text: "desconocen que la comunidad no está obligada a participar ni a denunciar los atracos que se cometen en la ciudad." },
+                    { id: 'D', text: "motivan a que las personas de un país que se encuentran en situaciones de pobreza, decidan irse a vivir a otro país." }
+                ],
+                correct: 'A'
+            },
+            {
+                id: 14,
+                title: "14. Propuestas políticas para la democracia",
+                text: "Un líder político afirmó lo siguiente durante una entrevista: “Volveremos a participar en las elecciones cuando:\n1. El calendario electoral vuelva a ser estable y no haya intervención por parte del presidente.\n2. Aumenten los controles por parte de entes independientes en los puestos de votación.\n3. Los ciudadanos no sufran represalias por expresar su preferencia electoral.\n4. Se les permita a los ciudadanos crear y pertenecer a partidos políticos diferentes al de Gobierno.\n5. Las decisiones tomadas en las urnas se respeten y los candidatos elegidos puedan posesionarse”.",
+                prompt: "¿Cuál es el propósito de las medidas propuestas?",
+                options: [
+                    { id: 'A', text: "Establecer límites a la democracia, modificando el calendario electoral y concentrando el poder en los partidos políticos existentes." },
+                    { id: 'B', text: "Fortalecer la democracia, priorizando la gobernabilidad del partido político en el poder y creando un consenso nacional, al disminuir la oposición." },
+                    { id: 'C', text: "Establecer límites a la democracia, controlando el número de partidos que pueden postular candidatos y debilitando la figura presidencial." },
+                    { id: 'D', text: "Fortalecer la democracia representativa, garantizando condiciones para ejercer la oposición y disminuyendo los límites al ejercicio electoral." }
+                ],
+                correct: 'D'
+            },
+            {
+                id: 15,
+                title: "15. Amazonía y Pueblos Indígenas",
+                text: "Representantes de los gremios minero y petrolero han enviado un comunicado al Gobierno con la intención de obtener los permisos necesarios para intervenir la selva amazónica. Estos gremios argumentan que esta intervención les permitiría mejorar la competitividad de este sector del mercado y generar empleos para las comunidades de la región del Amazonas. Por otra parte, los líderes de algunos pueblos indígenas del Amazonas llevan varios meses pidiendo la ayuda del Gobierno para proteger los territorios de sus “hermanos aislados”...",
+                prompt: "De acuerdo con los intereses involucrados en la situación descrita, ¿entre quiénes sería más probable que se genere un conflicto?",
+                options: [
+                    { id: 'A', text: "Entre los pueblos indígenas y los académicos." },
+                    { id: 'B', text: "Entre el gremio minero y los pueblos indígenas." },
+                    { id: 'C', text: "Entre el Ministerio de Minas y Energía y el gremio petrolero." },
+                    { id: 'D', text: "Entre los grupos madereros ilegales y el gremio petrolero." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 16,
+                title: "16. Acción de Tutela y Derecho Fundamental a la Salud",
+                text: "En un municipio, la EPS de una persona de 68 años con una enfermedad crónica degenerativa se niega a suministrarle un medicamento formulado por su médico tratante, argumentando que este fármaco no se encuentra incluido en el Plan de Beneficios en Salud (PBS) y que la paciente debe asumir su costo. La paciente no cuenta con ingresos económicos suficientes para comprar el medicamento y su estado de salud empeora progresivamente.",
+                prompt: "¿Cuál es el mecanismo constitucional idóneo y prioritario al que puede acudir la ciudadana para exigir la entrega inmediata del medicamento?",
+                options: [
+                    { id: 'A', text: "Una Acción Popular, porque la negación de medicamentos afecta los derechos colectivos de toda la comunidad de usuarios de la EPS." },
+                    { id: 'B', text: "Una Acción de Tutela, porque se encuentra amenazado de manera inminente su derecho fundamental a la salud y a la vida digna." },
+                    { id: 'C', text: "Una Demanda de Inconstitucionalidad, porque la norma que regula el Plan de Beneficios viola la Constitución." },
+                    { id: 'D', text: "Una Acción de Cumplimiento, para obligar a los jueces a sancionar a los directivos de la entidad promotora de salud." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 17,
+                title: "17. Consulta Previa y Proyectos Extractivos",
+                text: "Una empresa multinacional obtuvo una concesión estatal para construir una represa hidroeléctrica que inundará 1.200 hectáreas en una cuenca hidrográfica habitada ancestralmente por comunidades afrodescendientes e indígenas. El Ministerio de Ambiente otorgó la licencia ambiental sin haber convocado a las autoridades locales de estas comunidades, alegando que el proyecto es de 'interés público y soberanía energética nacional'. Los líderes comunitarios interpusieron una demanda exigiendo suspender las obras.",
+                prompt: "¿Cuál es el principio constitucional en el que se sustentan las comunidades para reclamar la suspensión de la obra?",
+                options: [
+                    { id: 'A', text: "El principio de libre competencia económica frente a las empresas públicas del sector energético." },
+                    { id: 'B', text: "El derecho a la consulta previa, libre e informada cuando se pretenden ejecutar proyectos en territorios de minorías étnicas." },
+                    { id: 'C', text: "El derecho a la expropiación por vía administrativa de proyectos de infraestructura estratégica." },
+                    { id: 'D', text: "El principio de inmunidad tributaria territorial de las comunidades étnicas organizadas." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 18,
+                title: "18. Mecanismos de Participación Ciudadana",
+                text: "En un municipio con vocación agrícola, la administración municipal planea autorizar proyectos de fracturación hidráulica (fracking) para extracción de gas. La ciudadanía, alarmada por el impacto hídrico sobre las fuentes de agua subterránea, decide organizarse democráticamente para que sea el pueblo en las urnas el que decida de manera vinculante si se permite o no dicha actividad extractiva en el territorio municipal.",
+                prompt: "¿Cuál mecanismo de participación ciudadana formal establecido en la legislación colombiana se ajusta a este propósito?",
+                options: [
+                    { id: 'A', text: "La Consulta Popular." },
+                    { id: 'B', text: "El Plebiscito." },
+                    { id: 'C', text: "El Referendo Derogatorio." },
+                    { id: 'D', text: "El Cabildo Abierto." }
+                ],
+                correct: 'A'
+            },
+            {
+                id: 19,
+                title: "19. Separación de Poderes y Frenos y Contrapesos",
+                text: "Durante una crisis de orden público, el Presidente de la República expidió un decreto con fuerza de ley que restringe de forma permanente las reuniones públicas y autoriza la detención preventiva sin orden judicial. La Corte Constitucional procedió a revisar de oficio dicho decreto y lo declaró inexequible, argumentando que desconoce garantías sustanciales consagradas en la Carta Política y excede las facultades del Ejecutivo.",
+                prompt: "La decisión adoptada por la Corte Constitucional evidencia:",
+                options: [
+                    { id: 'A', text: "La superioridad jerárquica del poder judicial sobre los electores y la soberanía popular." },
+                    { id: 'B', text: "El principio de frenos y contrapesos para evitar la concentración arbitraria del poder en el Ejecutivo." },
+                    { id: 'C', text: "Una vulneración al principio de seguridad y defensa nacional en estados de excepción." },
+                    { id: 'D', text: "El debilitamiento de la democracia al subordinar decisiones de ministros a jueces locales." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 20,
+                title: "20. Política Fiscal: Progresividad y Equidad",
+                text: "El Congreso de la República debate una reforma tributaria para financiar programas de alimentación escolar y saneamiento básico en zonas rurales dispersas. Un sector de congresistas propone incrementar el impuesto al valor agregado (IVA) de la canasta familiar al 19%, mientras que otro sector plantea que el recaudo debe obtenerse aumentando los impuestos al patrimonio y a la renta de las corporaciones y personas con los ingresos más altos del país.",
+                prompt: "Desde la perspectiva de los principios tributarios de equidad y progresividad constitucional, la segunda propuesta es más adecuada porque:",
+                options: [
+                    { id: 'A', text: "Garantiza que quienes tienen mayor capacidad contributiva aporten una proporción superior de sus recursos para beneficio común." },
+                    { id: 'B', text: "Elimina por completo la necesidad de que los ciudadanos de ingresos medios tributen al Estado." },
+                    { id: 'C', text: "Permite que el recaudo sea asumido equitativamente por los sectores que no consumen bienes de primera necesidad." },
+                    { id: 'D', text: "Impide el crecimiento de las empresas privadas para asegurar el monopolio comercial de la economía estatal." }
+                ],
+                correct: 'A'
+            }
+        ];
+
+        let state = {
+            studentName: "",
+            currentIdx: 0,
+            answers: new Array(questions.length).fill(null),
+            timeLeft: 3600,
+            timer: null
+        };
+
+        async function inicializarSesion() {
+            try {
+                const { data: { session } } = await sbClient.auth.getSession();
+                if (session && session.user) {
+                    currentUser = session.user;
+                    const meta = currentUser.user_metadata || {};
+                    state.studentName = meta.full_name || meta.documento || currentUser.email.split('@')[0];
+                    document.getElementById('student-name-input').value = state.studentName;
+
+                    const { data: intentoPrevio } = await sbClient
+                        .from('intentos')
+                        .select('id, finalizado')
+                        .eq('simulacro_id', SIMULACRO_ID)
+                        .eq('user_id', currentUser.id)
+                        .maybeSingle();
+
+                    if (intentoPrevio && intentoPrevio.finalizado) {
+                        alert("Ya has presentado este simulacro previamente. Tu intento se encuentra cerrado.");
+                        window.location.href = "../modulos.html";
+                        return;
+                    }
+                } else {
+                    state.studentName = "Estudiante";
+                    document.getElementById('student-name-input').value = "Estudiante";
+                }
+            } catch (e) {
+                console.error("Error al validar sesión:", e);
+            }
+        }
+
+        function startQuiz() {
+            const input = document.getElementById('student-name-input');
+            state.studentName = input.value.trim() || state.studentName || "Estudiante";
+
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            state.timer = setInterval(() => {
+                state.timeLeft--;
+                updateTimerDisplay();
+                if (state.timeLeft <= 0) {
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(state.timeLeft / 60);
+            const secs = state.timeLeft % 60;
+            const display = document.getElementById('timer-display');
+            if (display) {
+                display.innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+            if (state.timeLeft < 300) {
+                const box = document.getElementById('timer-box');
+                if (box) box.classList.add('bg-red-50', 'border-red-200', 'text-red-600', 'animate-pulse');
+            }
+        }
+
+        function renderQuestion() {
+            const q = questions[state.currentIdx];
+            document.getElementById('q-title').innerText = q.title;
+            document.getElementById('q-text').innerText = q.text;
+            document.getElementById('q-prompt').innerText = q.prompt;
+            document.getElementById('q-number-circle').innerText = state.currentIdx + 1;
+            document.getElementById('q-counter-text').innerText = `Pregunta ${state.currentIdx + 1} de ${questions.length}`;
+            document.getElementById('progress-bar').style.width = `${((state.currentIdx + 1) / questions.length) * 100}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full group text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-blue-400 hover:bg-blue-50/30 transition-all flex items-start gap-4 cursor-pointer";
+                btn.onclick = () => selectOption(opt.id);
+                btn.innerHTML = `
+                    <span class="shrink-0 w-8 h-8 rounded-lg bg-slate-100 text-slate-600 font-black text-sm flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">${opt.id}</span>
+                    <span class="text-slate-700 text-sm md:text-base font-medium">${opt.text}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(id) {
+            state.answers[state.currentIdx] = id;
+            if (state.currentIdx < questions.length - 1) {
+                state.currentIdx++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        async function finishQuiz() {
+            clearInterval(state.timer);
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('res-student-name').innerText = state.studentName;
+
+            let score = 0;
+            let fallas = [];
+
+            questions.forEach((q, idx) => {
+                const dada = state.answers[idx];
+                if (dada === q.correct) {
+                    score++;
+                } else {
+                    const optDada = q.options.find(o => o.id === dada);
+                    const optCorrecta = q.options.find(o => o.id === q.correct);
+                    fallas.push({
+                        numero: idx + 1,
+                        tema: q.title || `Pregunta ${idx + 1}`,
+                        enunciado: q.prompt || q.text,
+                        seleccionada: optDada ? `${dada}) ${optDada.text}` : (dada || "Sin responder"),
+                        correcta: optCorrecta ? `${q.correct}) ${optCorrecta.text}` : q.correct
+                    });
+                }
+            });
+
+            // Extraer automáticamente el área evaluada desde el título
+            const nombreMateria = document.title.replace('Logos Edu |', '').trim();
+
+            let dictamenIA = "";
+            if (fallas.length === 0) {
+                dictamenIA = `### 1. Diagnóstico Global y Nivel de Desempeño
+**Nivel Alcanzado: Superior (100% de Efectividad).**
+Precisión absoluta en los ${questions.length} ítems evaluados. El evaluado demuestra un dominio riguroso y sistemático de los estándares conceptuales y metodológicos evaluados en esta prueba.
+
+### 2. Ponderación de Preguntas Críticas
+No se registraron fallas operativas, procedimentales ni distracciones en los enunciados evaluados.
+
+### 3. Recomendación Estratégica
+Mantener la disciplina de lectura crítica y el ritmo de respuesta en las próximas sesiones simuladas del calendario.`;
+            } else {
+                const promptUniversal = `Actúa como Coordinador Académico y Docente Experto en Evaluación Saber 11 de Logos Edu.
+Genera un Informe de Diagnóstico Pedagógico y Nivelación Analítica exhaustivo, riguroso, muy extenso y de alto nivel técnico para la prueba: "${nombreMateria}".
+
+DATOS DEL DESEMPEÑO:
+- Aciertos: ${score} de ${questions.length} preguntas.
+- Efectividad: ${Math.round((score / questions.length) * 100)}%.
+- Banco de Fallas Registradas (${fallas.length} preguntas):
+${fallas.map(f => `• Ítem ${f.numero} [${f.tema}]:
+  - Enunciado clave: "${f.enunciado}"
+  - Opción marcada (errónea): "${f.seleccionada}"
+  - Opción correcta: "${f.correcta}"`).join('\n\n')}
+
+REGLAS OBLIGATORIAS:
+1. NO menciones nombres de estudiantes ni uses juicios personales. Concéntrate exclusivamente en la teoría disciplinar de la materia evaluada, la taxonomía de la prueba y el razonamiento cognitivo.
+2. La extensión debe ser muy amplia, profunda y detallada (mínimo 600 palabras), desglosando la teoría con precisión docente.
+3. Organiza la respuesta obligatoriamente con las siguientes 5 secciones estructuradas en Markdown:
+
+### 1. Diagnóstico Global y Nivel de Desempeño
+- Clasifica el nivel alcanzado (Bajo, Básico, Alto o Superior) según el porcentaje del ${Math.round((score / questions.length) * 100)}%.
+- Redacta dos párrafos analizando en profundidad la solidez técnica demostrada, las competencias dominadas y el impacto cuantitativo de los errores en el puntaje global estandarizado del examen.
+
+### 2. Ponderación de Preguntas Críticas y Trampas Cognitivas (¿Por qué se fallaron?)
+- Agrupa los ítems errados en 2 o 3 núcleos problemáticos recurrentes de esta área.
+- Examina con gran detalle la trampa cognitiva o el distractor: explica con precisión por qué la opción marcada resultó engañosa (sesgos de lectura, intuición moral o superficial, confusión de terminología técnica) y contrástala puntualmente con la fundamentación de la opción correcta.
+
+### 3. Fundamentación Teórica y Conceptual de los Vacíos Identificados
+- Desarrolla una explicación teórica profunda y rigurosa de cada concepto central involucrado en las fallas.
+- Expón los principios disciplinares, definiciones operativas, fórmulas o marcos normativos necesarios para que el evaluado domine el tema a cabalidad.
+
+### 4. Términos y Conceptos Clave a Estudiar Prioritariamente
+- Presenta un glosario técnico formal de 4 a 6 conceptos nucleares de esta materia que deben ser repasados de inmediato, cada uno acompañado de su definición formal rigurosa.
+
+### 5. Ruta de Entrenamiento y Descarte Metodológico
+- Proporciona pautas operativas concretas de lectura crítica, análisis de condiciones restrictivas y técnicas de descarte sistemático para el próximo simulacro institucional.
+
+Tono: Académico, institucional, pedagógico y riguroso. Emplea subtítulos, negritas y viñetas con claridad.`;
+
+                try {
+                    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: promptUniversal }] }],
+                            generationConfig: {
+                                temperature: 0.3,
+                                maxOutputTokens: 2500
+                            }
+                        })
+                    });
+
+                    if (!resp.ok) {
+                        const errBody = await resp.json();
+                        console.error("Error devuelto por Gemini API:", errBody);
+                        throw new Error(`Error API: ${resp.status}`);
+                    }
+
+                    const data = await resp.json();
+                    dictamenIA = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (!dictamenIA) throw new Error("Sin respuesta textual de Gemini");
+                } catch (e) {
+                    console.error("Fallo llamada Gemini, usando respaldo amplio:", e);
+                    dictamenIA = `### 1. Diagnóstico Global y Nivel de Desempeño
+**Nivel de Rendimiento: Básico/Bajo (${Math.round((score / questions.length) * 100)}% de Efectividad).**
+El resultado obtenido evidencia dificultades sustanciales en la consolidación de competencias nucleares evaluadas en este módulo. Se observa una marcada inconsistencia al enfrentarse a problemáticas que demandan juicio técnico y jerarquización de variables, lo que impacta de manera directa la proyección del puntaje global.
+
+### 2. Ponderación de Preguntas Críticas y Trampas Cognitivas
+- **Prevalencia de la Intuición sobre el Rigor Técnico:** Se evidencia una tendencia recurrente a marcar opciones guiadas por juicios de valor o percepciones morales de justicia inmediata, descartando el análisis objetivo del marco conceptual o normativo exigido por el problema.
+- **Vulnerabilidad ante Enunciados Condicionales:** Se identifican fallas críticas en ítems formulados con directrices restrictivas o de exclusión, donde se seleccionan opciones afirmativas que omiten la condición específica planteada en la pregunta.
+
+### 3. Fundamentación Teórica y Conceptual de los Vacíos Identificados
+- **Diferenciación de Competencias e Instrumentos:** Es prioritario afianzar el alcance exacto de los instrumentos evaluados, distinguiendo procedimientos jurídicos formales de meras declaraciones de intención política o acuerdos de conveniencia.
+- **Estructura y Jerarquía Disciplinar:** Los problemas planteados exigen reconocer el principio de contrapesos y la delimitación de funciones; ninguna entidad o actor social puede atribuirse competencias que la estructura institucional no le confiere.
+
+### 4. Términos y Conceptos Clave a Estudiar Prioritariamente
+- **Separación de Poderes y Contrapesos:** Principio constitucional que distribuye las ramas del poder público para impedir la concentración autoritaria.
+- **Mecanismos de Participación Ciudadana:** Herramientas jurídicas formales (Consulta Popular, Plebiscito, Referendo) con reglas y alcances diferenciados.
+- **Ponderación Dimensional:** Capacidad de contrastar variables ambientales, económicas y jurídicas en situaciones de conflicto social.
+
+### 5. Ruta de Entrenamiento y Descarte Metodológico
+- **Desarticulación de la Lectura Emocional:** Abstenerse de marcar la opción que "suene deseable" o "correcta en lo cotidiano"; validar siempre cuál opción cuenta con sustento técnico directo.
+- **Método de Triangulación y Descarte:** Leer primero la pregunta para identificar el verbo operativo, rastrear las condiciones restrictivas en el contexto y descartar sistemáticamente los distractores que generalizan.`;
+                }
+            }
+
+            // Almacenar con los nombres EXACTOS de tus columnas en Supabase
+            if (currentUser) {
+                try {
+                    const meta = currentUser.user_metadata || {};
+                    const institucionUser = meta.institucion || "I.E. Gabriel García Márquez";
+                    
+                    const { error } = await sbClient.from('intentos').insert([
+                        {
+                            user_id: currentUser.id,
+                            simulacro_id: SIMULACRO_ID,
+                            puntaje_global: score,
+                            respuestas: state.answers,
+                            finalizado: true,
+                            fecha_finalizado: new Date().toISOString(),
+                            retroalimentacion_ia: dictamenIA,
+                            nombre_estudiante: state.studentName,
+                            institucion: institucionUser
+                        }
+                    ]);
+                    if (error) console.error("Error al insertar en Supabase:", error);
+                } catch(e) {
+                    console.error("Excepción registrando intento:", e);
+                }
+            }
+        }
+
+        window.onload = () => {
+            inicializarSesion();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logos Edu | Sala de Clases Virtuales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+    <!-- Encabezado de Navegación -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm relative">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-10 w-auto object-contain">
+                <div>
+                    <span class="font-bold text-lg text-slate-900 tracking-tight">Logos <span class="text-blue-600">Edu</span></span>
+                    <span class="text-[10px] block text-slate-400 font-bold tracking-wider uppercase">Encuentros Sincrónicos</span>
+                </div>
+            </div>
+            <div>
+                <a href="modulos.html" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-bold transition border border-slate-200">
+                    Volver a Inicio
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección Hero con la Imagen de Fondo -->
+    <div class="relative w-full py-20 bg-slate-900 overflow-hidden">
+        <!-- Contenedor de la Imagen -->
+        <div class="absolute inset-0 z-0">
+            <img src="hero-portada.jpg" alt="Fondo Logos Edu" class="w-full h-full object-cover opacity-30 object-top">
+            <!-- Difuminado hacia el color de fondo de la página -->
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/50 via-slate-900/20 to-slate-50"></div>
+        </div>
+        
+        <!-- Contenido del Texto sobre la imagen -->
+        <div class="relative z-10 text-center max-w-2xl mx-auto px-4">
+            <span class="text-xs font-black uppercase text-blue-300 tracking-widest bg-blue-900/60 px-4 py-1.5 rounded-full border border-blue-500/50 backdrop-blur-sm shadow-lg">
+                Cronograma y Grabaciones
+            </span>
+            <h1 class="text-4xl md:text-5xl font-black text-white mt-5 drop-shadow-lg tracking-tight">Salas de Retroalimentación</h1>
+            <p class="text-slate-200 font-medium mt-4 leading-relaxed text-sm md:text-base drop-shadow-md">
+                Conéctate a tus clases en vivo según el horario establecido o accede a las grabaciones en Google Drive organizadas por simulacro para repasar los temas clave.
+            </p>
+        </div>
+    </div>
+
+    <!-- Contenedor de Tarjetas (Se monta sobre el difuminado) -->
+    <main class="max-w-6xl mx-auto px-6 pb-12 w-full flex-1 relative z-20 -mt-8">
+        
+        <div id="contenedor-clases" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full text-center py-10 text-slate-400 font-medium">Cargando cronograma y grabaciones desde la base de datos...</div>
+        </div>
+
+    </main>
+
+    <script>
+        const SUPABASE_URL = "https://uinctluqbmdrehazuyog.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpbmN0bHVxYm1kcmVoYXp1eW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDM2NDUsImV4cCI6MjEwNzQ3OTY0NX0.ANXAyoauMGWAXEKpDYjcAGvCImE738aygvA7JwTEfyI";
+        const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Mapeo de simulacros por cada materia
+        const simulacrosPorMateria = {
+            'Ciencias Sociales': [{ id: 1, nombre: 'Simulacro 1' }, { id: 2, nombre: 'Simulacro 2' }],
+            'Sociales y Ciudadanas': [{ id: 1, nombre: 'Simulacro 1' }, { id: 2, nombre: 'Simulacro 2' }],
+            'Lectura Crítica': [{ id: 3, nombre: 'Simulacro 1' }],
+            'Matemáticas': [{ id: 4, nombre: 'Simulacro 1' }],
+            'Ciencias Naturales': [{ id: 5, nombre: 'Simulacro 1' }],
+            'Inglés': [{ id: 6, nombre: 'Simulacro 1' }]
+        };
+
+        async function cargarClases() {
+            const contenedor = document.getElementById('contenedor-clases');
+            
+            try {
+                // Consultamos las clases programadas y las grabaciones por simulacro en simultáneo
+                const [respClases, respGrabaciones] = await Promise.all([
+                    sbClient.from('clases_en_vivo').select('*').order('id', { ascending: true }),
+                    sbClient.from('grabaciones_simulacros').select('*')
+                ]);
+
+                if (respClases.error) throw respClases.error;
+
+                const clases = respClases.data || [];
+                const grabaciones = respGrabaciones.data || [];
+
+                if (clases.length === 0) {
+                    contenedor.innerHTML = '<div class="col-span-full text-center py-10 text-slate-500 font-bold">Aún no hay clases programadas.</div>';
+                    return;
+                }
+
+                let html = '';
+                clases.forEach(clase => {
+                    const tieneLink = clase.link_meet && clase.link_meet.trim() !== "";
+                    const esHoy = clase.estado === "activa";
+                    
+                    const borderClass = esHoy ? "border-blue-500 shadow-blue-500/20" : "border-slate-200 shadow-sm";
+                    const bgHeader = esHoy ? "bg-blue-50" : "bg-white";
+                    const btnClass = tieneLink 
+                        ? (esHoy ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md cursor-pointer" : "bg-slate-800 hover:bg-slate-900 text-white shadow-md cursor-pointer") 
+                        : "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200";
+                    
+                    const btnText = tieneLink ? "Ingresar a la Sala ➔" : "Enlace en vivo pendiente";
+                    const icono = clase.icono || "📺";
+
+                    // Construcción de botones de grabaciones vinculados a los simulacros de esta materia
+                    const listaSims = simulacrosPorMateria[clase.materia] || [];
+                    let botonesGrabaciones = '';
+
+                    listaSims.forEach(sim => {
+                        const grab = grabaciones.find(g => g.simulacro_id === sim.id && g.link_grabacion && g.link_grabacion.trim() !== "");
+                        if (grab) {
+                            botonesGrabaciones += `
+                                <a href="${grab.link_grabacion}" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 text-xs font-bold transition shadow-sm cursor-pointer">
+                                    <span class="flex items-center gap-1.5">🎬 <span>Grabación ${sim.nombre}</span></span>
+                                    <span class="text-amber-700 text-sm">↗</span>
+                                </a>
+                            `;
+                        } else {
+                            botonesGrabaciones += `
+                                <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 text-slate-400 border border-slate-200 text-[11px] font-medium">
+                                    <span>📁 ${sim.nombre} (Grabación pendiente)</span>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    html += `
+                        <div class="bg-white rounded-3xl border-2 ${borderClass} overflow-hidden flex flex-col transition-all hover:-translate-y-1 hover:shadow-xl relative">
+                            <div class="${bgHeader} p-6 border-b border-slate-100 flex items-start justify-between">
+                                <div>
+                                    <span class="text-4xl block mb-3 drop-shadow-sm">${icono}</span>
+                                    <h2 class="text-lg font-black text-slate-900 tracking-tight">${clase.materia}</h2>
+                                    <p class="text-[11px] font-bold text-slate-400 uppercase mt-1 tracking-wider">${clase.profesor}</p>
+                                </div>
+                                ${esHoy ? '<span class="bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg animate-pulse shadow-sm">En Vivo</span>' : ''}
+                            </div>
+                            
+                            <div class="p-6 flex-1 flex flex-col justify-between space-y-5">
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-3 text-slate-600">
+                                        <span class="text-lg">📅</span>
+                                        <span class="text-sm font-semibold">${clase.fecha}</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-slate-600">
+                                        <span class="text-lg">⏰</span>
+                                        <span class="text-sm font-semibold">${clase.hora}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-3 pt-2">
+                                    <a ${tieneLink ? `href="${clase.link_meet}" target="_blank"` : ''} 
+                                       class="block w-full py-3.5 rounded-xl text-center font-bold text-sm transition-all ${btnClass}">
+                                        ${btnText}
+                                    </a>
+
+                                    <div class="pt-2 border-t border-slate-100 space-y-2">
+                                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Grabaciones por Simulacro:</span>
+                                        <div class="space-y-1.5">
+                                            ${botonesGrabaciones}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                contenedor.innerHTML = html;
+
+            } catch (err) {
+                console.error("Error al cargar las clases:", err);
+                contenedor.innerHTML = '<div class="col-span-full text-center py-10 text-rose-500 font-bold">Error al conectar con la base de datos.</div>';
+            }
+        }
+
+        window.onload = cargarClases;
+    </script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logos Edu | Portal Docente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        /* Animación suave para cambiar entre formularios */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="min-h-screen relative flex items-center justify-center p-6">
+
+    <!-- Imagen de Fondo con Filtro Oscuro -->
+    <div class="absolute inset-0 z-0">
+        <img src="hero-portada_2.jpg" alt="Fondo Logos Edu" class="w-full h-full object-cover object-center">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-[2px]"></div>
+    </div>
+
+    <!-- Tarjeta de Acceso -->
+    <div class="relative z-10 max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
+        
+        <!-- Encabezado -->
+        <div class="bg-slate-50 p-8 text-center border-b border-slate-100">
+            <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-14 w-auto mx-auto mb-3 object-contain block">
+            <span class="text-[10px] uppercase font-black text-blue-600 tracking-widest bg-blue-100/50 px-3 py-1 rounded-full border border-blue-200">Acceso Institucional</span>
+            <h1 class="text-xl font-black text-slate-900 mt-3">Portal Docente</h1>
+        </div>
+
+        <!-- Pestañas de Navegación -->
+        <div class="flex border-b border-slate-200">
+            <button onclick="mostrarFormulario('login')" id="tab-login" class="flex-1 py-3.5 text-sm font-bold text-blue-600 border-b-2 border-blue-600 bg-white transition-colors cursor-pointer">
+                Iniciar Sesión
+            </button>
+            <button onclick="mostrarFormulario('registro')" id="tab-registro" class="flex-1 py-3.5 text-sm font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 bg-slate-50 transition-colors cursor-pointer">
+                Crear Cuenta
+            </button>
+        </div>
+
+        <div class="p-8">
+            <!-- ================= FORMULARIO: INICIAR SESIÓN ================= -->
+            <form id="form-login" class="space-y-4 fade-in block">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Correo Electrónico</label>
+                    <input type="email" id="login-correo" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 font-medium text-slate-800 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Contraseña</label>
+                    <input type="password" id="login-password" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 font-medium text-slate-800 transition-colors">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-md transition-all text-sm tracking-wide cursor-pointer">
+                        Ingresar al Panel ➔
+                    </button>
+                </div>
+            </form>
+
+            <!-- ================= FORMULARIO: REGISTRO ================= -->
+            <form id="form-registro" class="space-y-4 fade-in hidden">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nombre Completo</label>
+                    <input type="text" id="reg-nombre" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 font-medium text-slate-800 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Correo Electrónico</label>
+                    <input type="email" id="reg-correo" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 font-medium text-slate-800 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Contraseña</label>
+                    <input type="password" id="reg-password" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 font-medium text-slate-800 text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Celular</label>
+                        <input type="tel" id="reg-celular" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 font-medium text-slate-800 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Área</label>
+                        <select id="reg-materia" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 font-bold text-slate-800 text-sm cursor-pointer">
+                            <option value="Sociales">Sociales</option>
+                            <option value="Lectura">Lectura</option>
+                            <option value="Matematicas">Matemáticas</option>
+                            <option value="Naturales">Naturales</option>
+                            <option value="Ingles">Inglés</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" id="btn-registro" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-3.5 rounded-xl shadow-md transition-all text-sm tracking-wide cursor-pointer">
+                        Registrarme
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="text-center pb-6 bg-white">
+            <a href="index.html" class="text-xs text-slate-400 hover:text-slate-600 font-semibold underline">← Volver al Portal de Inicio</a>
+        </div>
+    </div>
+
+    <script>
+        // Configuración Supabase
+        const SUPABASE_URL = "https://uinctluqbmdrehazuyog.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpbmN0bHVxYm1kcmVoYXp1eW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDM2NDUsImV4cCI6MjEwNzQ3OTY0NX0.ANXAyoauMGWAXEKpDYjcAGvCImE738aygvA7JwTEfyI";
+        const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Función para alternar entre Iniciar Sesión y Registro
+        function mostrarFormulario(tipo) {
+            const formLogin = document.getElementById('form-login');
+            const formRegistro = document.getElementById('form-registro');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegistro = document.getElementById('tab-registro');
+
+            if (tipo === 'login') {
+                formLogin.classList.remove('hidden');
+                formRegistro.classList.add('hidden');
+                tabLogin.className = "flex-1 py-3.5 text-sm font-bold text-blue-600 border-b-2 border-blue-600 bg-white transition-colors cursor-pointer";
+                tabRegistro.className = "flex-1 py-3.5 text-sm font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 bg-slate-50 transition-colors cursor-pointer";
+            } else {
+                formLogin.classList.add('hidden');
+                formRegistro.classList.remove('hidden');
+                tabRegistro.className = "flex-1 py-3.5 text-sm font-bold text-blue-600 border-b-2 border-blue-600 bg-white transition-colors cursor-pointer";
+                tabLogin.className = "flex-1 py-3.5 text-sm font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 bg-slate-50 transition-colors cursor-pointer";
+            }
+        }
+
+        // 1. Lógica de INICIAR SESIÓN (Valida credenciales y si está autorizado)
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            btn.innerText = "Verificando...";
+            btn.disabled = true;
+
+            const correo = document.getElementById('login-correo').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            try {
+                const { data, error } = await sbClient
+                    .from('docentes')
+                    .select('*')
+                    .eq('correo', correo)
+                    .eq('password', password)
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                if (!data) {
+                    alert("❌ Correo o contraseña incorrectos.");
+                } else if (!data.autorizado) {
+                    alert("⏳ Tu cuenta aún está en revisión. El administrador debe autorizar tu acceso en el sistema antes de que puedas ingresar.");
+                } else {
+                    window.location.href = "panel_docente.html";
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Hubo un error de conexión.");
+            } finally {
+                btn.innerText = "Ingresar al Panel ➔";
+                btn.disabled = false;
+            }
+        });
+
+        // 2. Lógica de REGISTRO (Guarda con autorizado = false)
+        document.getElementById('form-registro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-registro');
+            btn.innerText = "Registrando...";
+            btn.disabled = true;
+
+            const nombre = document.getElementById('reg-nombre').value.trim();
+            const correo = document.getElementById('reg-correo').value.trim();
+            const password = document.getElementById('reg-password').value.trim();
+            const celular = document.getElementById('reg-celular').value.trim();
+            const materia = document.getElementById('reg-materia').value;
+
+            try {
+                // Verificar si el correo ya existe
+                const { data: checkData } = await sbClient
+                    .from('docentes')
+                    .select('id')
+                    .eq('correo', correo)
+                    .maybeSingle();
+
+                if (checkData) {
+                    alert("⚠️ Este correo ya está registrado. Si ya fuiste autorizado, inicia sesión.");
+                    btn.innerText = "Registrarme";
+                    btn.disabled = false;
+                    return;
+                }
+
+                // Guardar al docente con autorizado: false
+                const { error } = await sbClient.from('docentes').insert([{ 
+                    nombre, 
+                    correo, 
+                    password, 
+                    celular, 
+                    materia,
+                    autorizado: false 
+                }]);
+                
+                if (error) throw error;
+                
+                alert("✅ Solicitud de registro enviada con éxito.\n\nTu cuenta debe ser aprobada por la administración en Supabase antes de poder ingresar al panel.");
+                mostrarFormulario('login');
+
+            } catch (err) {
+                console.error(err);
+                alert("Hubo un error al crear la cuenta. Intenta nuevamente.");
+            } finally {
+                btn.innerText = "Registrarme";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
