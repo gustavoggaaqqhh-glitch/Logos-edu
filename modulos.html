@@ -10,7 +10,6 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     body { font-family: 'Inter', sans-serif; }
 
-    /* Fondo hero-portada completo y suavizado para lectura */
     .bg-portada-clara {
       background-image: 
         linear-gradient(180deg, rgba(248, 250, 252, 0.90) 0%, rgba(241, 245, 249, 0.88) 50%, rgba(248, 250, 252, 0.94) 100%),
@@ -52,7 +51,6 @@
   <!-- Contenedor Principal -->
   <main class="max-w-5xl mx-auto px-4 py-8 space-y-6 flex-1 w-full">
 
-    <!-- Banner Hero con Botón Integrado -->
     <section class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
       <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div class="max-w-2xl">
@@ -122,11 +120,11 @@
     let areaActual = 'todas';
 
     const catalogoAreas = [
-      { clave: 'sociales',    nombre: 'Ciencias Sociales y Ciudadanas', prefijo: 'sociales',       idBase: 1 },
-      { clave: 'lectura',     nombre: 'Lectura Crítica',                 prefijo: 'lecturacritica', idBase: 1 },
-      { clave: 'matematicas', nombre: 'Matemáticas',                     prefijo: 'matematicas',    idBase: 1 },
-      { clave: 'ciencias',    nombre: 'Ciencias Naturales',              prefijo: 'ciencias',       idBase: 1 },
-      { clave: 'ingles',      nombre: 'Inglés',                          prefijo: 'ingles',         idBase: 1 }
+      { clave: 'sociales',    nombre: 'Ciencias Sociales y Ciudadanas', prefijo: 'sociales' },
+      { clave: 'lectura',     nombre: 'Lectura Crítica',                 prefijo: 'lecturacritica' },
+      { clave: 'matematicas', nombre: 'Matemáticas',                     prefijo: 'matematicas' },
+      { clave: 'ciencias',    nombre: 'Ciencias Naturales',              prefijo: 'ciencias' },
+      { clave: 'ingles',      nombre: 'Inglés',                          prefijo: 'ingles' }
     ];
 
     function generar14Simulacros() {
@@ -141,7 +139,7 @@
             area: area.clave,
             areaNombre: area.nombre,
             archivo: `${area.prefijo}${i}.html`,
-            disponible: (i === 1) // Solo el 1 abierto; 2 al 14 cerrados
+            disponible: (i === 1)
           });
         }
       });
@@ -167,10 +165,9 @@
         : todosLosSimulacros.filter(s => s.area === areaActual);
 
       simulacrosFiltrados.forEach(sim => {
-        // Verificar si existe intento en Supabase para este simulacro
         const idIntento = mapaIntentos[`${sim.materiaClave}_${sim.numero}`] || 
                           mapaIntentos[sim.archivo] || 
-                          mapaIntentos[sim.id];
+                          (sim.numero === 1 && mapaIntentos[sim.materiaClave]);
 
         const yaPresento = !!idIntento;
 
@@ -180,19 +177,16 @@
         let subtexto = "";
 
         if (yaPresento) {
-          // 1. YA PRESENTADO EN SUPABASE -> AZUL RETROALIMENTACIÓN
           bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
-          botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${idIntento}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
+          botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${idIntento}&materia=${sim.materiaClave}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
           subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu intento ha sido registrado. Puedes consultar el dictamen de retroalimentación.</p>`;
         } else if (sim.disponible) {
-          // 2. SIMULACRO 1 DISPONIBLE -> VERDE PRESENTAR PRUEBA
           bordeClase = "border-emerald-300 bg-white/95 backdrop-blur-md ring-1 ring-emerald-100";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• DISPONIBLE AHORA</span>`;
           botonHtml = `<button onclick="window.location.href='${sim.archivo}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
           subtexto = `<p class="text-xs text-slate-500 mt-1">${sim.areaNombre} • 20 Preguntas</p>`;
         } else {
-          // 3. DEL 2 AL 14 BLOQUEADOS -> ROJO NO DISPONIBLE
           bordeClase = "border-rose-200 bg-rose-50/30 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 mb-2">🔒 NO DISPONIBLE</span>`;
           botonHtml = `<button disabled class="px-6 py-2.5 bg-rose-50 text-rose-600 font-bold rounded-xl text-sm border border-rose-200 cursor-not-allowed">No disponible aún</button>`;
@@ -215,19 +209,55 @@
       });
     }
 
-    async function iniciar() {
-      todosLosSimulacros = generar14Simulacros();
-
+    async function cargarIntentos() {
       const { data: { session } } = await client.auth.getSession();
-      let userId = session?.user?.id || null;
-      let userName = localStorage.getItem("nombre_estudiante") || localStorage.getItem("estudiante_nombre") || "juan";
+      const userId = session?.user?.id || null;
+      const userName = localStorage.getItem("nombre_estudiante") || "juan";
 
-      if (session && session.user) {
-        const metadata = session.user.user_metadata || {};
-        userName = metadata.full_name || metadata.documento || session.user.email.split('@')[0];
+      document.getElementById("txt-nombre-estudiante").textContent = session?.user?.user_metadata?.full_name || userName;
+
+      let query = client.from('intentos').select('*');
+      if (userId) {
+        query = query.eq('user_id', userId);
       }
 
-      document.getElementById("txt-nombre-estudiante").textContent = userName;
+      const { data: intentos } = await query;
+
+      if (intentos && intentos.length > 0) {
+        intentos.forEach(item => {
+          const sid = item.simulacro_id || 1;
+          const mat = (item.materia || '').toLowerCase();
+
+          if (mat.includes('lectura') || mat.includes('critica')) {
+            mapaIntentos[`lectura_${sid}`] = item.id;
+            mapaIntentos['lectura'] = item.id;
+            mapaIntentos[`lecturacritica${sid}.html`] = item.id;
+          } else if (mat.includes('social')) {
+            mapaIntentos[`sociales_${sid}`] = item.id;
+            mapaIntentos['sociales'] = item.id;
+            mapaIntentos[`sociales${sid}.html`] = item.id;
+          } else if (mat.includes('matematica')) {
+            mapaIntentos[`matematicas_${sid}`] = item.id;
+            mapaIntentos['matematicas'] = item.id;
+            mapaIntentos[`matematicas${sid}.html`] = item.id;
+          } else if (mat.includes('ingles')) {
+            mapaIntentos[`ingles_${sid}`] = item.id;
+            mapaIntentos['ingles'] = item.id;
+            mapaIntentos[`ingles${sid}.html`] = item.id;
+          } else if (mat.includes('ciencia') || mat.includes('natural')) {
+            mapaIntentos[`ciencias_${sid}`] = item.id;
+            mapaIntentos['ciencias'] = item.id;
+            mapaIntentos[`ciencias${sid}.html`] = item.id;
+          }
+        });
+      }
+
+      renderizarTarjetas();
+    }
+
+    async function iniciar() {
+      todosLosSimulacros = generar14Simulacros();
+      renderizarTarjetas();
 
       document.getElementById("btn-cerrar-sesion").addEventListener("click", async () => {
         try { await client.auth.signOut(); } catch(e){}
@@ -235,48 +265,11 @@
         window.location.href = "index.html";
       });
 
-      // Consultar intentos de Supabase
-      try {
-        let query = client.from('intentos').select('*');
-        if (userId) {
-          query = query.eq('user_id', userId);
-        }
+      // Carga inmediata
+      await cargarIntentos();
 
-        const { data: intentos } = await query;
-
-        if (intentos && intentos.length > 0) {
-          intentos.forEach(item => {
-            const sid = item.simulacro_id;
-            const resp = item.respuestas || {};
-            const materia = (item.materia || resp.materia || '').toLowerCase();
-
-            if (materia.includes('lectura') || materia.includes('critica')) {
-              mapaIntentos[`lectura_${sid}`] = item.id;
-              mapaIntentos[`lecturacritica${sid}.html`] = item.id;
-            } else if (materia.includes('social')) {
-              mapaIntentos[`sociales_${sid}`] = item.id;
-              mapaIntentos[`sociales${sid}.html`] = item.id;
-            } else if (materia.includes('matematica')) {
-              mapaIntentos[`matematicas_${sid}`] = item.id;
-              mapaIntentos[`matematicas${sid}.html`] = item.id;
-            } else if (materia.includes('ingles')) {
-              mapaIntentos[`ingles_${sid}`] = item.id;
-              mapaIntentos[`ingles${sid}.html`] = item.id;
-            } else if (materia.includes('natural') || materia.includes('ciencia')) {
-              mapaIntentos[`ciencias_${sid}`] = item.id;
-              mapaIntentos[`ciencias${sid}.html`] = item.id;
-            }
-
-            // Fallback genérico por número de simulacro
-            mapaIntentos[`sociales_${sid}`] = mapaIntentos[`sociales_${sid}`] || item.id;
-            mapaIntentos[`lectura_${sid}`] = mapaIntentos[`lectura_${sid}`] || item.id;
-          });
-        }
-      } catch (err) {
-        console.warn("Aviso:", err);
-      }
-
-      renderizarTarjetas();
+      // Recarga automática a los 3 segundos por si Supabase estaba terminando de escribir en segundo plano
+      setTimeout(cargarIntentos, 3000);
     }
 
     iniciar();
