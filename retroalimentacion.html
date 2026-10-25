@@ -139,7 +139,7 @@
     function obtenerNombreLimpio(materiaTexto, textoIA, simulacroId) {
       if (simulacroId === 57) return "Ciencias Sociales y Ciudadanas";
       if (simulacroId === 1) return "Lectura Crítica";
-      if (simulacro_id === 401 || simulacroId === 401) return "Inglés";
+      if (simulacroId === 401) return "Inglés";
 
       const combo = `${materiaTexto || ''} ${textoIA || ''}`.toLowerCase();
       if (combo.includes('social') || combo.includes('ciudadan')) return "Ciencias Sociales y Ciudadanas";
