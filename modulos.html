@@ -77,7 +77,7 @@
       </div>
     </section>
 
-    <!-- Filtros de Área Interactivos -->
+    <!-- Filtros de Área Interactivos (Orden: Sociales, Matemáticas, Inglés, Ciencias, Lectura) -->
     <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="contenedor-filtros">
       <button onclick="cambiarFiltro('todas', this)" class="btn-filtro px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold shadow-sm flex items-center gap-1.5 whitespace-nowrap transition cursor-pointer">
         <span>🗺️</span> Todas las Áreas
@@ -85,17 +85,17 @@
       <button onclick="cambiarFiltro('sociales', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
         <span>🏛️</span> Sociales y Ciudadanas
       </button>
-      <button onclick="cambiarFiltro('lectura', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
-        <span>📖</span> Lectura Crítica
-      </button>
       <button onclick="cambiarFiltro('matematicas', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
         <span>📐</span> Matemáticas
+      </button>
+      <button onclick="cambiarFiltro('ingles', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+        <span>🌐</span> Inglés
       </button>
       <button onclick="cambiarFiltro('ciencias', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
         <span>🔬</span> Ciencias Naturales
       </button>
-      <button onclick="cambiarFiltro('ingles', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
-        <span>🌐</span> Inglés
+      <button onclick="cambiarFiltro('lectura', this)" class="btn-filtro px-4 py-2 bg-white/90 backdrop-blur-md text-slate-600 hover:bg-slate-100 rounded-xl text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+        <span>📖</span> Lectura Crítica
       </button>
     </div>
 
@@ -123,16 +123,28 @@
     let intentosRealizados = new Set();
     let areaActual = 'todas';
 
-    // Mapeo dinámico
-    function obtenerCarpetaArea(area) {
-      const mapa = {
-        'sociales': 'Sociales',
-        'lectura': 'Lectura Critica',
-        'matematicas': 'Matematicas',
-        'ciencias': 'Biologia',
-        'ingles': 'Ingles'
-      };
-      return mapa[area] || 'Sociales';
+    // Generador automático de rutas estándar según el área y número de simulacro
+    function obtenerNombreArchivoSimulacro(sim) {
+      const areaTexto = (sim.area || 'sociales').toLowerCase();
+      
+      // Extraer el número del simulacro (del nombre como "Simulacro 1" o del id si no viniera)
+      const numeroCoincidencia = sim.nombre ? sim.nombre.match(/\d+/) : null;
+      const numero = numeroCoincidencia ? numeroCoincidencia[0] : sim.id;
+
+      let prefijo = 'sociales';
+      if (areaTexto.includes('matematica')) {
+        prefijo = 'matematicas';
+      } else if (areaTexto.includes('ingles')) {
+        prefijo = 'ingles';
+      } else if (areaTexto.includes('ciencia') || areaTexto.includes('natural') || areaTexto.includes('biologia')) {
+        prefijo = 'ciencias';
+      } else if (areaTexto.includes('lectura') || areaTexto.includes('critica')) {
+        prefijo = 'lecturacritica';
+      } else {
+        prefijo = 'sociales';
+      }
+
+      return `${prefijo}${numero}.html`;
     }
 
     function formatearFecha(fechaStr) {
@@ -158,7 +170,7 @@
 
       const simulacrosFiltrados = areaActual === 'todas'
         ? todosLosSimulacros
-        : todosLosSimulacros.filter(s => (s.area || 'sociales') === areaActual);
+        : todosLosSimulacros.filter(s => (s.area || 'sociales').toLowerCase().includes(areaActual));
 
       if (simulacrosFiltrados.length === 0) {
         contenedor.innerHTML = `
@@ -178,6 +190,8 @@
         const fechaFin = sim.fecha_fin ? new Date(sim.fecha_fin) : null;
         const fechaRetro = sim.fecha_retroalimentacion ? new Date(sim.fecha_retroalimentacion) : null;
         const yaPresento = intentosRealizados.has(sim.id);
+
+        const archivoHtmlDestino = obtenerNombreArchivoSimulacro(sim);
 
         let badgeHtml = "";
         let botonHtml = "";
@@ -201,7 +215,7 @@
         } else {
           bordeClase = "border-blue-400 bg-white/95 backdrop-blur-md ring-1 ring-blue-100";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 mb-2">• DISPONIBLE AHORA</span>`;
-          botonHtml = `<button onclick="window.location.href='Prueba${sim.id}.html'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
+          botonHtml = `<button onclick="window.location.href='${archivoHtmlDestino}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
         }
 
         let subtextoFecha = "";
