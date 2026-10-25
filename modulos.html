@@ -10,7 +10,6 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     body { font-family: 'Inter', sans-serif; }
 
-    /* Fondo hero-portada completo y suavizado para lectura */
     .bg-portada-clara {
       background-image: 
         linear-gradient(180deg, rgba(248, 250, 252, 0.90) 0%, rgba(241, 245, 249, 0.88) 50%, rgba(248, 250, 252, 0.94) 100%),
@@ -52,7 +51,7 @@
   <!-- Contenedor Principal -->
   <main class="max-w-5xl mx-auto px-4 py-8 space-y-6 flex-1 w-full">
 
-    <!-- Banner Hero con Botón Integrado -->
+    <!-- Banner Hero -->
     <section class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
       <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div class="max-w-2xl">
@@ -67,7 +66,6 @@
           </p>
         </div>
         
-        <!-- Botón de Clases Sincrónicas para Estudiantes -->
         <div class="w-full md:w-auto shrink-0 border-t md:border-t-0 md:border-l border-blue-700/50 pt-4 md:pt-0 md:pl-6">
           <p class="text-[10px] text-blue-300 font-bold uppercase tracking-widest mb-2 text-center md:text-left">Salas de Encuentro</p>
           <a href="clases.html" class="flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-extrabold rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all cursor-pointer transform hover:scale-105 border border-emerald-400">
@@ -77,7 +75,7 @@
       </div>
     </section>
 
-    <!-- Filtros de Área Interactivos (Orden: Sociales, Matemáticas, Inglés, Ciencias, Lectura) -->
+    <!-- Filtros de Área -->
     <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="contenedor-filtros">
       <button onclick="cambiarFiltro('todas', this)" class="btn-filtro px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold shadow-sm flex items-center gap-1.5 whitespace-nowrap transition cursor-pointer">
         <span>🗺️</span> Todas las Áreas
@@ -102,7 +100,7 @@
     <!-- Lista Dinámica de Simulacros -->
     <div id="lista-simulacros" class="space-y-4">
       <div class="p-8 text-center text-slate-400 text-sm bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200">
-        Sincronizando estado con Supabase...
+        Cargando simulacros...
       </div>
     </div>
 
@@ -136,12 +134,13 @@
         for (let i = 1; i <= 14; i++) {
           lista.push({
             id: `${area.clave}_${i}`,
+            claveMateria: area.clave,
             numero: i,
             nombre: `Simulacro ${i}: Entrenamiento Saber 11`,
             area: area.clave,
             areaNombre: area.nombre,
             archivo: `${area.prefijo}${i}.html`,
-            disponible: (i === 1) // Solo el simulacro 1 abierto
+            disponible: (i === 1) // Solo el simulacro 1 abierto sin fechas
           });
         }
       });
@@ -158,6 +157,10 @@
       renderizarTarjetas();
     }
 
+    function normalizarTexto(txt) {
+      return (txt || '').toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    }
+
     function renderizarTarjetas() {
       const contenedor = document.getElementById("lista-simulacros");
       contenedor.innerHTML = "";
@@ -167,10 +170,11 @@
         : todosLosSimulacros.filter(s => s.area === areaActual);
 
       simulacrosFiltrados.forEach(sim => {
-        // Buscar el intento en el mapa
+        // Detectar si fue presentado por cualquiera de sus identificadores
         const idIntento = mapaIntentos[sim.id] || 
                           mapaIntentos[sim.archivo] || 
-                          (sim.numero === 1 && mapaIntentos[sim.area]);
+                          mapaIntentos[`${sim.claveMateria}_${sim.numero}`] ||
+                          (sim.numero === 1 && mapaIntentos[sim.claveMateria]);
 
         const yaPresento = !!idIntento;
 
@@ -180,19 +184,19 @@
         let subtexto = "";
 
         if (yaPresento) {
-          // 1. COMPLETADO -> BOTÓN AZUL "VER RETROALIMENTACIÓN"
+          // 1. YA PRESENTADO: BOTÓN AZUL DE RETROALIMENTACIÓN
           bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
           botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${idIntento}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
           subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu intento ha sido registrado. Puedes consultar el dictamen de retroalimentación.</p>`;
         } else if (sim.disponible) {
-          // 2. DISPONIBLE (SOLO EL 1) -> BOTÓN VERDE "PRESENTAR PRUEBA"
+          // 2. DISPONIBLE (SIMULACRO 1): BOTÓN VERDE "PRESENTAR PRUEBA"
           bordeClase = "border-emerald-300 bg-white/95 backdrop-blur-md ring-1 ring-emerald-100";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• DISPONIBLE AHORA</span>`;
           botonHtml = `<button onclick="window.location.href='${sim.archivo}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
           subtexto = `<p class="text-xs text-slate-500 mt-1">${sim.areaNombre} • 20 Preguntas</p>`;
         } else {
-          // 3. DEL 2 AL 14 -> BLOQUEADOS EN ROJO
+          // 3. BLOQUEADOS (SIMULACROS 2 AL 14): BOTÓN ROJO INACTIVO
           bordeClase = "border-rose-200 bg-rose-50/30 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 mb-2">🔒 NO DISPONIBLE</span>`;
           botonHtml = `<button disabled class="px-6 py-2.5 bg-rose-50 text-rose-600 font-bold rounded-xl text-sm border border-rose-200 cursor-not-allowed">No disponible aún</button>`;
@@ -218,17 +222,14 @@
     async function iniciar() {
       todosLosSimulacros = generar14Simulacros();
 
-      // 1. Obtener sesión de Supabase Auth o fallback a localStorage
+      // Identificar al estudiante
       const { data: { session } } = await client.auth.getSession();
-      let userId = null;
-      let userDoc = null;
+      let userId = session?.user?.id || null;
       let userName = localStorage.getItem("nombre_estudiante") || localStorage.getItem("estudiante_nombre") || "juan";
 
       if (session && session.user) {
-        userId = session.user.id;
         const metadata = session.user.user_metadata || {};
-        userDoc = metadata.documento || null;
-        userName = metadata.full_name || userDoc || session.user.email.split('@')[0];
+        userName = metadata.full_name || metadata.documento || session.user.email.split('@')[0];
       }
 
       document.getElementById("txt-nombre-estudiante").textContent = userName;
@@ -239,55 +240,57 @@
         window.location.href = "index.html";
       });
 
-      // 2. Consultar intentos en Supabase: por user_id, por documento o por nombre de estudiante
+      // Consultar todos los intentos del estudiante sin importar cómo se guardó la materia
       try {
-        let intentosQuery = client.from('intentos').select('*');
-
+        let query = client.from('intentos').select('*');
         if (userId) {
-          intentosQuery = intentosQuery.eq('user_id', userId);
-        } else if (userDoc) {
-          intentosQuery = intentosQuery.eq('documento', userDoc);
-        } else if (userName) {
-          intentosQuery = intentosQuery.ilike('nombre_estudiante', `%${userName}%`);
+          query = query.eq('user_id', userId);
+        } else {
+          query = query.ilike('nombre_estudiante', `%${userName}%`);
         }
 
-        const { data: intentos, error } = await intentosQuery;
+        const { data: intentos } = await query;
 
         if (intentos && intentos.length > 0) {
-          intentos.forEach(i => {
-            const intentoId = i.id;
-            const materiaRaw = (i.materia || '').toLowerCase();
-            const sidRaw = String(i.simulacro_id || '');
+          intentos.forEach(item => {
+            const intId = item.id;
+            const materiaNorm = normalizarTexto(item.materia || '');
+            const simIdRaw = normalizarTexto(item.simulacro_id || '');
 
-            if (materiaRaw.includes('social')) {
-              mapaIntentos['sociales'] = intentoId;
-              mapaIntentos['sociales_1'] = intentoId;
-              mapaIntentos['sociales1.html'] = intentoId;
-            } else if (materiaRaw.includes('lectura') || materiaRaw.includes('critica')) {
-              mapaIntentos['lectura'] = intentoId;
-              mapaIntentos['lectura_1'] = intentoId;
-              mapaIntentos['lecturacritica1.html'] = intentoId;
-            } else if (materiaRaw.includes('matematica')) {
-              mapaIntentos['matematicas'] = intentoId;
-              mapaIntentos['matematicas_1'] = intentoId;
-              mapaIntentos['matematicas1.html'] = intentoId;
-            } else if (materiaRaw.includes('ingles')) {
-              mapaIntentos['ingles'] = intentoId;
-              mapaIntentos['ingles_1'] = intentoId;
-              mapaIntentos['ingles1.html'] = intentoId;
-            } else if (materiaRaw.includes('natural') || materiaRaw.includes('ciencia')) {
-              mapaIntentos['ciencias'] = intentoId;
-              mapaIntentos['ciencias_1'] = intentoId;
-              mapaIntentos['ciencias1.html'] = intentoId;
+            // Mapeo automático de áreas
+            if (materiaNorm.includes('lectura') || materiaNorm.includes('critica') || simIdRaw.includes('lectura')) {
+              mapaIntentos['lectura'] = intId;
+              mapaIntentos['lectura_1'] = intId;
+              mapaIntentos['lecturacritica1.html'] = intId;
+            }
+            if (materiaNorm.includes('social') || simIdRaw.includes('social')) {
+              mapaIntentos['sociales'] = intId;
+              mapaIntentos['sociales_1'] = intId;
+              mapaIntentos['sociales1.html'] = intId;
+            }
+            if (materiaNorm.includes('matematica') || simIdRaw.includes('matematica')) {
+              mapaIntentos['matematicas'] = intId;
+              mapaIntentos['matematicas_1'] = intId;
+              mapaIntentos['matematicas1.html'] = intId;
+            }
+            if (materiaNorm.includes('ingles') || simIdRaw.includes('ingles')) {
+              mapaIntentos['ingles'] = intId;
+              mapaIntentos['ingles_1'] = intId;
+              mapaIntentos['ingles1.html'] = intId;
+            }
+            if (materiaNorm.includes('natural') || materiaNorm.includes('ciencia') || simIdRaw.includes('ciencia')) {
+              mapaIntentos['ciencias'] = intId;
+              mapaIntentos['ciencias_1'] = intId;
+              mapaIntentos['ciencias1.html'] = intId;
             }
 
-            if (sidRaw) {
-              mapaIntentos[sidRaw] = intentoId;
+            if (item.simulacro_id) {
+              mapaIntentos[item.simulacro_id] = intId;
             }
           });
         }
       } catch (err) {
-        console.warn("Error leyendo intentos:", err);
+        console.warn("Aviso:", err);
       }
 
       renderizarTarjetas();
