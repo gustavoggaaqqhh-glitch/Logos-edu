@@ -432,7 +432,17 @@
         render();
     }
 
-    function selectOption(id) { userAnswers[currentQIdx] = id; render(); }
+    function selectOption(id) {
+        userAnswers[currentQIdx] = id;
+        if (currentQIdx < questions.length - 1) {
+            currentQIdx++;
+            render();
+            window.scrollTo(0, 0);
+        } else {
+            finishExam();
+        }
+    }
+
     function nextQ() { if (currentQIdx < questions.length - 1) { currentQIdx++; render(); window.scrollTo(0,0); } }
     function prevQ() { if (currentQIdx > 0) { currentQIdx--; render(); window.scrollTo(0,0); } }
 
