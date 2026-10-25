@@ -113,17 +113,15 @@
   </footer>
 
   <script>
-    // Configuración de Supabase
     const SUPABASE_URL = "https://uinctluqbmdrehazuyog.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpbmN0bHVxYm1kcmVoYXp1eW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDM2NDUsImV4cCI6MjEwNzQ3OTY0NX0.ANXAyoauMGWAXEKpDYjcAGvCImE738aygvA7JwTEfyI";
 
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let todosLosSimulacros = [];
-    let mapaIntentos = {}; // Claves normalizadas por materia y número
+    let mapaIntentos = {};
     let areaActual = 'todas';
 
-    // Áreas oficiales del Saber 11
     const catalogoAreas = [
       { clave: 'sociales',    nombre: 'Ciencias Sociales y Ciudadanas', prefijo: 'sociales' },
       { clave: 'matematicas', nombre: 'Matemáticas',                     prefijo: 'matematicas' },
@@ -134,11 +132,8 @@
 
     function generar14Simulacros() {
       const lista = [];
-
       catalogoAreas.forEach(area => {
         for (let i = 1; i <= 14; i++) {
-          const estaDisponible = (i === 1); // SOLO EL SIMULACRO 1 DISPONIBLE
-
           lista.push({
             id: `${area.clave}_${i}`,
             numero: i,
@@ -146,15 +141,13 @@
             area: area.clave,
             areaNombre: area.nombre,
             archivo: `${area.prefijo}${i}.html`,
-            disponible: estaDisponible
+            disponible: (i === 1) // Solo el simulacro 1 abierto
           });
         }
       });
-
       return lista;
     }
 
-    // Alternar filtros de materia
     function cambiarFiltro(area, botonPulsado) {
       areaActual = area;
       const botones = document.querySelectorAll('.btn-filtro');
@@ -173,18 +166,8 @@
         ? todosLosSimulacros
         : todosLosSimulacros.filter(s => s.area === areaActual);
 
-      if (simulacrosFiltrados.length === 0) {
-        contenedor.innerHTML = `
-          <div class="p-12 text-center bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200">
-            <span class="text-3xl block mb-2">📂</span>
-            <p class="text-sm font-semibold text-slate-700">No hay simulacros programados en esta área.</p>
-          </div>
-        `;
-        return;
-      }
-
       simulacrosFiltrados.forEach(sim => {
-        // Verificar si existe intento registrado para este simulacro específico
+        // Buscar el intento en el mapa
         const idIntento = mapaIntentos[sim.id] || 
                           mapaIntentos[sim.archivo] || 
                           (sim.numero === 1 && mapaIntentos[sim.area]);
@@ -197,19 +180,19 @@
         let subtexto = "";
 
         if (yaPresento) {
-          // 1. YA PRESENTADO -> RETROALIMENTACIÓN EN AZUL
+          // 1. COMPLETADO -> BOTÓN AZUL "VER RETROALIMENTACIÓN"
           bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
           botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${idIntento}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
           subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu intento ha sido registrado. Puedes consultar el dictamen de retroalimentación.</p>`;
         } else if (sim.disponible) {
-          // 2. SOLO EL 1: DISPONIBLE EN VERDE
+          // 2. DISPONIBLE (SOLO EL 1) -> BOTÓN VERDE "PRESENTAR PRUEBA"
           bordeClase = "border-emerald-300 bg-white/95 backdrop-blur-md ring-1 ring-emerald-100";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• DISPONIBLE AHORA</span>`;
           botonHtml = `<button onclick="window.location.href='${sim.archivo}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
           subtexto = `<p class="text-xs text-slate-500 mt-1">${sim.areaNombre} • 20 Preguntas</p>`;
         } else {
-          // 3. DEL 2 AL 14: NO DISPONIBLE EN ROJO
+          // 3. DEL 2 AL 14 -> BLOQUEADOS EN ROJO
           bordeClase = "border-rose-200 bg-rose-50/30 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 mb-2">🔒 NO DISPONIBLE</span>`;
           botonHtml = `<button disabled class="px-6 py-2.5 bg-rose-50 text-rose-600 font-bold rounded-xl text-sm border border-rose-200 cursor-not-allowed">No disponible aún</button>`;
@@ -233,32 +216,42 @@
     }
 
     async function iniciar() {
-      // 1. Generar la lista fija del 1 al 14 por materia
       todosLosSimulacros = generar14Simulacros();
 
-      // 2. Verificar la sesión del estudiante
+      // 1. Obtener sesión de Supabase Auth o fallback a localStorage
       const { data: { session } } = await client.auth.getSession();
       let userId = null;
+      let userDoc = null;
+      let userName = localStorage.getItem("nombre_estudiante") || localStorage.getItem("estudiante_nombre") || "juan";
+
       if (session && session.user) {
         userId = session.user.id;
         const metadata = session.user.user_metadata || {};
-        const nombre = metadata.full_name || metadata.documento || session.user.email.split('@')[0];
-        document.getElementById("txt-nombre-estudiante").textContent = nombre;
-      } else {
-        document.getElementById("txt-nombre-estudiante").textContent = "Estudiante";
+        userDoc = metadata.documento || null;
+        userName = metadata.full_name || userDoc || session.user.email.split('@')[0];
       }
 
+      document.getElementById("txt-nombre-estudiante").textContent = userName;
+
       document.getElementById("btn-cerrar-sesion").addEventListener("click", async () => {
-        await client.auth.signOut();
+        try { await client.auth.signOut(); } catch(e){}
+        localStorage.clear();
         window.location.href = "index.html";
       });
 
-      // 3. Consultar los intentos presentados en Supabase
-      if (userId) {
-        const { data: intentos } = await client
-          .from('intentos')
-          .select('*')
-          .eq('user_id', userId);
+      // 2. Consultar intentos en Supabase: por user_id, por documento o por nombre de estudiante
+      try {
+        let intentosQuery = client.from('intentos').select('*');
+
+        if (userId) {
+          intentosQuery = intentosQuery.eq('user_id', userId);
+        } else if (userDoc) {
+          intentosQuery = intentosQuery.eq('documento', userDoc);
+        } else if (userName) {
+          intentosQuery = intentosQuery.ilike('nombre_estudiante', `%${userName}%`);
+        }
+
+        const { data: intentos, error } = await intentosQuery;
 
         if (intentos && intentos.length > 0) {
           intentos.forEach(i => {
@@ -266,7 +259,6 @@
             const materiaRaw = (i.materia || '').toLowerCase();
             const sidRaw = String(i.simulacro_id || '');
 
-            // Mapeo por texto de materia en Supabase
             if (materiaRaw.includes('social')) {
               mapaIntentos['sociales'] = intentoId;
               mapaIntentos['sociales_1'] = intentoId;
@@ -289,15 +281,15 @@
               mapaIntentos['ciencias1.html'] = intentoId;
             }
 
-            // Mapeo si en Supabase se guardó directamente como 'lectura_1', 'sociales_1' o archivo
             if (sidRaw) {
               mapaIntentos[sidRaw] = intentoId;
             }
           });
         }
+      } catch (err) {
+        console.warn("Error leyendo intentos:", err);
       }
 
-      // 4. Renderizar
       renderizarTarjetas();
     }
 
