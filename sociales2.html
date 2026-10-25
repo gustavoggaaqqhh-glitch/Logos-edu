@@ -7,503 +7,536 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         .context-area { line-height: 1.75; text-align: justify; }
-        .option-selected { border-color: #2563eb; background-color: #eff6ff; box-shadow: 0 0 0 2px #3b82f6; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+<body class="bg-slate-50 font-sans text-slate-900 min-h-screen">
 
-<div id="app" class="flex-1 flex flex-col"></div>
+    <!-- Pantalla de Inicio -->
+    <div id="welcome-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-200">
+            <div class="text-center mb-8">
+                <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-20 w-auto mx-auto mb-3 object-contain block">
+                <span class="inline-block bg-blue-50 text-blue-700 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-blue-200 tracking-wider mb-2">
+                    SIMULACRO 2 • SABER 11
+                </span>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Ciencias Sociales y Ciudadanas</h1>
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mt-1">Logos Edu • Formación Rural y Equidad</p>
+            </div>
 
-<script>
-    const SUPABASE_URL = "https://uinctluqbmdrehazuyog.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpbmN0bHVxYm1kcmVoYXp1eW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDM2NDUsImV4cCI6MjEwNzQ3OTY0NX0.ANXAyoauMGWAXEKpDYjcAGvCImE738aygvA7JwTEfyI";
-    const GEMINI_API_KEY = "AIzaSyDSypb-t82azUtj1CBKjxGg4DHFZRKp-kE";
-    const SIMULACRO_ID = 2; // ID de Sociales 2
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Nombre del Estudiante</label>
+                    <input type="text" id="student-name-input" 
+                        class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                        placeholder="Escribe tu nombre si está vacío...">
+                </div>
 
-    const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Condiciones del Examen</span>
+                    <p class="text-sm font-extrabold text-slate-800">20 Preguntas • 60 Minutos • Intento Único</p>
+                </div>
 
-    const questions = [
-        {
-            id: 1,
-            title: "1. Selva Amazónica y Comunidades Aisladas",
-            context: `Representantes de los gremios minero y petrolero han enviado un comunicado al Gobierno con la intención de obtener los permisos necesarios para intervenir la selva amazónica. Estos gremios argumentan que esta intervención les permitiría mejorar la competitividad de este sector del mercado y generar empleos para las comunidades de la región del Amazonas. Por otra parte, los líderes de algunos pueblos indígenas del Amazonas llevan varios meses pidiendo la ayuda del Gobierno para proteger los territorios de sus “hermanos aislados”, pueblos indígenas que han decidido voluntariamente aislarse en las selvas huyendo de la esclavitud, la violencia y las enfermedades que la civilización occidental ha traído consigo durante los últimos cinco siglos. La amenaza para estos pueblos aún sigue latente; por ejemplo, en el último año varias comunidades indígenas se han visto seriamente afectadas por la cuestión de contornos de gripa y sarampión, producto de encuentros imprevistos con leñadores de grupos madereros ilegales en el Amazonas.\n\nPara tomar una decisión informada sobre este tema, el Gobierno ha pedido la colaboración, tanto de su Ministerio de Minas y Energía, como de los académicos estudiosos de la cultura y la cosmovisión de estos pueblos indígenas del Amazonas. Los académicos argumentan que, teniendo en cuenta la gran vulnerabilidad que estos pueblos antiguos presentan frente a las enfermedades más comunes de Occidente, es necesario crear estructuras legales que protejan los territorios en donde podrían habitar los pueblos indígenas en aislamiento voluntario, respetando su autodeterminación a no ser contactados y protegiendo el gran patrimonio cultural, espiritual y natural que ellos poseen. Por otra parte, desde el Ministerio de Minas y Energía se argumenta que la solución está en que se reúnan los gremios minero, petrolero y maderero con las comunidades indígenas del Amazonas, incluyendo a las comunidades indígenas en aislamiento voluntario, para así poder negociar qué partes de la selva amazónica pueden ser explotadas legalmente para beneficio del desarrollo económico del país.`,
-            prompt: "En relación con la propuesta planteada por el Ministerio de Minas y Energía, ¿cuál de las siguientes opciones describe una posible reacción o respuesta que NO se tuvo en cuenta en dicha propuesta?",
-            options: [
-                { id: 'A', text: "Que los gremios petroleros y mineros solo quieran beneficiarse de la extracción ilegal de la mayor cantidad de recursos del Amazonas." },
-                { id: 'B', text: "Que los académicos no tengan en cuenta los beneficios que conlleva el modelo extractivo legal que busca el desarrollo económico del país." },
-                { id: 'C', text: "Que los pueblos indígenas aislados voluntariamente no acepten entablar ningún tipo de relación con la sociedad occidental." },
-                { id: 'D', text: "Que los grupos madereros ilegales no tengan las vías para poder negociar la explotación legal de los bosques amazónicos." }
-            ],
-            correct: 'C'
-        },
-        {
-            id: 2,
-            title: "2. Mercados Campesinos y Tratados Comerciales",
-            context: `Un grupo de campesinos productores de papa se ha visto afectado por la entrada en vigencia de un tratado de libre comercio que ha permitido el ingreso al país de alimentos extranjeros que son más económicos, incluyendo la papa. La situación se ha complicado tanto para ellos, que sus ingresos se han reducido considerablemente y se ha puesto en riesgo su permanencia como agricultores. Esto afecta aspectos esenciales de su vida, dado que muchas de sus tradiciones y elementos culturales están relacionados con el cultivo de la tierra. Los campesinos mencionan que los políticos prometieron, en sus campañas, que los tratados no los afectarían, pues sus cultivos y productos serían protegidos.\n\nAnte esta situación, deciden rescatar una antigua tradición: los mercados campesinos, donde pueden vender sus productos sin intermediarios y a precios más bajos. Con esto se busca mejorar la calidad de vida de los productores, que más personas accedan a alimentos de alta calidad y que sus productos compitan en mejores condiciones frente a los productos extranjeros. Ahora bien, se busca ampliar este tipo de mercados a todo el país, pues la medida ha sido altamente beneficiosa para los cultivadores de papa, para los consumidores y para la tradición, pues se rescatan prácticas olvidadas.`,
-            prompt: "¿Cuáles de las siguientes dimensiones se privilegiaron en la solución propuesta por los campesinos?",
-            options: [
-                { id: 'A', text: "Social y política." },
-                { id: 'B', text: "Cultural y social." },
-                { id: 'C', text: "Económica y cultural." },
-                { id: 'D', text: "Política y comercial." }
-            ],
-            correct: 'C'
-        },
-        {
-            id: 3,
-            title: "3. Presupuesto y Acueducto",
-            context: `Para llevar agua a varios municipios, el gobernador de un departamento propone la extensión del sistema de acueducto con presupuesto del Gobierno nacional. Después de varios estudios, un equipo de ingenieros entrega el diseño del proyecto. Este diseño contempla el trazado que tendrá el acueducto, el presupuesto general que se requiere para construirlo, el plan para proteger la flora y la fauna de la región, y la reubicación temporal de algunas familias que viven donde se llevarán a cabo las obras. Ahora bien, cuando el gobernador pretende dar inicio al proyecto, el Gobierno nacional le comunica que, si se considera el diseño entregado por los ingenieros, no habrá dinero suficiente para ejecutar la obra.`,
-            prompt: "¿Qué aspecto descrito anteriormente obstaculiza el desarrollo del acueducto?",
-            options: [
-                { id: 'A', text: "El aspecto social, pues las familias que viven en la zona de la obra no podrán ser reubicadas permanentemente." },
-                { id: 'B', text: "El aspecto económico, pues los requerimientos de diseño de la obra no se ajustan al presupuesto del Gobierno." },
-                { id: 'C', text: "El aspecto ambiental, pues el diseño no especifica qué sucederá con la flora y la fauna presente en la zona." },
-                { id: 'D', text: "El aspecto logístico, pues los ingenieros no especifican el trazado definitivo del acueducto." }
-            ],
-            correct: 'B'
-        },
-        {
-            id: 4,
-            title: "4. Acuerdos de Paz y Fuerzas Militares",
-            context: `Como resultado del acuerdo de paz firmado por un Gobierno y un grupo armado al margen de la ley, se establecieron zonas veredales transitorias de normalización (ZVTN), las cuales consisten en locaciones rurales donde se concentran los militantes del grupo armado para iniciar su transición a la vida civil. En estas zonas, el ejército del país debe custodiar a los miembros del grupo armado, en lugar de combatirlo.`,
-            prompt: "De acuerdo con lo expuesto, ¿por qué es posible que se dé esta situación?",
-            options: [
-                { id: 'A', text: "Porque el Gobierno nacional quiere que el grupo armado conviva con el Ejército, para que en el futuro haga parte de él." },
-                { id: 'B', text: "Porque el Gobierno nacional ha dado un giro hacia el socialismo y ha decidido poner a su Ejército al servicio del grupo armado." },
-                { id: 'C', text: "Porque el grupo armado ahora controla las ZVTN and tienen miembros del Ejército a su disposición." },
-                { id: 'D', text: "Porque la función de las Fuerzas Armadas se adecuó al nuevo contexto sociopolítico del país." }
-            ],
-            correct: 'D'
-        },
-        {
-            id: 5,
-            title: "5. Discurso Político y Cambio Climático",
-            context: `En Estados Unidos existe un debate sobre el cambio climático, definido como variaciones del clima atribuidas directa o indirectamente a la actividad humana, que alteran la composición de la atmósfera mundial y que se suman a la variabilidad natural del clima observada durante períodos de tiempo comparables. Este debate ha llevado a que algunos Gobiernos se resistan a suscribir acuerdos internacionales que comprometan a los Estados a reducir la emisión de gases. El ejemplo más reciente fue el retiro de los Estados Unidos del Acuerdo de París. Esta situación ha generado que grupos ambientalistas protesten e insistan en que el desarrollo económico no puede seguir poniendo en peligro la existencia misma del planeta.\n\nAl respecto, el presidente de un país, escéptico del cambio climático, escribió en su red social de internet las siguientes dos frases:\n1. "Por el cambio climático que deberíamos estar preocupados es el provocado por las armas nucleares que están en las manos de líderes locos o incompetentes".\n2. "Hace frío afuera. ¿Dónde demonios está el cambio climático?".\n\nTomado y adaptado de: http://www.minambiente.gov.co/index.php/cambio-climatico y de http://www.elfinanciero.com.mx/`,
-            prompt: "A partir de la información anterior, ¿resultan confiables las afirmaciones del presidente en su red social acerca del cambio climático?",
-            options: [
-                { id: 'A', text: "Sí, porque, como presidente, tiene acceso a información precisa sobre los aspectos relevantes del planeta." },
-                { id: 'B', text: "No, porque, como presidente, tiene intereses en que el país que gobierna siga siendo competitivo en la economía mundial." },
-                { id: 'C', text: "No, porque, al ser un político, los temas de la ciencia naturales le son ajenos a sus conocimientos de la vida diaria." },
-                { id: 'D', text: "Sí, porque, al ser difundido en una red social con tantos seguidores, lo expresado tiene un impacto a nivel de la economía internacional." }
-            ],
-            correct: 'B'
-        },
-        {
-            id: 6,
-            title: "6. Teoría de la Dependencia",
-            context: `La teoría de la dependencia argumenta que la pobreza que existe en los países del sur se debe a condiciones históricas que han estructurado el mercado global de tal manera que favorece a los países del norte y mantiene a los países del sur en un estado constante de pobreza. Es así como, desde sus inicios, los países del sur han servido como proveedores de materia prima para los países del norte y, a cambio, han sido receptores de aquellos productos terminados que ya han cumplido su ciclo en los mercados del norte. De esta manera, se crea un vínculo de dependencia, en el que las economías del sur dependen de la voluntad de compra de materias primas por parte de los países del norte.\n\nTomado y adaptado de: Subgerencia Cultural del Banco de la República. (2015). Teoría de la dependencia. http://www.banrepcultural.org/blaavirtual/ayudadetareas/politica/teoria_de_la_dependencia`,
-            prompt: "¿Cuál de las siguientes situaciones se ajusta al modelo teórico descrito?",
-            options: [
-                { id: 'A', text: "Un país latinoamericano desarrolla tecnología industrial que le permite procesar materias primas para generar productos con valor añadido, que se venden dentro del mismo país." },
-                { id: 'B', text: "Una compañía multinacional adquiere, en un país pobre, materias primas a bajo costo, las procesa e incrementa su valor añadido para, luego, vender sus productos en el país pobre." },
-                { id: 'C', text: "Un país desarrollado de Europa genera riquezas gracias a sus adelantos tecnológicos y, luego, impulsa el avance de la industria de países en desarrollo, porque comparte con ellos esta nueva tecnología." },
-                { id: 'D', text: "Una organización internacional regula las relaciones comerciales entre países, para asegurarse de que los países que venden materias primas no cobren de más a los países que más las necesitan." }
-            ],
-            correct: 'B'
-        },
-        {
-            id: 7,
-            title: "7. Desarrollo Sostenible",
-            context: `La Organización de las Naciones Unidas (ONU) define el “desarrollo sostenible” como\n“[…] la satisfacción de ‘las necesidades de la generación presente sin comprometer la capacidad de las generaciones futuras para satisfacer sus propias necesidades’. El desarrollo sostenible ha emergido como el principio rector para el desarrollo mundial a largo plazo. Consta de tres pilares: el desarrollo sostenible trata de lograr, de manera equilibrada, el desarrollo económico, el desarrollo social y la protección del medio ambiente. [A partir de lo anterior] la Conferencia de las Naciones Unidas sobre el Desarrollo Sostenible, o Cumbre de la Tierra de Río 20, se centrará en dos temas: 1) la economía verde en el contexto del desarrollo sostenible y la erradicación de la pobreza y 2) el marco institucional para el desarrollo sostenible”.\n\nTomado y adaptado de: Asamblea General de las Naciones Unidas (s. f.). Desarrollo Sostenible. http://www.un.org/es/ga/president/65/issues/sustdev.shtml`,
-            prompt: "De acuerdo con la anterior definición, una política económica es sostenible cuando",
-            options: [
-                { id: 'A', text: "privilegia la industrialización para generar empleo por encima de la necesidad de disminuir los gases de efecto invernadero." },
-                { id: 'B', text: "le da la misma importancia a la generación de riqueza y a la explotación ilimitada de los recursos naturales." },
-                { id: 'C', text: "le da la misma importancia a la generación de riqueza para las personas y a la protección del medio ambiente." },
-                { id: 'D', text: "prohíbe totalmente aprovechar económicamente los bienes y servicios ecosistémicos de lagos, ríos y bosques para lograr su conservación." }
-            ],
-            correct: 'C'
-        },
-        {
-            id: 8,
-            title: "8. División del Trabajo (Adam Smith)",
-            context: `Para Adam Smith, economista y filósofo escocés del siglo XVIII, la división del trabajo aumenta la productividad, pues cada persona se enfoca en producir aquello en lo que es mejor y, luego, lo intercambia de forma mercantil por los otros bienes y servicios que necesita. Si cada uno dependiera del automovimiento, tendría menos posibilidades de fabricar la misma cantidad de bienes que le es posible conseguir en el intercambio.`,
-            prompt: "Según el concepto de división del trabajo, para Smith, el mercado",
-            options: [
-                { id: 'A', text: "genera injusticias sociales al separar a las personas en clases sociales según sus ingresos." },
-                { id: 'B', text: "lleva la economía al fracaso, pues no hay coordinación entre productores y consumidores." },
-                { id: 'C', text: "hace que las personas se vuelvan más ignorantes, pues no saben cómo producir ciertos bienes." },
-                { id: 'D', text: "es una forma eficiente de repartir los bienes que se han producido mediante la especialización." }
-            ],
-            correct: 'D'
-        },
-        {
-            id: 9,
-            title: "9. Especies Invasoras y Ecosistemas Marinos",
-            context: `El Gobierno está investigando el impacto que tiene el pez león en los ecosistemas marítimos colombianos y las formas de combatirlo. El pez león, especie originaria de Asia, se ha convertido en una amenaza o “plaga” para los ecosistemas marítimos y se ha extendido a las costas del Caribe colombiano. Según un artículo de prensa, este pez genera dos tipos de peligro: “Por un lado, es una amenaza para el hombre, que puede sufrir accidentes al pisar o tocar sus nocivas púas venenosas, y, por otro, es una amenaza para las especies nativas, pues se alimenta de peces jóvenes que sirven de alimentación para el hombre, como el pargo y el mero”.\n\nTomado y adaptado de: Agencia de Noticias de la Universidad Nacional. (15 de diciembre de 2009). Pez león ataca en el Caribe colombiano. Revista Semana. https://www.semana.com/-vida-moderna/ciencia/articulo/pez-leon-ataca-caribe-colombiano/111041-3/`,
-            prompt: "¿Para cuál de los siguientes objetivos de investigación del Gobierno sería útil la anterior información?",
-            options: [
-                { id: 'A', text: "Establecer el impacto económico que provocan las plagas en la fauna y flora del Caribe colombiano." },
-                { id: 'B', text: "Promover la caza del pez león para fortalecer la economía de las zonas pesqueras en el Caribe." },
-                { id: 'C', text: "Determinar los factores que han provocado una disminución de la fauna en algunas costas colombianas." },
-                { id: 'D', text: "Establecer la cantidad de especies nativas existentes antes de la aparición del pez león." }
-            ],
-            correct: 'C'
-        },
-        {
-            id: 10,
-            title: "10. Mecanismos de Participación: Referendo",
-            context: `En Colombia, una importante firma encuestadora reveló que, desde hace cuatro años, la corrupción es percibida por la ciudadanía como uno de los problemas más graves que afecta al país. En la versión más reciente de la encuesta aplicada, se muestra que el 84 % de los encuestados piensa que el problema está empeorando. Al respecto, un grupo de jóvenes decide promover el aumento de las penas para los delitos de corrupción y fortalecer a las entidades de control como la Procuraduría General de la Nación y la Contraloría General de la República. Sin embargo, al buscar apoyo para promover su ley, los jóvenes se dan cuenta de que en todos los partidos políticos hay escándalos de corrupción, por lo que reciben poco apoyo para su iniciativa. Ante esta situación, los jóvenes deciden promover un referendo aprobatorio de iniciativa ciudadana.\n\nTomado y adaptado de: Ávila, R. (4 de octubre de 2020). La corrupción en Colombia: un mal más grave que el coronavirus. Portafolio. https://www.portafolio.co/economia/la-corrupcion-en-colombia-un-mal-mas-grave-que-el-coronavirus-545299`,
-            prompt: "En esta situación, y teniendo en cuenta la Constitución Política de Colombia, ¿pueden los jóvenes continuar con su propuesta de referendo?",
-            options: [
-                { id: 'A', text: "No, pues solo pueden proponer leyes de la República los integrantes del Congreso de la República y del Gobierno nacional." },
-                { id: 'B', text: "No, pues solo pueden pronunicarse sobre temas políticos los expertos y los representantes elegidos popularmente." },
-                { id: 'C', text: "Sí, pues en Colombia existen los referendos como mecanismos para que los ciudadanos propongan cambios normativos de manera directa." },
-                { id: 'D', text: "Sí, pues en Colombia existen los referendos para que cada una de las decisiones públicas en el país sea consultada a la ciudadanía." }
-            ],
-            correct: 'C'
-        },
-        {
-            id: 11,
-            title: "11. Activismo Climático y Evidencia Científica",
-            context: `En 2019, una joven de 16 años pronunció el siguiente discurso ante el Parlamento Británico sobre el desarrollo sostenible y la urgencia de actuar decididamente para frenar el cambio climático:\n“La crisis climática es, a la vez, el conflicto más fácil y el más difícil al que nos hemos enfrentado. El más fácil porque sabemos lo que tenemos que hacer y el más difícil porque nuestra economía depende de la destrucción de los ecosistemas [...] Alrededor del 2030, habremos desatado una reacción en cadena irreversible [...] que, seguramente, pondrá fin a nuestra civilización tal como la conocemos. Eso es lo que sucederá, a menos que se tomen medidas sin precedentes.\nY tengan en cuenta que estos cálculos dependen de inventos que todavía no se han hecho a esa escala, inventos que se supone que limpiarán la atmósfera de cantidades astronómicas de dióxido de carbono [...] Pero quizá la idea más equivocada sobre la crisis climática es que tenemos que ‘reducir’ las emisiones [...] Sin embargo, eso es solo el comienzo de un proceso rápido que debe llevar al fin de las emisiones en un par de décadas o menos. Y cuando digo ‘fin’ quiero decir cero y, luego, pasar rápidamente a cifras negativas. Eso descarta automáticamente la mayoría de las políticas actuales”.\n\nTomado y adaptado de: Thunberg, G. (2019). El discurso completo de Greta Thunberg ante el Parlamento británico: “Volveremos a clase cuando escuchéis a la ciencia”. El País. https://www.eldiario.es/internacional/greta-thunberg-parlamento-britanico-volveremos_1_1581512.html`,
-            prompt: "¿Cuál de los siguientes hechos permite sustentar el reclamo de la joven por políticas concretas contra el cambio climático?",
-            options: [
-                { id: 'A', text: "Durante 2022, la venta de carros eléctricos en América Latina aumentó un 21,7 % frente al año anterior, aunque la mayoría de estos son importados, pues las empresas que se encargan de ensamblar vehículos en la región todavía no los producen." },
-                { id: 'B', text: "Si bien las tasas de pobreza en el mundo se han reducido a más de la mitad desde el 2000, la pandemia de la COVID-19 podría aumentar la pobreza a nivel mundial hasta llegar a afectar a 500 millones de personas más o a un 8 % más de la población mundial." },
-                { id: 'C', text: "Desde 1990, Reino Unido ha reducido en un 37 % la explosión de dióxido de carbono al ambiente, gracias al cierre de sus viejas plantas de carbón, aunque todavía no ha conseguido eliminar completamente la generación de estos gases contaminantes." },
-                { id: 'D', text: "El crecimiento continuo y sostenido de la capacidad instalada de producción de energía eólica a nivel mundial en los últimos 10 años ha tenido un repunte reciente, gracias al desarrollo de máquinas cada vez más potentes y adaptadas a distintos entornos." }
-            ],
-            correct: 'C'
-        },
-        {
-            id: 12,
-            title: "12. Indigenismo y Constitución de 1991",
-            context: `Una ley en Colombia establecía lo siguiente:\n“Artículo 1.º- Para atender a la reducción y civilización de las tribus indígenas en el territorio colombiano, se divide este en seis corregimientos [...]”.`,
-            prompt: "¿Cuál de los siguientes argumentos permite afirmar que esta ley es anterior a la Constitución política de 1991?",
-            options: [
-                { id: 'A', text: "Antes de la Constitución de 1991 existía un mayor número de asentamientos indígenas en el país." },
-                { id: 'B', text: "Las expresiones del artículo son contrarias a la protección de la diversidad étnica establecida en la Constitución de 1991." },
-                { id: 'C', text: "A partir de la Constitución de 1991, se potenció un cambio hacia un Estado más descentralizado." },
-                { id: 'D', text: "A partir de la Constitución de 1991, es necesario agotar la consulta previa para aprobar ese tipo de leyes." }
-            ],
-            correct: 'B'
-        },
-        {
-            id: 13,
-            title: "13. Prejuicios de Género en la Crianza",
-            context: `Un análisis del comportamiento de setenta niños en edad preescolar le permitió a un grupo de investigadores de una universidad concluir que los niños, desde los dos años y medio, pueden discriminar a personas con diferencias sociales y culturales. Al respecto, los investigadores afirman que:\n“Para el estudio, nos basamos en las actitudes y comportamientos de las madres, debido a que ellas son las que cumplen el papel de formar a sus hijos e hijas en valores”.`,
-            prompt: "¿La afirmación de los investigadores contiene algún prejuicio?",
-            options: [
-                { id: 'A', text: "No, porque en la infancia quienes realmente asumen el cuidado y formación de los hijos son las madres." },
-                { id: 'B', text: "Sí, porque está afirmando que las madres son las únicas responsables de la formación de los hijos." },
-                { id: 'C', text: "No, porque las madres siempre cuidan con afecto a sus hijos enseñándoles todos los valores." },
-                { id: 'D', text: "Sí, porque supone que las madres no tienen el papel de sostener económicamente a los hijos." }
-            ],
-            correct: 'B'
-        },
-        {
-            id: 14,
-            title: "14. Transformación Social y Diversidad",
-            context: `Un periodista se aproxima a un grupo de personas que está llevando a cabo una manifestación. Al preguntarle a una de ellas sobre sus motivos para manifestarse, esta contesta lo siguiente: “Buscamos promover el conocimiento y el respeto hacia la diversidad sexual, la educación sexual científica y sin prejuicios morales, y las relaciones interpersonales libres de toda forma de violencia de género”.`,
-            prompt: "¿Cuál de las siguientes sería una postura que esta persona probablemente adoptaría?",
-            options: [
-                { id: 'A', text: "El respeto hacia el otro en una relación de pareja depende de la adopción de valores familiares tradicionales." },
-                { id: 'B', text: "Las manifestaciones son la única ruta que tienen los ciudadanos para lograr los cambios que la sociedad necesita." },
-                { id: 'C', text: "Las personas tienen el poder para transformar las condiciones sociales aun cuando estas están fuertemente arraigadas." },
-                { id: 'D', text: "La ausencia de sesgos morales en la educación sexual ha hecho que la diversidad sexual sea ampliamente valorada en nuestra sociedad." }
-            ],
-            correct: 'C'
-        },
-        {
-            id: 15,
-            title: "15. Inclusión Laboral y Discapacidad",
-            context: `En respuesta a la solicitud de adaptar la infraestructura de una empresa para hacerla más accesible a los trabajadores con discapacidad, el jefe de la empresa contestó lo siguiente: “Es cierto que existen muchas barreras para que las personas con discapacidad se integren al mercado laboral. El Estado, en principio, debería asumir un papel más activo frente a esta población, pues los ajustes a la infraestructura no son una responsabilidad que deba asumir exclusivamente una empresa. Además, no se debe pensar que la discapacidad radica en la limitación, ya que el problema de la discapacidad radica en las actitudes personales que impiden superarla de forma efectiva”.`,
-            prompt: "¿Cuál de los siguientes enunciados del jefe de la empresa contiene un prejuicio cuestionable?",
-            options: [
-                { id: 'A', text: "Existen muchas barreras para que las personas con discapacidad se integren al mercado laboral." },
-                { id: 'B', text: "El Estado, en principio, debería asumir un papel más activo frente a la población con discapacidad." },
-                { id: 'C', text: "El problema de la discapacidad radica en las actitudes personales que impiden superarla de forma efectiva." },
-                { id: 'D', text: "Los ajustes a la infraestructura no son una responsabilidad que deba asumir exclusivamente una empresa." }
-            ],
-            correct: 'C'
-        },
-        {
-            id: 16,
-            title: "16. Bipartidismo y Frente Nacional",
-            context: `Durante el siglo XX en Colombia, el magnicidio de Jorge Eliécer Gaitán en 1948 desencadenó el periodo conocido como "La Violencia" entre los partidos tradicionales Liberal y Conservador. Para poner freno a la confrontación armada y retornar a la institucionalidad civil tras la dictadura del general Gustavo Rojas Pinilla, los líderes de ambos partidos tradicionales pactaron un acuerdo político de alternancia paritaria en la Presidencia de la República y reparto igualitario de los cargos de los tres poderes del Estado durante 16 años (1958-1974), conocido como el Frente Nacional.`,
-            prompt: "Una consecuencia política directa y no deseada del establecimiento del Frente Nacional en Colombia fue:",
-            options: [
-                { id: 'A', text: "El fortalecimiento inmediato de la economía de libre mercado y el cese absoluto de toda protesta sindical en las ciudades." },
-                { id: 'B', text: "La exclusión institucional de terceras fuerzas políticas y movimientos de izquierda, lo que propició el surgimiento de grupos insurgentes armados." },
-                { id: 'C', text: "La disolución definitiva de los partidos Liberal y Conservador en favor de una asamblea constituyente popular permanente." },
-                { id: 'D', text: "La suspensión definitiva de la Constitución de 1886 para adoptar un modelo federal semejante al de los Estados Unidos." }
-            ],
-            correct: 'B'
-        },
-        {
-            id: 17,
-            title: "17. Tensión entre Seguridad y Libre Circulación",
-            context: `En un municipio intermedio del país, la administración municipal expidió un decreto que prohíbe de manera general la circulación de motocicletas con acompañante (parrillero) durante los fines de semana en horario nocturno, justificando la medida en la reducción de hurtos y homicidios según estadísticas de la Policía Nacional. Frente a esto, un colectivo conformado por trabajadores de restaurantes, guardias de seguridad y estudiantes nocturnos convocó a un plantón pacífico, alegando que la motocicleta es su única herramienta económica y segura de transporte hacia las zonas veredales donde residen.`,
-            prompt: "En la situación descrita, ¿entre cuáles dimensiones o derechos se presenta una tensión fundamental?",
-            options: [
-                { id: 'A', text: "Entre la seguridad pública ciudadana y los derechos fundamentales al trabajo y a la libre locomoción de un sector de la población." },
-                { id: 'B', text: "Entre el derecho al medio ambiente sano y el fomento comercial del gremio de ensambladoras de vehículos motorizados." },
-                { id: 'C', text: "Entre la autonomía judicial de la Fiscalía y las facultades impositivas y presupuestales del Concejo Municipal." },
-                { id: 'D', text: "Entre la libertad de cultos de las comunidades religiosas y el deber cívico de pagar peajes en vías municipales." }
-            ],
-            correct: 'A'
-        },
-        {
-            id: 18,
-            title: "18. Frenos y Contrapesos del Estado",
-            context: `El artículo 113 de la Constitución Política de Colombia consagra que son ramas del poder público la legislativa, la ejecutiva y la judicial, las cuales tienen funciones separadas pero colaboran armónicamente para la realización de los fines del Estado. Asimismo, establece la existencia de órganos autónomos e independientes para el control disciplinario, la vigilancia fiscal y la organización electoral.`,
-            prompt: "¿Cuál es el propósito central de dividir el poder del Estado bajo el principio de frenos y contrapesos (checks and balances)?",
-            options: [
-                { id: 'A', text: "Facilitar que el Presidente de la República pueda anular las decisiones del Congreso durante emergencias económicas." },
-                { id: 'B', text: "Evitar la concentración autoritaria y el abuso del poder en una sola entidad o persona, salvaguardando las libertades ciudadanas." },
-                { id: 'C', text: "Garantizar que todas las sentencias y leyes del país sean dictadas exclusivamente por los jueces de las altas cortes." },
-                { id: 'D', text: "Acelerar la contratación pública eliminando el control previo y las auditorías de los organismos de control estatal." }
-            ],
-            correct: 'B'
-        },
-        {
-            id: 19,
-            title: "19. Derechos Colectivos y Acción Popular",
-            context: `Los habitantes de una vereda agrícola descubren que una industria de agroquímicos asentada en la parte alta de la cuenca vierte periódicamente residuos tóxicos a la quebrada que surte el acueducto comunitario, provocando la muerte de fauna acuática y brotes dermatológicos en los niños de la zona. Tras solicitar formalmente a la empresa detener los vertimientos, los directivos se negaron argumentando que cuentan con un permiso ambiental en trámite ante la Corporación Autónoma Regional.`,
-            prompt: "De acuerdo con el ordenamiento constitucional colombiano, ¿cuál es el mecanismo jurídico más idóneo para amparar el derecho colectivo al medio ambiente sano y a la salubridad de esta comunidad?",
-            options: [
-                { id: 'A', text: "El recurso de Habeas Corpus." },
-                { id: 'B', text: "La Acción Popular." },
-                { id: 'C', text: "Una Acción de Inconstitucionalidad contra el Plan Nacional de Desarrollo." },
-                { id: 'D', text: "Un Derecho de Petición dirigido al Ministerio de Comercio Exterior." }
-            ],
-            correct: 'B'
-        },
-        {
-            id: 20,
-            title: "20. Estado Laico y Pluralista",
-            context: `La Constitución de 1886 definía a Colombia como un Estado confesional católico, unitario y centralizado bajo la égida de la Regeneración. Por el contrario, la Constitución de 1991 proclamó a Colombia como un Estado social de derecho, organizado en forma de república unitaria descentralizada, participativa, pluralista y laica, fundada en el respeto irrestricto de la dignidad humana y el reconocimiento de la diversidad étnica y cultural de la nación.`,
-            prompt: "¿Cuál de las siguientes situaciones cotidianas refleja de manera concreta el cambio constitucional introducido en 1991 frente al modelo de 1886?",
-            options: [
-                { id: 'A', text: "Un colegio público oficial que sanciona a un alumno por manifestar abiertamente creencias religiosas distintas a las de la mayoría." },
-                { id: 'B', text: "Un juez civil que rehúsa tramitar un divorcio argumentando que el matrimonio es un sacramento indisoluble de la Iglesia." },
-                { id: 'C', text: "Una institución educativa pública que garantiza el libre desarrollo de la personalidad y respeta que sus estudiantes profesen cualquier credo o ninguno." },
-                { id: 'D', text: "El Presidente de la República designando directamente a los gobernadores departamentales sin mediación de elección popular." }
-            ],
-            correct: 'C'
-        }
-    ];
+                <button onclick="startQuiz()" id="start-btn" 
+                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl font-black text-white text-base transition-all transform active:scale-95 shadow-lg shadow-blue-500/20 cursor-pointer">
+                    Iniciar Simulacro
+                </button>
+                <div class="text-center">
+                    <a href="modulos.html" class="text-xs text-slate-400 hover:text-slate-600 font-semibold underline">Volver a la Ruta de Módulos</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    let currentStep = 'intro';
-    let currentQIdx = 0;
-    let userAnswers = new Array(questions.length).fill(null);
-    let timeLeft = 3600; // 60 minutos oficiales Saber 11
-    let timerId = null;
-    let studentName = "";
-    let currentUser = null;
+    <!-- Pantalla del Examen -->
+    <div id="quiz-screen" class="hidden min-h-screen p-4 md:p-8 flex flex-col items-center">
+        <div class="max-w-4xl w-full bg-white rounded-2xl shadow-md border border-slate-200 p-4 mb-6 flex justify-between items-center sticky top-4 z-10">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-10 w-auto object-contain">
+                <div id="q-number-circle" class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-blue-700 font-black">1</div>
+                <div>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Logos Edu • Saber 11</p>
+                    <p id="q-counter-text" class="text-sm font-bold text-slate-800">Pregunta 1 de 20</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div id="timer-box" class="flex items-center gap-2 px-4 py-2 rounded-xl border bg-slate-50 border-slate-200 text-slate-700 font-bold transition-colors">
+                    <span class="text-blue-600">⏱</span>
+                    <span id="timer-display" class="font-mono text-lg font-black">60:00</span>
+                </div>
+            </div>
+        </div>
 
-    async function checkStudentSession() {
-        try {
-            const { data: { session } } = await sbClient.auth.getSession();
-            if (session && session.user) {
-                currentUser = session.user;
-                const meta = currentUser.user_metadata || {};
-                studentName = meta.full_name || meta.documento || currentUser.email.split('@')[0];
+        <div class="max-w-4xl w-full h-2.5 bg-slate-200 rounded-full mb-8 overflow-hidden">
+            <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-500" style="width: 5%"></div>
+        </div>
 
-                const { data: intento } = await sbClient
-                    .from('intentos')
-                    .select('id, finalizado')
-                    .eq('simulacro_id', SIMULACRO_ID)
-                    .eq('user_id', currentUser.id)
-                    .maybeSingle();
+        <div class="max-w-4xl w-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-12">
+            <div class="p-8">
+                <h2 id="q-title" class="text-xl font-extrabold text-slate-900 mb-6">Cargando...</h2>
 
-                if (intento && intento.finalizado) {
-                    alert("Ya has presentado este simulacro previamente. Tu intento se encuentra cerrado.");
-                    window.location.href = "modulos.html";
-                    return;
-                }
-            } else {
-                studentName = "Estudiante";
+                <div id="q-text" class="prose prose-slate max-w-none mb-8 text-slate-700 leading-relaxed whitespace-pre-wrap font-normal text-base bg-slate-50 p-6 rounded-2xl border border-slate-200 context-area"></div>
+
+                <div id="q-prompt" class="bg-blue-50/70 p-6 rounded-2xl border border-blue-100 mb-8 italic text-slate-900 font-semibold text-base"></div>
+
+                <div id="options-container" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Finalización -->
+    <div id="results-screen" class="hidden min-h-screen bg-slate-50 flex items-center justify-center p-6">
+        <div class="max-w-xl w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-200 text-center space-y-6">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-3xl flex items-center justify-center mx-auto shadow-sm text-3xl font-black">
+                ✓
+            </div>
+
+            <div class="space-y-2">
+                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-black uppercase px-3 py-1 rounded-full">
+                    Intento Registrado Oficialmente
+                </span>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">¡Prueba 2 Finalizada con Éxito!</h1>
+                <p class="text-sm text-slate-500 leading-relaxed">
+                    Estudiante: <strong id="res-student-name" class="text-slate-800 uppercase"></strong><br>
+                    Tus respuestas y el dictamen pedagógico han sido asegurados en el sistema de Logos Edu.
+                </p>
+            </div>
+
+            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 text-left space-y-2">
+                <div class="flex items-center gap-2 text-blue-700 font-bold text-sm">
+                    <span>📅</span>
+                    <span>Retroalimentación Pedagógica Programada</span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    El informe individual y la retroalimentación cualitativa estarán disponibles en la plataforma a partir de la fecha de cierre programada en el calendario.
+                </p>
+            </div>
+
+            <div>
+                <a href="modulos.html" class="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl font-black text-white text-sm transition-all inline-flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95 cursor-pointer">
+                    ← Volver a la Ruta de Módulos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://uinctluqbmdrehazuyog.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpbmN0bHVxYm1kcmVoYXp1eW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDM2NDUsImV4cCI6MjEwNzQ3OTY0NX0.ANXAyoauMGWAXEKpDYjcAGvCImE738aygvA7JwTEfyI";
+        const GEMINI_API_KEY = "AIzaSyDSypb-t82azUtj1CBKjxGg4DHFZRKp-kE";
+        const SIMULACRO_ID = 2; // ID oficial de Sociales 2
+
+        const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let currentUser = null;
+
+        const questions = [
+            {
+                id: 1,
+                title: "1. Selva Amazónica y Comunidades Aisladas",
+                text: `Representantes de los gremios minero y petrolero han enviado un comunicado al Gobierno con la intención de obtener los permisos necesarios para intervenir la selva amazónica. Estos gremios argumentan que esta intervención les permitiría mejorar la competitividad de este sector del mercado y generar empleos para las comunidades de la región del Amazonas. Por otra parte, los líderes de algunos pueblos indígenas del Amazonas llevan varios meses pidiendo la ayuda del Gobierno para proteger los territorios de sus “hermanos aislados”, pueblos indígenas que han decidido voluntariamente aislarse en las selvas huyendo de la esclavitud, la violencia y las enfermedades que la civilización occidental ha traído consigo durante los últimos cinco siglos. La amenaza para estos pueblos aún sigue latente; por ejemplo, en el último año varias comunidades indígenas se han visto seriamente afectadas por la cuestión de contornos de gripa y sarampión, producto de encuentros imprevistos con leñadores de grupos madereros ilegales en el Amazonas.\n\nPara tomar una decisión informada sobre este tema, el Gobierno ha pedido la colaboración, tanto de su Ministerio de Minas y Energía, como de los académicos estudiosos de la cultura y la cosmovisión de estos pueblos indígenas del Amazonas. Los académicos argumentan que, teniendo en cuenta la gran vulnerabilidad que estos pueblos antiguos presentan frente a las enfermedades más comunes de Occidente, es necesario crear estructuras legales que protejan los territorios en donde podrían habitar los pueblos indígenas en aislamiento voluntario, respetando su autodeterminación a no ser contactados y protegiendo el gran patrimonio cultural, espiritual y natural que ellos poseen. Por otra parte, desde el Ministerio de Minas y Energía se argumenta que la solución está en que se reúnan los gremios minero, petrolero y maderero con las comunidades indígenas del Amazonas, incluyendo a las comunidades indígenas en aislamiento voluntario, para así poder negociar qué partes de la selva amazónica pueden ser explotadas legalmente para beneficio del desarrollo económico del país.`,
+                prompt: "En relación con la propuesta planteada por el Ministerio de Minas y Energía, ¿cuál de las siguientes opciones describe una posible reacción o respuesta que NO se tuvo en cuenta en dicha propuesta?",
+                options: [
+                    { id: 'A', text: "Que los gremios petroleros y mineros solo quieran beneficiarse de la extracción ilegal de la mayor cantidad de recursos del Amazonas." },
+                    { id: 'B', text: "Que los académicos no tengan en cuenta los beneficios que conlleva el modelo extractivo legal que busca el desarrollo económico del país." },
+                    { id: 'C', text: "Que los pueblos indígenas aislados voluntariamente no acepten entablar ningún tipo de relación con la sociedad occidental." },
+                    { id: 'D', text: "Que los grupos madereros ilegales no tengan las vías para poder negociar la explotación legal de los bosques amazónicos." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 2,
+                title: "2. Mercados Campesinos y Tratados Comerciales",
+                text: `Un grupo de campesinos productores de papa se ha visto afectado por la entrada en vigencia de un tratado de libre comercio que ha permitido el ingreso al país de alimentos extranjeros que son más económicos, incluyendo la papa. La situación se ha complicado tanto para ellos, que sus ingresos se han reducido considerablemente y se ha puesto en riesgo su permanencia como agricultores. Esto afecta aspectos esenciales de su vida, dado que muchas de sus tradiciones y elementos culturales están relacionados con el cultivo de la tierra. Los campesinos mencionan que los políticos prometieron, en sus campañas, que los tratados no los afectarían, pues sus cultivos y productos serían protegidos.\n\nAnte esta situación, deciden rescatar una antigua tradición: los mercados campesinos, donde pueden vender sus productos sin intermediarios y a precios más bajos. Con esto se busca mejorar la calidad de vida de los productores, que más personas accedan a alimentos de alta calidad y que sus productos compitan en mejores condiciones frente a los productos extranjeros. Ahora bien, se busca ampliar este tipo de mercados a todo el país, pues la medida ha sido altamente beneficiosa para los cultivadores de papa, para los consumidores y para la tradición, pues se rescatan prácticas olvidadas.`,
+                prompt: "¿Cuáles de las siguientes dimensiones se privilegiaron en la solución propuesta por los campesinos?",
+                options: [
+                    { id: 'A', text: "Social y política." },
+                    { id: 'B', text: "Cultural y social." },
+                    { id: 'C', text: "Económica y cultural." },
+                    { id: 'D', text: "Política y comercial." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 3,
+                title: "3. Presupuesto y Acueducto",
+                text: `Para llevar agua a varios municipios, el gobernador de un departamento propone la extensión del sistema de acueducto con presupuesto del Gobierno nacional. Después de varios estudios, un equipo de ingenieros entrega el diseño del proyecto. Este diseño contempla el trazado que tendrá el acueducto, el presupuesto general que se requiere para construirlo, el plan para proteger la flora y la fauna de la región, y la reubicación temporal de algunas familias que viven donde se llevarán a cabo las obras. Ahora bien, cuando el gobernador pretende dar inicio al proyecto, el Gobierno nacional le comunica que, si se considera el diseño entregado por los ingenieros, no habrá dinero suficiente para ejecutar la obra.`,
+                prompt: "¿Qué aspecto descrito anteriormente obstaculiza el desarrollo del acueducto?",
+                options: [
+                    { id: 'A', text: "El aspecto social, pues las familias que viven en la zona de la obra no podrán ser reubicadas permanentemente." },
+                    { id: 'B', text: "El aspecto económico, pues los requerimientos de diseño de la obra no se ajustan al presupuesto del Gobierno." },
+                    { id: 'C', text: "El aspecto ambiental, pues el diseño no especifica qué sucederá con la flora y la fauna presente en la zona." },
+                    { id: 'D', text: "El aspecto logístico, pues los ingenieros no especifican el trazado definitivo del acueducto." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 4,
+                title: "4. Acuerdos de Paz y Fuerzas Militares",
+                text: `Como resultado del acuerdo de paz firmado por un Gobierno y un grupo armado al margen de la ley, se establecieron zonas veredales transitorias de normalización (ZVTN), las cuales consisten en locaciones rurales donde se concentran los militantes del grupo armado para iniciar su transición a la vida civil. En estas zonas, el ejército del país debe custodiar a los miembros del grupo armado, en lugar de combatirlo.`,
+                prompt: "De acuerdo con lo expuesto, ¿por qué es posible que se dé esta situación?",
+                options: [
+                    { id: 'A', text: "Porque el Gobierno nacional quiere que el grupo armado conviva con el Ejército, para que en el futuro haga parte de él." },
+                    { id: 'B', text: "Porque el Gobierno nacional ha dado un giro hacia el socialismo y ha decidido poner a su Ejército al servicio del grupo armado." },
+                    { id: 'C', text: "Porque el grupo armado ahora controla las ZVTN and tienen miembros del Ejército a su disposición." },
+                    { id: 'D', text: "Porque la función de las Fuerzas Armadas se adecuó al nuevo contexto sociopolítico del país." }
+                ],
+                correct: 'D'
+            },
+            {
+                id: 5,
+                title: "5. Discurso Político y Cambio Climático",
+                text: `En Estados Unidos existe un debate sobre el cambio climático, definido como variaciones del clima atribuidas directa o indirectamente a la actividad humana, que alteran la composición de la atmósfera mundial y que se suman a la variabilidad natural del clima observada durante períodos de tiempo comparables. Este debate ha llevado a que algunos Gobiernos se resistan a suscribir acuerdos internacionales que comprometan a los Estados a reducir la emisión de gases. El ejemplo más reciente fue el retiro de los Estados Unidos del Acuerdo de París. Esta situación ha generado que grupos ambientalistas protesten e insistan en que el desarrollo económico no puede seguir poniendo en peligro la existencia misma del planeta.\n\nAl respecto, el presidente de un país, escéptico del cambio climático, escribió en su red social de internet las siguientes dos frases:\n1. "Por el cambio climático que deberíamos estar preocupados es el provocado por las armas nucleares que están en las manos de líderes locos o incompetentes".\n2. "Hace frío afuera. ¿Dónde demonios está el cambio climático?".\n\nTomado y adaptado de: http://www.minambiente.gov.co/index.php/cambio-climatico y de http://www.elfinanciero.com.mx/`,
+                prompt: "A partir de la información anterior, ¿resultan confiables las afirmaciones del presidente en su red social acerca del cambio climático?",
+                options: [
+                    { id: 'A', text: "Sí, porque, como presidente, tiene acceso a información precisa sobre los aspectos relevantes del planeta." },
+                    { id: 'B', text: "No, porque, como presidente, tiene intereses en que el país que gobierna siga siendo competitivo en la economía mundial." },
+                    { id: 'C', text: "No, porque, al ser un político, los temas de la ciencia naturales le son ajenos a sus conocimientos de la vida diaria." },
+                    { id: 'D', text: "Sí, porque, al ser difundido en una red social con tantos seguidores, lo expresado tiene un impacto a nivel de la economía internacional." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 6,
+                title: "6. Teoría de la Dependencia",
+                text: `La teoría de la dependencia argumenta que la pobreza que existe en los países del sur se debe a condiciones históricas que han estructurado el mercado global de tal manera que favorece a los países del norte y mantiene a los países del sur en un estado constante de pobreza. Es así como, desde sus inicios, los países del sur han servido como proveedores de materia prima para los países del norte y, a cambio, han sido receptores de aquellos productos terminados que ya han cumplido su ciclo en los mercados del norte. De esta manera, se crea un vínculo de dependencia, en el que las economías del sur dependen de la voluntad de compra de materias primas por parte de los países del norte.\n\nTomado y adaptado de: Subgerencia Cultural del Banco de la República. (2015). Teoría de la dependencia. http://www.banrepcultural.org/blaavirtual/ayudadetareas/politica/teoria_de_la_dependencia`,
+                prompt: "¿Cuál de las siguientes situaciones se ajusta al modelo teórico descrito?",
+                options: [
+                    { id: 'A', text: "Un país latinoamericano desarrolla tecnología industrial que le permite procesar materias primas para generar productos con valor añadido, que se venden dentro del mismo país." },
+                    { id: 'B', text: "Una compañía multinacional adquiere, en un país pobre, materias primas a bajo costo, las procesa e incrementa su valor añadido para, luego, vender sus productos en el país pobre." },
+                    { id: 'C', text: "Un país desarrollado de Europa genera riquezas gracias a sus adelantos tecnológicos y, luego, impulsa el avance de la industria de países en desarrollo, porque comparte con ellos esta nueva tecnología." },
+                    { id: 'D', text: "Una organización internacional regula las relaciones comerciales entre países, para asegurarse de que los países que venden materias primas no cobren de más a los países que más las necesitan." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 7,
+                title: "7. Desarrollo Sostenible",
+                text: `La Organización de las Naciones Unidas (ONU) define el “desarrollo sostenible” como\n“[…] la satisfacción de ‘las necesidades de la generación presente sin comprometer la capacidad de las generaciones futuras para satisfacer sus propias necesidades’. El desarrollo sostenible ha emergido como el principio rector para el desarrollo mundial a largo plazo. Consta de tres pilares: el desarrollo sostenible trata de lograr, de manera equilibrada, el desarrollo económico, el desarrollo social y la protección del medio ambiente. [A partir de lo anterior] la Conferencia de las Naciones Unidas sobre el Desarrollo Sostenible, o Cumbre de la Tierra de Río 20, se centrará en dos temas: 1) la economía verde en el contexto del desarrollo sostenible y la erradicación de la pobreza y 2) el marco institucional para el desarrollo sostenible”.\n\nTomado y adaptado de: Asamblea General de las Naciones Unidas (s. f.). Desarrollo Sostenible. http://www.un.org/es/ga/president/65/issues/sustdev.shtml`,
+                prompt: "De acuerdo con la anterior definición, una política económica es sostenible cuando",
+                options: [
+                    { id: 'A', text: "privilegia la industrialización para generar empleo por encima de la necesidad de disminuir los gases de efecto invernadero." },
+                    { id: 'B', text: "le da la misma importancia a la generación de riqueza y a la explotación ilimitada de los recursos naturales." },
+                    { id: 'C', text: "le da la misma importancia a la generación de riqueza para las personas y a la protección del medio ambiente." },
+                    { id: 'D', text: "prohíbe totalmente aprovechar económicamente los bienes y servicios ecosistémicos de lagos, ríos y bosques para lograr su conservación." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 8,
+                title: "8. División del Trabajo (Adam Smith)",
+                text: `Para Adam Smith, economista y filósofo escocés del siglo XVIII, la división del trabajo aumenta la productividad, pues cada persona se enfoca en producir aquello en lo que es mejor y, luego, lo intercambia de forma mercantil por los otros bienes y servicios que necesita. Si cada uno dependiera del automovimiento, tendría menos posibilidades de fabricar la misma cantidad de bienes que le es posible conseguir en el intercambio.`,
+                prompt: "Según el concepto de división del trabajo, para Smith, el mercado",
+                options: [
+                    { id: 'A', text: "genera injusticias sociales al separar a las personas en clases sociales según sus ingresos." },
+                    { id: 'B', text: "lleva la economía al fracaso, pues no hay coordinación entre productores y consumidores." },
+                    { id: 'C', text: "hace que las personas se vuelvan más ignorantes, pues no saben cómo producir ciertos bienes." },
+                    { id: 'D', text: "es una forma eficiente de repartir los bienes que se han producido mediante la especialización." }
+                ],
+                correct: 'D'
+            },
+            {
+                id: 9,
+                title: "9. Especies Invasoras y Ecosistemas Marinos",
+                text: `El Gobierno está investigando el impacto que tiene el pez león en los ecosistemas marítimos colombianos y las formas de combatirlo. El pez león, especie originaria de Asia, se ha convertido en una amenaza o “plaga” para los ecosistemas marítimos y se ha extendido a las costas del Caribe colombiano. Según un artículo de prensa, este pez genera dos tipos de peligro: “Por un lado, es una amenaza para el hombre, que puede sufrir accidentes al pisar o tocar sus nocivas púas venenosas, y, por otro, es una amenaza para las especies nativas, pues se alimenta de peces jóvenes que sirven de alimentación para el hombre, como el pargo y el mero”.\n\nTomado y adaptado de: Agencia de Noticias de la Universidad Nacional. (15 de diciembre de 2009). Pez león ataca en el Caribe colombiano. Revista Semana. https://www.semana.com/-vida-moderna/ciencia/articulo/pez-leon-ataca-caribe-colombiano/111041-3/`,
+                prompt: "¿Para cuál de los siguientes objetivos de investigación del Gobierno sería útil la anterior información?",
+                options: [
+                    { id: 'A', text: "Establecer el impacto económico que provocan las plagas en la fauna y flora del Caribe colombiano." },
+                    { id: 'B', text: "Promover la caza del pez león para fortalecer la economía de las zonas pesqueras en el Caribe." },
+                    { id: 'C', text: "Determinar los factores que han provocado una disminución de la fauna en algunas costas colombianas." },
+                    { id: 'D', text: "Establecer la cantidad de especies nativas existentes antes de la aparición del pez león." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 10,
+                title: "10. Mecanismos de Participación: Referendo",
+                text: `En Colombia, una importante firma encuestadora reveló que, desde hace cuatro años, la corrupción es percibida por la ciudadanía como uno de los problemas más graves que afecta al país. En la versión más reciente de la encuesta aplicada, se muestra que el 84 % de los encuestados piensa que el problema está empeorando. Al respecto, un grupo de jóvenes decide promover el aumento de las penas para los delitos de corrupción y fortalecer a las entidades de control como la Procuraduría General de la Nación y la Contraloría General de la República. Sin embargo, al buscar apoyo para promover su ley, los jóvenes se dan cuenta de que en todos los partidos políticos hay escándalos de corrupción, por lo que reciben poco apoyo para su iniciativa. Ante esta situación, los jóvenes deciden promover un referendo aprobatorio de iniciativa ciudadana.\n\nTomado y adaptado de: Ávila, R. (4 de octubre de 2020). La corrupción en Colombia: un mal más grave que el coronavirus. Portafolio. https://www.portafolio.co/economia/la-corrupcion-en-colombia-un-mal-mas-grave-que-el-coronavirus-545299`,
+                prompt: "En esta situación, y teniendo en cuenta la Constitución Política de Colombia, ¿pueden los jóvenes continuar con su propuesta de referendo?",
+                options: [
+                    { id: 'A', text: "No, pues solo pueden proponer leyes de la República los integrantes del Congreso de la República y del Gobierno nacional." },
+                    { id: 'B', text: "No, pues solo pueden pronunicarse sobre temas políticos los expertos y los representantes elegidos popularmente." },
+                    { id: 'C', text: "Sí, pues en Colombia existen los referendos como mecanismos para que los ciudadanos propongan cambios normativos de manera directa." },
+                    { id: 'D', text: "Sí, pues en Colombia existen los referendos para que cada una de las decisiones públicas en el país sea consultada a la ciudadanía." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 11,
+                title: "11. Activismo Climático y Evidencia Científica",
+                text: `En 2019, una joven de 16 años pronunció el siguiente discurso ante el Parlamento Británico sobre el desarrollo sostenible y la urgencia de actuar decididamente para frenar el cambio climático:\n“La crisis climática es, a la vez, el conflicto más fácil y el más difícil al que nos hemos enfrentado. El más fácil porque sabemos lo que tenemos que hacer y el más difícil porque nuestra economía depende de la destrucción de los ecosistemas [...] Alrededor del 2030, habremos desatado una reacción en cadena irreversible [...] que, seguramente, pondrá fin a nuestra civilización tal como la conocemos. Eso es lo que sucederá, a menos que se tomen medidas sin precedentes.\nY tengan en cuenta que estos cálculos dependen de inventos que todavía no se han hecho a esa escala, inventos que se supone que limpiarán la atmósfera de cantidades astronómicas de dióxido de carbono [...] Pero quizá la idea más equivocada sobre la crisis climática es que tenemos que ‘reducir’ las emisiones [...] Sin embargo, eso es solo el comienzo de un proceso rápido que debe llevar al fin de las emisiones en un par de décadas o menos. Y cuando digo ‘fin’ quiero decir cero y, luego, pasar rápidamente a cifras negativas. Eso descarta automáticamente la mayoría de las políticas actuales”.\n\nTomado y adaptado de: Thunberg, G. (2019). El discurso completo de Greta Thunberg ante el Parlamento británico: “Volveremos a clase cuando escuchéis a la ciencia”. El País. https://www.eldiario.es/internacional/greta-thunberg-parlamento-britanico-volveremos_1_1581512.html`,
+                prompt: "¿Cuál de los siguientes hechos permite sustentar el reclamo de la joven por políticas concretas contra el cambio climático?",
+                options: [
+                    { id: 'A', text: "Durante 2022, la venta de carros eléctricos en América Latina aumentó un 21,7 % frente al año anterior, aunque la mayoría de estos son importados, pues las empresas que se encargan de ensamblar vehículos en la región todavía no los producen." },
+                    { id: 'B', text: "Si bien las tasas de pobreza en el mundo se han reducido a más de la mitad desde el 2000, la pandemia de la COVID-19 podría aumentar la pobreza a nivel mundial hasta llegar a afectar a 500 millones de personas más o a un 8 % más de la población mundial." },
+                    { id: 'C', text: "Desde 1990, Reino Unido ha reducido en un 37 % la explosión de dióxido de carbono al ambiente, gracias al cierre de sus viejas plantas de carbón, aunque todavía no ha conseguido eliminar completamente la generación de estos gases contaminantes." },
+                    { id: 'D', text: "El crecimiento continuo y sostenido de la capacidad instalada de producción de energía eólica a nivel mundial en los últimos 10 años ha tenido un repunte reciente, gracias al desarrollo de máquinas cada vez más potentes y adaptadas a distintos entornos." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 12,
+                title: "12. Indigenismo y Constitución de 1991",
+                text: `Una ley en Colombia establecía lo siguiente:\n“Artículo 1.º- Para atender a la reducción y civilización de las tribus indígenas en el territorio colombiano, se divide este en seis corregimientos [...]”.`,
+                prompt: "¿Cuál de los siguientes argumentos permite afirmar que esta ley es anterior a la Constitución política de 1991?",
+                options: [
+                    { id: 'A', text: "Antes de la Constitución de 1991 existía un mayor número de asentamientos indígenas en el país." },
+                    { id: 'B', text: "Las expresiones del artículo son contrarias a la protección de la diversidad étnica establecida en la Constitución de 1991." },
+                    { id: 'C', text: "A partir de la Constitución de 1991, se potenció un cambio hacia un Estado más descentralizado." },
+                    { id: 'D', text: "A partir de la Constitución de 1991, es necesario agotar la consulta previa para aprobar ese tipo de leyes." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 13,
+                title: "13. Prejuicios de Género en la Crianza",
+                text: `Un análisis del comportamiento de setenta niños en edad preescolar le permitió a un grupo de investigadores de una universidad concluir que los niños, desde los dos años y medio, pueden discriminar a personas con diferencias sociales y culturales. Al respecto, los investigadores afirman que:\n“Para el estudio, nos basamos en las actitudes y comportamientos de las madres, debido a que ellas son las que cumplen el papel de formar a sus hijos e hijas en valores”.`,
+                prompt: "¿La afirmación de los investigadores contiene algún prejuicio?",
+                options: [
+                    { id: 'A', text: "No, porque en la infancia quienes realmente asumen el cuidado y formación de los hijos son las madres." },
+                    { id: 'B', text: "Sí, porque está afirmando que las madres son las únicas responsables de la formación de los hijos." },
+                    { id: 'C', text: "No, porque las madres siempre cuidan con afecto a sus hijos enseñándoles todos los valores." },
+                    { id: 'D', text: "Sí, porque supone que las madres no tienen el papel de sostener económicamente a los hijos." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 14,
+                title: "14. Transformación Social y Diversidad",
+                text: `Un periodista se aproxima a un grupo de personas que está llevando a cabo una manifestación. Al preguntarle a una de ellas sobre sus motivos para manifestarse, esta contesta lo siguiente: “Buscamos promover el conocimiento y el respeto hacia la diversidad sexual, la educación sexual científica y sin prejuicios morales, y las relaciones interpersonales libres de toda forma de violencia de género”.`,
+                prompt: "¿Cuál de las siguientes sería una postura que esta persona probablemente adoptaría?",
+                options: [
+                    { id: 'A', text: "El respeto hacia el otro en una relación de pareja depende de la adopción de valores familiares tradicionales." },
+                    { id: 'B', text: "Las manifestaciones son la única ruta que tienen los ciudadanos para lograr los cambios que la sociedad necesita." },
+                    { id: 'C', text: "Las personas tienen el poder para transformar las condiciones sociales aun cuando estas están fuertemente arraigadas." },
+                    { id: 'D', text: "La ausencia de sesgos morales en la educación sexual ha hecho que la diversidad sexual sea ampliamente valorada en nuestra sociedad." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 15,
+                title: "15. Inclusión Laboral y Discapacidad",
+                text: `En respuesta a la solicitud de adaptar la infraestructura de una empresa para hacerla más accesible a los trabajadores con discapacidad, el jefe de la empresa contestó lo siguiente: “Es cierto que existen muchas barreras para que las personas con discapacidad se integren al mercado laboral. El Estado, en principio, debería asumir un papel más activo frente a esta población, pues los ajustes a la infraestructura no son una responsabilidad que deba asumir exclusivamente una empresa. Además, no se debe pensar que la discapacidad radica en la limitación, ya que el problema de la discapacidad radica en las actitudes personales que impiden superarla de forma efectiva”.`,
+                prompt: "¿Cuál de los siguientes enunciados del jefe de la empresa contiene un prejuicio cuestionable?",
+                options: [
+                    { id: 'A', text: "Existen muchas barreras para que las personas con discapacidad se integren al mercado laboral." },
+                    { id: 'B', text: "El Estado, en principio, debería asumir un papel más activo frente a la población con discapacidad." },
+                    { id: 'C', text: "El problema de la discapacidad radica en las actitudes personales que impiden superarla de forma efectiva." },
+                    { id: 'D', text: "Los ajustes a la infraestructura no son una responsabilidad que deba asumir exclusivamente una empresa." }
+                ],
+                correct: 'C'
+            },
+            {
+                id: 16,
+                title: "16. Bipartidismo y Frente Nacional",
+                text: `Durante el siglo XX en Colombia, el magnicidio de Jorge Eliécer Gaitán en 1948 desencadenó el periodo conocido como "La Violencia" entre los partidos tradicionales Liberal y Conservador. Para poner freno a la confrontación armada y retornar a la institucionalidad civil tras la dictadura del general Gustavo Rojas Pinilla, los líderes de ambos partidos tradicionales pactaron un acuerdo político de alternancia paritaria en la Presidencia de la República y reparto igualitario de los cargos de los tres poderes del Estado durante 16 años (1958-1974), conocido como el Frente Nacional.`,
+                prompt: "Una consecuencia política directa y no deseada del establecimiento del Frente Nacional en Colombia fue:",
+                options: [
+                    { id: 'A', text: "El fortalecimiento inmediato de la economía de libre mercado y el cese absoluto de toda protesta sindical en las ciudades." },
+                    { id: 'B', text: "La exclusión institucional de terceras fuerzas políticas y movimientos de izquierda, lo que propició el surgimiento de grupos insurgentes armados." },
+                    { id: 'C', text: "La disolución definitiva de los partidos Liberal y Conservador en favor de una asamblea constituyente popular permanente." },
+                    { id: 'D', text: "La suspensión definitiva de la Constitución de 1886 para adoptar un modelo federal semejante al de los Estados Unidos." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 17,
+                title: "17. Tensión entre Seguridad y Libre Circulación",
+                text: `En un municipio intermedio del país, la administración municipal expidió un decreto que prohíbe de manera general la circulación de motocicletas con acompañante (parrillero) durante los fines de semana en horario nocturno, justificando la medida en la reducción de hurtos y homicidios según estadísticas de la Policía Nacional. Frente a esto, un colectivo conformado por trabajadores de restaurantes, guardias de seguridad y estudiantes nocturnos convocó a un plantón pacífico, alegando que la motocicleta es su única herramienta económica y segura de transporte hacia las zonas veredales donde residen.`,
+                prompt: "En la situación descrita, ¿entre cuáles dimensiones o derechos se presenta una tensión fundamental?",
+                options: [
+                    { id: 'A', text: "Entre la seguridad pública ciudadana y los derechos fundamentales al trabajo y a la libre locomoción de un sector de la población." },
+                    { id: 'B', text: "Entre el derecho al medio ambiente sano y el fomento comercial del gremio de ensambladoras de vehículos motorizados." },
+                    { id: 'C', text: "Entre la autonomía judicial de la Fiscalía y las facultades impositivas y presupuestales del Concejo Municipal." },
+                    { id: 'D', text: "Entre la libertad de cultos de las comunidades religiosas y el deber cívico de pagar peajes en vías municipales." }
+                ],
+                correct: 'A'
+            },
+            {
+                id: 18,
+                title: "18. Frenos y Contrapesos del Estado",
+                text: `El artículo 113 de la Constitución Política de Colombia consagra que son ramas del poder público la legislativa, la ejecutiva y la judicial, las cuales tienen funciones separadas pero colaboran armónicamente para la realización de los fines del Estado. Asimismo, establece la existencia de órganos autónomos e independientes para el control disciplinario, la vigilancia fiscal y la organización electoral.`,
+                prompt: "¿Cuál es el propósito central de dividir el poder del Estado bajo el principio de frenos y contrapesos (checks and balances)?",
+                options: [
+                    { id: 'A', text: "Facilitar que el Presidente de la República pueda anular las decisiones del Congreso durante emergencias económicas." },
+                    { id: 'B', text: "Evitar la concentración autoritaria y el abuso del poder en una sola entidad o persona, salvaguardando las libertades ciudadanas." },
+                    { id: 'C', text: "Garantizar que todas las sentencias y leyes del país sean dictadas exclusivamente por los jueces de las altas cortes." },
+                    { id: 'D', text: "Acelerar la contratación pública eliminando el control previo y las auditorías de los organismos de control estatal." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 19,
+                title: "19. Derechos Colectivos y Acción Popular",
+                text: `Los habitantes de una vereda agrícola descubren que una industria de agroquímicos asentada en la parte alta de la cuenca vierte periódicamente residuos tóxicos a la quebrada que surte el acueducto comunitario, provocando la muerte de fauna acuática y brotes dermatológicos en los niños de la zona. Tras solicitar formalmente a la empresa detener los vertimientos, los directivos se negaron argumentando que cuentan con un permiso ambiental en trámite ante la Corporación Autónoma Regional.`,
+                prompt: "De acuerdo con el ordenamiento constitucional colombiano, ¿cuál es el mecanismo jurídico más idóneo para amparar el derecho colectivo al medio ambiente sano y a la salubridad de esta comunidad?",
+                options: [
+                    { id: 'A', text: "El recurso de Habeas Corpus." },
+                    { id: 'B', text: "La Acción Popular." },
+                    { id: 'C', text: "Una Acción de Inconstitucionalidad contra el Plan Nacional de Desarrollo." },
+                    { id: 'D', text: "Un Derecho de Petición dirigido al Ministerio de Comercio Exterior." }
+                ],
+                correct: 'B'
+            },
+            {
+                id: 20,
+                title: "20. Estado Laico y Pluralista",
+                text: `La Constitución de 1886 definía a Colombia como un Estado confesional católico, unitario y centralizado bajo la égida de la Regeneración. Por el contrario, la Constitución de 1991 proclamó a Colombia como un Estado social de derecho, organizado en forma de república unitaria descentralizada, participativa, pluralista y laica, fundada en el respeto irrestricto de la dignidad humana y el reconocimiento de la diversidad étnica y cultural de la nación.`,
+                prompt: "¿Cuál de las siguientes situaciones cotidianas refleja de manera concreta el cambio constitucional introducido en 1991 frente al modelo de 1886?",
+                options: [
+                    { id: 'A', text: "Un colegio público oficial que sanciona a un alumno por manifestar abiertamente creencias religiosas distintas a las de la mayoría." },
+                    { id: 'B', text: "Un juez civil que rehúsa tramitar un divorcio argumentando que el matrimonio es un sacramento indisoluble de la Iglesia." },
+                    { id: 'C', text: "Una institución educativa pública que garantiza el libre desarrollo de la personalidad y respeta que sus estudiantes profesen cualquier credo o ninguno." },
+                    { id: 'D', text: "El Presidente de la República designando directamente a los gobernadores departamentales sin mediación de elección popular." }
+                ],
+                correct: 'C'
             }
-        } catch (e) {
-            console.log("Modo de prueba local sin sesión");
-        }
-    }
+        ];
 
-    function render() {
-        const app = document.getElementById('app');
-        
-        if (currentStep === 'intro') {
-            app.innerHTML = `
-                <div class="flex-1 flex items-center justify-center p-6">
-                    <div class="bg-white max-w-xl w-full rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-100 border-t-[10px] border-t-blue-600">
-                        <div class="text-center mb-6">
-                            <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-20 w-auto mx-auto mb-3 object-contain block">
-                            <span class="text-xs uppercase font-extrabold text-blue-600 tracking-widest bg-blue-50 px-3 py-1 rounded-full border border-blue-100">Simulacro 2 • Saber 11</span>
-                            <h1 class="text-2xl md:text-3xl font-black text-slate-900 mt-3">Ciencias Sociales y Ciudadanas</h1>
-                            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Logos Edu • Formación Rural y Equidad</h2>
-                        </div>
-                        <div class="space-y-6">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Nombre del Estudiante</label>
-                                <input type="text" id="nameInput" value="${studentName}" placeholder="Ingresa tu nombre completo" class="w-full p-4 border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-medium text-slate-800">
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center space-y-1">
-                                <p class="text-xs font-bold text-slate-500 uppercase">Condiciones del examen</p>
-                                <p class="text-sm font-extrabold text-blue-900">20 Preguntas • 60 Minutos • Intento Único</p>
-                            </div>
-                            <button onclick="startExam()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all text-base tracking-wide cursor-pointer">
-                                INICIAR SIMULACRO
-                            </button>
-                            <div class="text-center">
-                                <a href="modulos.html" class="text-xs text-slate-400 hover:text-slate-600 font-semibold underline">Volver a la Ruta de Módulos</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-        } else if (currentStep === 'testing') {
-            const q = questions[currentQIdx];
-            const contextoHtml = q.context ? `<div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 text-slate-700 text-sm md:text-base context-area whitespace-pre-wrap">${q.context}</div>` : '';
-            const tituloHtml = q.title ? `<div class="text-xs font-black uppercase text-blue-600 tracking-wider mb-2">${q.title}</div>` : '';
+        let state = {
+            studentName: "",
+            currentIdx: 0,
+            answers: new Array(questions.length).fill(null),
+            timeLeft: 3600,
+            timer: null
+        };
 
-            app.innerHTML = `
-                <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
-                    <div class="flex items-center gap-3">
-                        <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-9 w-auto object-contain">
-                        <span class="font-black text-blue-600 text-sm">Simulacro 2</span>
-                        <span class="text-slate-300">|</span>
-                        <div class="font-bold text-slate-700 text-sm">Pregunta ${currentQIdx + 1} de ${questions.length}</div>
-                    </div>
-                    <div id="timerDisplay" class="text-lg font-mono font-black text-rose-600 bg-rose-50 px-4 py-1.5 rounded-xl border border-rose-200">
-                        ${formatTime(timeLeft)}
-                    </div>
-                </header>
-                <main class="flex-1 p-6 md:p-10 max-w-4xl mx-auto w-full">
-                    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="p-6 md:p-8 space-y-6">
-                            ${tituloHtml}
-                            ${contextoHtml}
-                            <div class="bg-blue-50/70 p-6 rounded-2xl border border-blue-100 text-slate-900 font-bold text-base md:text-lg leading-snug">
-                                ${q.prompt || q.text}
-                            </div>
-                            <div class="grid gap-3 mt-6">
-                                ${q.options.map(opt => `
-                                    <button onclick="selectOption('${opt.id}')" 
-                                        class="text-left p-4 rounded-2xl border-2 flex items-start transition-all cursor-pointer ${userAnswers[currentQIdx] === opt.id ? 'option-selected' : 'border-slate-200 hover:border-blue-300 bg-white'}">
-                                        <span class="w-8 h-8 rounded-xl border-2 flex items-center justify-center font-bold mr-4 shrink-0 transition-colors ${userAnswers[currentQIdx] === opt.id ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'border-slate-300 text-slate-700'}">${opt.id}</span>
-                                        <span class="text-sm md:text-base text-slate-800 leading-relaxed pt-0.5">${opt.text}</span>
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </main>
-                <footer class="bg-white border-t border-slate-200 p-4 md:px-10 flex justify-between items-center sticky bottom-0 z-40">
-                    <button onclick="prevQ()" ${currentQIdx === 0 ? 'disabled' : ''} class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-sm disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer">
-                        ← Anterior
-                    </button>
-                    ${currentQIdx === questions.length - 1 ? 
-                        `<button onclick="finishExam()" class="px-8 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md text-sm transition cursor-pointer">FINALIZAR Y REGISTRAR</button>` : 
-                        `<button onclick="nextQ()" class="px-8 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md text-sm transition cursor-pointer">Siguiente →</button>`
+        async function inicializarSesion() {
+            try {
+                const { data: { session } } = await sbClient.auth.getSession();
+                if (session && session.user) {
+                    currentUser = session.user;
+                    const meta = currentUser.user_metadata || {};
+                    state.studentName = meta.full_name || meta.documento || currentUser.email.split('@')[0];
+                    document.getElementById('student-name-input').value = state.studentName;
+
+                    const { data: intentoPrevio } = await sbClient
+                        .from('intentos')
+                        .select('id, finalizado')
+                        .eq('simulacro_id', SIMULACRO_ID)
+                        .eq('user_id', currentUser.id)
+                        .maybeSingle();
+
+                    if (intentoPrevio && intentoPrevio.finalizado) {
+                        alert("Ya has presentado este simulacro previamente. Tu intento se encuentra cerrado.");
+                        window.location.href = "modulos.html";
+                        return;
                     }
-                </footer>`;
-        } else if (currentStep === 'results') {
-            app.innerHTML = `
-                <div class="flex-1 flex items-center justify-center p-6">
-                    <div class="bg-white max-w-lg w-full rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-200 text-center space-y-6">
-                        
-                        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-inner">
-                            ✓
-                        </div>
-
-                        <div>
-                            <span class="text-xs uppercase font-extrabold text-emerald-600 tracking-wider bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                                Intento Cerrado y Registrado
-                            </span>
-                            <h1 class="text-2xl font-black text-slate-900 mt-3">¡Prueba Finalizada con Éxito!</h1>
-                            <p class="text-sm font-semibold text-slate-700 mt-1 uppercase">${studentName}</p>
-                        </div>
-
-                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-left text-xs text-slate-600 space-y-2 leading-relaxed">
-                            <p class="font-bold text-slate-800 flex items-center gap-2">
-                                <span>🔒</span> Respuestas guardadas en el servidor
-                            </p>
-                            <p>Tus respuestas han sido procesadas correctamente. Siguiendo el protocolo oficial de evaluación formativa, tu único intento ha sido bloqueado.</p>
-                            <p class="text-blue-700 font-medium">
-                                🗓️ El informe pedagógico personalizado generado por el docente tutor estará disponible en la fecha de cierre programada.
-                            </p>
-                        </div>
-
-                        <a href="modulos.html" class="w-full inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 transition-all text-sm cursor-pointer">
-                            Volver a la Ruta de Entrenamiento
-                        </a>
-
-                    </div>
-                </div>`;
-        }
-    }
-
-    function formatTime(s) {
-        const m = Math.floor(s / 60);
-        const sec = s % 60;
-        return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-    }
-
-    function startExam() {
-        const nameInput = document.getElementById('nameInput');
-        const val = nameInput ? nameInput.value.trim() : studentName;
-        if (!val) return alert("Por favor, ingresa tu nombre completo.");
-        studentName = val;
-        currentStep = 'testing';
-        timerId = setInterval(() => {
-            timeLeft--;
-            if (timeLeft <= 0) finishExam();
-            const display = document.getElementById('timerDisplay');
-            if (display) display.innerText = formatTime(timeLeft);
-        }, 1000);
-        render();
-    }
-
-    // AVANCE AUTOMÁTICO INMEDIATO AL MARCAR OPCIÓN
-    function selectOption(id) {
-        userAnswers[currentQIdx] = id;
-        if (currentQIdx < questions.length - 1) {
-            currentQIdx++;
-            render();
-            window.scrollTo(0, 0);
-        } else {
-            finishExam();
-        }
-    }
-
-    function nextQ() { if (currentQIdx < questions.length - 1) { currentQIdx++; render(); window.scrollTo(0,0); } }
-    function prevQ() { if (currentQIdx > 0) { currentQIdx--; render(); window.scrollTo(0,0); } }
-
-    async function finishExam() {
-        clearInterval(timerId);
-
-        let correctas = 0;
-        let fallas = [];
-        questions.forEach((q, idx) => {
-            const dada = userAnswers[idx];
-            if (dada === q.correct) {
-                correctas++;
-            } else {
-                const optDada = q.options.find(o => o.id === dada);
-                const optCorrecta = q.options.find(o => o.id === q.correct);
-                fallas.push({
-                    numero: idx + 1,
-                    tema: q.title || `Pregunta ${idx + 1}`,
-                    enunciado: q.prompt || q.text,
-                    seleccionada: optDada ? `${dada}) ${optDada.text}` : (dada || "Sin responder"),
-                    correcta: optCorrecta ? `${q.correct}) ${optCorrecta.text}` : q.correct
-                });
+                } else {
+                    state.studentName = "Estudiante";
+                    document.getElementById('student-name-input').value = "Estudiante";
+                }
+            } catch (e) {
+                console.error("Error al validar sesión:", e);
             }
-        });
+        }
 
-        const nombreMateria = "Ciencias Sociales y Competencias Ciudadanas - Prueba 2";
+        function startQuiz() {
+            const input = document.getElementById('student-name-input');
+            state.studentName = input.value.trim() || state.studentName || "Estudiante";
 
-        let dictamenIA = "";
-        if (fallas.length === 0) {
-            dictamenIA = `### 1. Diagnóstico Global y Nivel de Desempeño
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            state.timer = setInterval(() => {
+                state.timeLeft--;
+                updateTimerDisplay();
+                if (state.timeLeft <= 0) {
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(state.timeLeft / 60);
+            const secs = state.timeLeft % 60;
+            const display = document.getElementById('timer-display');
+            if (display) {
+                display.innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+            if (state.timeLeft < 300) {
+                const box = document.getElementById('timer-box');
+                if (box) box.classList.add('bg-red-50', 'border-red-200', 'text-red-600', 'animate-pulse');
+            }
+        }
+
+        function renderQuestion() {
+            const q = questions[state.currentIdx];
+            document.getElementById('q-title').innerText = q.title;
+            document.getElementById('q-text').innerText = q.text;
+            document.getElementById('q-prompt').innerText = q.prompt;
+            document.getElementById('q-number-circle').innerText = state.currentIdx + 1;
+            document.getElementById('q-counter-text').innerText = `Pregunta ${state.currentIdx + 1} de ${questions.length}`;
+            document.getElementById('progress-bar').style.width = `${((state.currentIdx + 1) / questions.length) * 100}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full group text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-blue-400 hover:bg-blue-50/30 transition-all flex items-start gap-4 cursor-pointer";
+                btn.onclick = () => selectOption(opt.id);
+                btn.innerHTML = `
+                    <span class="shrink-0 w-8 h-8 rounded-lg bg-slate-100 text-slate-600 font-black text-sm flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">${opt.id}</span>
+                    <span class="text-slate-700 text-sm md:text-base font-medium">${opt.text}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // AVANCE AUTOMÁTICO INMEDIATO (SIN BOTÓN SIGUIENTE)
+        function selectOption(id) {
+            state.answers[state.currentIdx] = id;
+            if (state.currentIdx < questions.length - 1) {
+                state.currentIdx++;
+                renderQuestion();
+                window.scrollTo(0, 0);
+            } else {
+                finishQuiz();
+            }
+        }
+
+        async function finishQuiz() {
+            clearInterval(state.timer);
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('res-student-name').innerText = state.studentName;
+
+            let score = 0;
+            let fallas = [];
+
+            questions.forEach((q, idx) => {
+                const dada = state.answers[idx];
+                if (dada === q.correct) {
+                    score++;
+                } else {
+                    const optDada = q.options.find(o => o.id === dada);
+                    const optCorrecta = q.options.find(o => o.id === q.correct);
+                    fallas.push({
+                        numero: idx + 1,
+                        tema: q.title || `Pregunta ${idx + 1}`,
+                        enunciado: q.prompt || q.text,
+                        seleccionada: optDada ? `${dada}) ${optDada.text}` : (dada || "Sin responder"),
+                        correcta: optCorrecta ? `${q.correct}) ${optCorrecta.text}` : q.correct
+                    });
+                }
+            });
+
+            const nombreMateria = "Ciencias Sociales y Competencias Ciudadanas - Prueba 2";
+            let dictamenIA = "";
+
+            if (fallas.length === 0) {
+                dictamenIA = `### 1. Diagnóstico Global y Nivel de Desempeño
 **Nivel Alcanzado: Superior (100% de Efectividad).**
 Precisión absoluta en los ${questions.length} ítems evaluados. El evaluado demuestra un dominio riguroso y sistemático de los estándares conceptuales, multiperspectivismo y competencias ciudadanas evaluados en esta prueba.
 
@@ -512,13 +545,13 @@ No se registraron fallas operativas, procedimentales ni distracciones en los enu
 
 ### 3. Recomendación Estratégica
 Mantener la disciplina de lectura crítica y el ritmo de respuesta en las próximas sesiones simuladas del calendario.`;
-        } else {
-            const promptUniversal = `Actúa como Coordinador Académico y Docente Experto en Evaluación Saber 11 de Logos Edu.
+            } else {
+                const promptUniversal = `Actúa como Coordinador Académico y Docente Experto en Evaluación Saber 11 de Logos Edu.
 Genera un Informe de Diagnóstico Pedagógico y Nivelación Analítica exhaustivo, riguroso, muy extenso y de alto nivel técnico para la prueba: "${nombreMateria}".
 
 DATOS DEL DESEMPEÑO:
-- Aciertos: ${correctas} de ${questions.length} preguntas.
-- Efectividad: ${Math.round((correctas / questions.length) * 100)}%.
+- Aciertos: ${score} de ${questions.length} preguntas.
+- Efectividad: ${Math.round((score / questions.length) * 100)}%.
 - Banco de Fallas Registradas (${fallas.length} preguntas):
 ${fallas.map(f => `• Ítem ${f.numero} [${f.tema}]:
   - Enunciado clave: "${f.enunciado}"
@@ -531,7 +564,7 @@ REGLAS OBLIGATORIAS:
 3. Organiza la respuesta obligatoriamente con las siguientes 5 secciones estructuradas en Markdown:
 
 ### 1. Diagnóstico Global y Nivel de Desempeño
-- Clasifica el nivel alcanzado (Bajo, Básico, Alto o Superior) según el porcentaje del ${Math.round((correctas / questions.length) * 100)}%.
+- Clasifica el nivel alcanzado (Bajo, Básico, Alto o Superior) según el porcentaje del ${Math.round((score / questions.length) * 100)}%.
 - Redacta dos párrafos analizando en profundidad la solidez técnica demostrada, las competencias dominadas y el impacto cuantitativo de los errores en el puntaje global estandarizado del examen.
 
 ### 2. Ponderación de Preguntas Críticas y Trampas Cognitivas (¿Por qué se fallaron?)
@@ -550,30 +583,27 @@ REGLAS OBLIGATORIAS:
 
 Tono: Académico, institucional, pedagógico y riguroso. Emplea subtítulos, negritas y viñetas con claridad.`;
 
-            try {
-                const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: promptUniversal }] }],
-                        generationConfig: {
-                            temperature: 0.3,
-                            maxOutputTokens: 2500
-                        }
-                    })
-                });
+                try {
+                    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: promptUniversal }] }],
+                            generationConfig: {
+                                temperature: 0.3,
+                                maxOutputTokens: 2500
+                            }
+                        })
+                    });
 
-                if (!resp.ok) {
-                    throw new Error(`Error API: ${resp.status}`);
-                }
-
-                const data = await resp.json();
-                dictamenIA = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!dictamenIA) throw new Error("Sin respuesta textual de Gemini");
-            } catch (e) {
-                console.error("Fallo llamada Gemini, usando respaldo amplio:", e);
-                dictamenIA = `### 1. Diagnóstico Global y Nivel de Desempeño
-**Nivel de Rendimiento: Básico/Bajo (${Math.round((correctas / questions.length) * 100)}% de Efectividad).**
+                    if (!resp.ok) throw new Error(`Error API: ${resp.status}`);
+                    const data = await resp.json();
+                    dictamenIA = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (!dictamenIA) throw new Error("Sin respuesta textual");
+                } catch (e) {
+                    console.error("Fallo llamada Gemini, usando respaldo amplio:", e);
+                    dictamenIA = `### 1. Diagnóstico Global y Nivel de Desempeño
+**Nivel de Rendimiento: Básico/Bajo (${Math.round((score / questions.length) * 100)}% de Efectividad).**
 El resultado obtenido evidencia dificultades sustanciales en la consolidación de competencias nucleares evaluadas en este módulo. Se observa una marcada inconsistencia al enfrentarse a problemáticas que demandan juicio técnico y jerarquización de variables, lo que impacta de manera directa la proyección del puntaje global.
 
 ### 2. Ponderación de Preguntas Críticas y Trampas Cognitivas
@@ -592,40 +622,37 @@ El resultado obtenido evidencia dificultades sustanciales en la consolidación d
 ### 5. Ruta de Entrenamiento y Descarte Metodológico
 - **Desarticulación de la Lectura Emocional:** Abstenerse de marcar la opción que "suene deseable" o "correcta en lo cotidiano"; validar siempre cuál opción cuenta con sustento técnico directo.
 - **Método de Triangulación y Descarte:** Leer primero la pregunta para identificar el verbo operativo, rastrear las condiciones restrictivas en el contexto y descartar sistemáticamente los distractores que generalizan.`;
+                }
+            }
+
+            if (currentUser) {
+                try {
+                    const meta = currentUser.user_metadata || {};
+                    const institucionUser = meta.institucion || meta.institucion_educativa || "Logos Edu";
+                    
+                    const { error } = await sbClient.from('intentos').insert([
+                        {
+                            user_id: currentUser.id,
+                            simulacro_id: SIMULACRO_ID,
+                            puntaje_global: score,
+                            respuestas: state.answers,
+                            finalizado: true,
+                            fecha_finalizado: new Date().toISOString(),
+                            retroalimentacion_ia: dictamenIA,
+                            nombre_estudiante: state.studentName,
+                            institucion: institucionUser
+                        }
+                    ]);
+                    if (error) console.error("Error al registrar intento en Supabase:", error);
+                } catch(e) {
+                    console.error("Excepción registrando intento:", e);
+                }
             }
         }
 
-        // --- REGISTRO EN SUPABASE ---
-        if (currentUser) {
-            try {
-                const meta = currentUser.user_metadata || {};
-                const institucionUser = meta.institucion || meta.institucion_educativa || "Logos Edu";
-                
-                const { error } = await sbClient.from('intentos').insert({
-                    user_id: currentUser.id,
-                    simulacro_id: SIMULACRO_ID,
-                    puntaje_global: correctas,
-                    respuestas: userAnswers,
-                    finalizado: true,
-                    fecha_finalizado: new Date().toISOString(),
-                    retroalimentacion_ia: dictamenIA,
-                    nombre_estudiante: studentName,
-                    institucion: institucionUser
-                });
-                if (error) console.error("Error al insertar en Supabase:", error);
-            } catch (err) {
-                console.error("Excepción al registrar en Supabase:", err);
-            }
-        }
-
-        currentStep = 'results';
-        render();
-    }
-
-    window.onload = async () => {
-        await checkStudentSession();
-        render();
-    };
-</script>
+        window.onload = () => {
+            inicializarSesion();
+        };
+    </script>
 </body>
 </html>
