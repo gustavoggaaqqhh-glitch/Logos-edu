@@ -9,7 +9,11 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        .context-area { line-height: 1.6; text-align: justify; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .context-area { line-height: 1.65; text-align: justify; }
         .option-selected { border-color: #2563eb; background-color: #eff6ff; box-shadow: 0 0 0 2px #3b82f6; }
     </style>
 </head>
@@ -21,14 +25,14 @@
     const SUPABASE_URL = "https://uinctluqbmdrehazuyog.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpbmN0bHVxYm1kcmVoYXp1eW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDM2NDUsImV4cCI6MjEwNzQ3OTY0NX0.ANXAyoauMGWAXEKpDYjcAGvCImE738aygvA7JwTEfyI";
     const GEMINI_API_KEY = "AIzaSyDSypb-t82azUtj1CBKjxGg4DHFZRKp-kE";
-    const SIMULACRO_ID = 2;
+    const SIMULACRO_ID = 2; // ID de Sociales 2
 
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const questions = [
         {
             id: 1,
-            context: "Representantes de los gremios minero y petrolero han enviado un comunicado al Gobierno con la intención de obtener los permisos necesarios para intervenir la selva amazónica. Estos gremios argumentan que esta intervención les permitiría mejorar la competitividad de este sector del mercado y generar empleos para las comunidades de la región del Amazonas. Por otra parte, los líderes de algunos pueblos indígenas del Amazonas llevan varios meses pidiendo la ayuda del Gobierno para proteger los territorios de sus 'hermanos aislados', pueblos indígenas que han decidido voluntariamente aislarse en las selvas huyendo de la esclavitud, la violencia y las enfermedades que la civilización occidental ha traído consigo durante los últimos cinco siglos.",
+            context: `Representantes de los gremios minero y petrolero han enviado un comunicado al Gobierno con la intención de obtener los permisos necesarios para intervenir la selva amazónica. Estos gremios argumentan que esta intervención les permitiría mejorar la competitividad de este sector del mercado y generar empleos para las comunidades de la región del Amazonas. Por otra parte, los líderes de algunos pueblos indígenas del Amazonas llevan varios meses pidiendo la ayuda del Gobierno para proteger los territorios de sus “hermanos aislados”, pueblos indígenas que han decidido voluntariamente aislarse en las selvas huyendo de la esclavitud, la violencia y las enfermedades que la civilización occidental ha traído consigo durante los últimos cinco siglos. La amenaza para estos pueblos aún sigue latente; por ejemplo, en el último año varias comunidades indígenas se han visto seriamente afectadas por la cuestión de contornos de gripa y sarampión, producto de encuentros imprevistos con leñadores de grupos madereros ilegales en el Amazonas.\n\nPara tomar una decisión informada sobre este tema, el Gobierno ha pedido la colaboración, tanto de su Ministerio de Minas y Energía, como de los académicos estudiosos de la cultura y la cosmovisión de estos pueblos indígenas del Amazonas. Los académicos argumentan que, teniendo en cuenta la gran vulnerabilidad que estos pueblos antiguos presentan frente a las enfermedades más comunes de Occidente, es necesario crear estructuras legales que protejan los territorios en donde podrían habitar los pueblos indígenas en aislamiento voluntario, respetando su autodeterminación a no ser contactados y protegiendo el gran patrimonio cultural, espiritual y natural que ellos poseen. Por otra parte, desde el Ministerio de Minas y Energía se argumenta que la solución está en que se reúnan los gremios minero, petrolero y maderero con las comunidades indígenas del Amazonas, incluyendo a las comunidades indígenas en aislamiento voluntario, para así poder negociar qué partes de la selva amazónica pueden ser explotadas legalmente para beneficio del desarrollo económico del país.`,
             text: "En relación con la propuesta planteada por el Ministerio de Minas y Energía, ¿cuál de las siguientes opciones describe una posible reacción o respuesta que NO se tuvo en cuenta en dicha propuesta?",
             options: [
                 { id: 'A', text: "Que los gremios petroleros y mineros solo quieran beneficiarse de la extracción ilegal de la mayor cantidad de recursos del Amazonas." },
@@ -40,7 +44,7 @@
         },
         {
             id: 2,
-            context: "Un grupo de campesinos productores de papa se ha visto afectado por la entrada en vigencia de un tratado de libre comercio que ha permitido el ingreso al país de alimentos extranjeros que son más económicos, incluyendo la papa. La situación se ha complicado tanto para ellos, que sus ingresos se han reducido considerablemente y se ha puesto en riesgo su permanencia como agricultores. Ante esta situación, deciden rescatar una antigua tradición: los mercados campesinos, donde pueden vender sus productos sin intermediarios y a precios más bajos.",
+            context: `Un grupo de campesinos productores de papa se ha visto afectado por la entrada en vigencia de un tratado de libre comercio que ha permitido el ingreso al país de alimentos extranjeros que son más económicos, incluyendo la papa. La situación se ha complicado tanto para ellos, que sus ingresos se han reducido considerablemente y se ha puesto en riesgo su permanencia como agricultores. Esto afecta aspectos esenciales de su vida, dado que muchas de sus tradiciones y elementos culturales están relacionados con el cultivo de la tierra. Los campesinos mencionan que los políticos prometieron, en sus campañas, que los tratados no los afectarían, pues sus cultivos y productos serían protegidos.\n\nAnte esta situación, deciden rescatar una antigua tradición: los mercados campesinos, donde pueden vender sus productos sin intermediarios y a precios más bajos. Con esto se busca mejorar la calidad de vida de los productores, que más personas accedan a alimentos de alta calidad y que sus productos compitan en mejores condiciones frente a los productos extranjeros. Ahora bien, se busca ampliar este tipo de mercados a todo el país, pues la medida ha sido altamente beneficiosa para los cultivadores de papa, para los consumidores y para la tradición, pues se rescatan prácticas olvidadas.`,
             text: "¿Cuáles de las siguientes dimensiones se privilegiaron en la solución propuesta por los campesinos?",
             options: [
                 { id: 'A', text: "Social y política." },
@@ -52,7 +56,7 @@
         },
         {
             id: 3,
-            context: "Para llevar agua a varios municipios, el gobernador de un departamento propone la extensión del sistema de acueducto con presupuesto del Gobierno nacional. Después de varios estudios, un equipo de ingenieros entrega el diseño del proyecto. Este diseño contempla el trazado que tendrá el acueducto, el presupuesto general que se requiere para construirlo, el plan para proteger la flora y la fauna de la región, y la reubicación temporal de algunas familias que viven donde se llevarán a cabo las obras. Ahora bien, cuando el gobernador pretende dar inicio al proyecto, el Gobierno nacional le comunica que, si se considera el diseño entregado por los ingenieros, no habrá dinero suficiente para ejecutar la obra.",
+            context: `Para llevar agua a varios municipios, el gobernador de un departamento propone la extensión del sistema de acueducto con presupuesto del Gobierno nacional. Después de varios estudios, un equipo de ingenieros entrega el diseño del proyecto. Este diseño contempla el trazado que tendrá el acueducto, el presupuesto general que se requiere para construirlo, el plan para proteger la flora y la fauna de la región, y la reubicación temporal de algunas familias que viven donde se llevarán a cabo las obras. Ahora bien, cuando el gobernador pretende dar inicio al proyecto, el Gobierno nacional le comunica que, si se considera el diseño entregado por los ingenieros, no habrá dinero suficiente para ejecutar la obra.`,
             text: "¿Qué aspecto descrito anteriormente obstaculiza el desarrollo del acueducto?",
             options: [
                 { id: 'A', text: "El aspecto social, pues las familias que viven en la zona de la obra no podrán ser reubicadas permanentemente." },
@@ -64,7 +68,7 @@
         },
         {
             id: 4,
-            context: "Como resultado del acuerdo de paz firmado por un Gobierno y un grupo armado al margen de la ley, se establecieron zonas veredales transitorias de normalización (ZVTN), las cuales consisten en locaciones rurales donde se concentran los militantes del grupo armado para iniciar su transición a la vida civil. En estas zonas, el ejército del país debe custodiar a los miembros del grupo armado, en lugar de combatirlo.",
+            context: `Como resultado del acuerdo de paz firmado por un Gobierno y un grupo armado al margen de la ley, se establecieron zonas veredales transitorias de normalización (ZVTN), las cuales consisten en locaciones rurales donde se concentran los militantes del grupo armado para iniciar su transición a la vida civil. En estas zonas, el ejército del país debe custodiar a los miembros del grupo armado, en lugar de combatirlo.`,
             text: "De acuerdo con lo expuesto, ¿por qué es posible que se dé esta situación?",
             options: [
                 { id: 'A', text: "Porque el Gobierno nacional quiere que el grupo armado conviva con el Ejército, para que en el futuro haga parte de él." },
@@ -76,7 +80,7 @@
         },
         {
             id: 5,
-            context: "En Estados Unidos existe un debate sobre el cambio climático, definido como variaciones del clima atribuidas directa o indirectamente a la actividad humana. Al respecto, el presidente de un país, escéptico del cambio climático, escribió en su red social de internet las siguientes dos frases: 1. 'Por el cambio climático que deberíamos estar preocupados es el provocado por las armas nucleares que están en las manos de líderes locos o incompetentes'. 2. 'Hace frío afuera. ¿Dónde demonios está el cambio climático?'.",
+            context: `En Estados Unidos existe un debate sobre el cambio climático, definido como variaciones del clima atribuidas directa o indirectamente a la actividad humana, que alteran la composición de la atmósfera mundial y que se suman a la variabilidad natural del clima observada durante períodos de tiempo comparables. Este debate ha llevado a que algunos Gobiernos se resistan a suscribir acuerdos internacionales que comprometan a los Estados a reducir la emisión de gases. El ejemplo más reciente fue el retiro de los Estados Unidos del Acuerdo de París. Esta situación ha generado que grupos ambientalistas protesten e insistan en que el desarrollo económico no puede seguir poniendo en peligro la existencia misma del planeta.\n\nAl respecto, el presidente de un país, escéptico del cambio climático, escribió en su red social de internet las siguientes dos frases:\n1. "Por el cambio climático que deberíamos estar preocupados es el provocado por las armas nucleares que están en las manos de líderes locos o incompetentes".\n2. "Hace frío afuera. ¿Dónde demonios está el cambio climático?".\n\nTomado y adaptado de: http://www.minambiente.gov.co/index.php/cambio-climatico y de http://www.elfinanciero.com.mx/`,
             text: "A partir de la información anterior, ¿resultan confiables las afirmaciones del presidente en su red social acerca del cambio climático?",
             options: [
                 { id: 'A', text: "Sí, porque, como presidente, tiene acceso a información precisa sobre los aspectos relevantes del planeta." },
@@ -88,19 +92,19 @@
         },
         {
             id: 6,
-            context: "La teoría de la dependencia argumenta que la pobreza que existe en los países del sur se debe a condiciones históricas que han estructurado el mercado global de tal manera que favorece a los países del norte y mantiene a los países del sur en un estado constante de pobreza. Es así como, desde sus inicios, los países del sur han servido como proveedores de materia prima para los países del norte y, a cambio, han sido receptores de aquellos productos terminados.",
+            context: `La teoría de la dependencia argumenta que la pobreza que existe en los países del sur se debe a condiciones históricas que han estructurado el mercado global de tal manera que favorece a los países del norte y mantiene a los países del sur en un estado constante de pobreza. Es así como, desde sus inicios, los países del sur han servido como proveedores de materia prima para los países del norte y, a cambio, han sido receptores de aquellos productos terminados que ya han cumplido su ciclo en los mercados del norte. De esta manera, se crea un vínculo de dependencia, en el que las economías del sur dependen de la voluntad de compra de materias primas por parte de los países del norte.\n\nTomado y adaptado de: Subgerencia Cultural del Banco de la República. (2015). Teoría de la dependencia. http://www.banrepcultural.org/blaavirtual/ayudadetareas/politica/teoria_de_la_dependencia`,
             text: "¿Cuál de las siguientes situaciones se ajusta al modelo teórico descrito?",
             options: [
-                { id: 'A', text: "Un país latinoamericano desarrolla tecnología industrial que le permite procesar materias primas para generar productos con valor añadido." },
+                { id: 'A', text: "Un país latinoamericano desarrolla tecnología industrial que le permite procesar materias primas para generar productos con valor añadido, que se venden dentro del mismo país." },
                 { id: 'B', text: "Una compañía multinacional adquiere, en un país pobre, materias primas a bajo costo, las procesa e incrementa su valor añadido para, luego, vender sus productos en el país pobre." },
-                { id: 'C', text: "Un país desarrollado de Europa genera riquezas gracias a sus adelantos tecnológicos y, luego, impulsa el avance de la industria de países en desarrollo." },
-                { id: 'D', text: "Una organización internacional regula las relaciones comerciales entre países, para asegurarse de que los países que venden materias primas no cobren de más." }
+                { id: 'C', text: "Un país desarrollado de Europa genera riquezas gracias a sus adelantos tecnológicos y, luego, impulsa el avance de la industria de países en desarrollo, porque comparte con ellos esta nueva tecnología." },
+                { id: 'D', text: "Una organización internacional regula las relaciones comerciales entre países, para asegurarse de que los países que venden materias primas no cobren de más a los países que más las necesitan." }
             ],
             correct: 'B'
         },
         {
             id: 7,
-            context: "La Organización de las Naciones Unidas (ONU) define el 'desarrollo sostenible' como la satisfacción de las necesidades de la generación presente sin comprometer la capacidad de las generaciones futuras para satisfacer sus propias necesidades. Consta de tres pilares: el desarrollo económico, el desarrollo social y la protección del medio ambiente de manera equilibrada.",
+            context: `La Organización de las Naciones Unidas (ONU) define el “desarrollo sostenible” como\n“[…] la satisfacción de ‘las necesidades de la generación presente sin comprometer la capacidad de las generaciones futuras para satisfacer sus propias necesidades’. El desarrollo sostenible ha emergido como el principio rector para el desarrollo mundial a largo plazo. Consta de tres pilares: el desarrollo sostenible trata de lograr, de manera equilibrada, el desarrollo económico, el desarrollo social y la protección del medio ambiente. [A partir de lo anterior] la Conferencia de las Naciones Unidas sobre el Desarrollo Sostenible, o Cumbre de la Tierra de Río 20, se centrará en dos temas: 1) la economía verde en el contexto del desarrollo sostenible y la erradicación de la pobreza y 2) el marco institucional para el desarrollo sostenible”.\n\nTomado y adaptado de: Asamblea General de las Naciones Unidas (s. f.). Desarrollo Sostenible. http://www.un.org/es/ga/president/65/issues/sustdev.shtml`,
             text: "De acuerdo con la anterior definición, una política económica es sostenible cuando",
             options: [
                 { id: 'A', text: "privilegia la industrialización para generar empleo por encima de la necesidad de disminuir los gases de efecto invernadero." },
@@ -112,7 +116,7 @@
         },
         {
             id: 8,
-            context: "Para Adam Smith, economista y filósofo escocés del siglo XVIII, la división del trabajo aumenta la productividad, pues cada persona se enfoca en producir aquello en lo que es mejor y, luego, lo intercambia de forma mercantil por los otros bienes y servicios que necesita.",
+            context: `Para Adam Smith, economista y filósofo escocés del siglo XVIII, la división del trabajo aumenta la productividad, pues cada persona se enfoca en producir aquello en lo que es mejor y, luego, lo intercambia de forma mercantil por los otros bienes y servicios que necesita. Si cada uno dependiera del automovimiento, tendría menos posibilidades de fabricar la misma cantidad de bienes que le es posible conseguir en el intercambio.`,
             text: "Según el concepto de división del trabajo, para Smith, el mercado",
             options: [
                 { id: 'A', text: "genera injusticias sociales al separar a las personas en clases sociales según sus ingresos." },
@@ -124,7 +128,7 @@
         },
         {
             id: 9,
-            context: "El Gobierno está investigando el impacto que tiene el pez león en los ecosistemas marítimos colombianos y las formas de combatirlo. El pez león, especie originaria de Asia, se ha convertido en una amenaza o 'plaga' para los ecosistemas marítimos y se ha extendido a las costas del Caribe colombiano. Por un lado, es una amenaza para el hombre, y por otro, es una amenaza para las especies nativas.",
+            context: `El Gobierno está investigando el impacto que tiene el pez león en los ecosistemas marítimos colombianos y las formas de combatirlo. El pez león, especie originaria de Asia, se ha convertido en una amenaza o “plaga” para los ecosistemas marítimos y se ha extendido a las costas del Caribe colombiano. Según un artículo de prensa, este pez genera dos tipos de peligro: “Por un lado, es una amenaza para el hombre, que puede sufrir accidentes al pisar o tocar sus nocivas púas venenosas, y, por otro, es una amenaza para las especies nativas, pues se alimenta de peces jóvenes que sirven de alimentación para el hombre, como el pargo y el mero”.\n\nTomado y adaptado de: Agencia de Noticias de la Universidad Nacional. (15 de diciembre de 2009). Pez león ataca en el Caribe colombiano. Revista Semana. https://www.semana.com/-vida-moderna/ciencia/articulo/pez-leon-ataca-caribe-colombiano/111041-3/`,
             text: "¿Para cuál de los siguientes objetivos de investigación del Gobierno sería útil la anterior información?",
             options: [
                 { id: 'A', text: "Establecer el impacto económico que provocan las plagas en la fauna y flora del Caribe colombiano." },
@@ -136,7 +140,7 @@
         },
         {
             id: 10,
-            context: "En Colombia, una importante firma encuestadora reveló que, desde hace cuatro años, la corrupción es percibida por la ciudadanía como uno de los problemas más graves que afecta al país. Un grupo de jóvenes decide promover el aumento de las penas para los delitos de corrupción y deciden promover un referendo aprobatorio de iniciativa ciudadana.",
+            context: `En Colombia, una importante firma encuestadora reveló que, desde hace cuatro años, la corrupción es percibida por la ciudadanía como uno de los problemas más graves que afecta al país. En la versión más reciente de la encuesta aplicada, se muestra que el 84 % de los encuestados piensa que el problema está empeorando. Al respecto, un grupo de jóvenes decide promover el aumento de las penas para los delitos de corrupción y fortalecer a las entidades de control como la Procuraduría General de la Nación y la Contraloría General de la República. Sin embargo, al buscar apoyo para promover su ley, los jóvenes se dan cuenta de que en todos los partidos políticos hay escándalos de corrupción, por lo que reciben poco apoyo para su iniciativa. Ante esta situación, los jóvenes deciden promover un referendo aprobatorio de iniciativa ciudadana.\n\nTomado y adaptado de: Ávila, R. (4 de octubre de 2020). La corrupción en Colombia: un mal más grave que el coronavirus. Portafolio. https://www.portafolio.co/economia/la-corrupcion-en-colombia-un-mal-mas-grave-que-el-coronavirus-545299`,
             text: "En esta situación, y teniendo en cuenta la Constitución Política de Colombia, ¿pueden los jóvenes continuar con su propuesta de referendo?",
             options: [
                 { id: 'A', text: "No, pues solo pueden proponer leyes de la República los integrantes del Congreso de la República y del Gobierno nacional." },
@@ -148,19 +152,19 @@
         },
         {
             id: 11,
-            context: "En 2019, una joven de 16 años pronunció el siguiente discurso ante el Parlamento Británico sobre el desarrollo sostenible y la urgencia de actuar decididamente para frenar el cambio climático: 'La crisis climática es el conflicto más fácil y el más difícil al que nos hemos enfrentado. Alrededor del 2030, habremos desatado una reacción en cadena irreversible que seguramente pondrá fin a nuestra civilización tal como la conocemos'.",
+            context: `En 2019, una joven de 16 años pronunció el siguiente discurso ante el Parlamento Británico sobre el desarrollo sostenible y la urgencia de actuar decididamente para frenar el cambio climático:\n“La crisis climática es, a la vez, el conflicto más fácil y el más difícil al que nos hemos enfrentado. El más fácil porque sabemos lo que tenemos que hacer y el más difícil porque nuestra economía depende de la destrucción de los ecosistemas [...] Alrededor del 2030, habremos desatado una reacción en cadena irreversible [...] que, seguramente, pondrá fin a nuestra civilización tal como la conocemos. Eso es lo que sucederá, a menos que se tomen medidas sin precedentes.\nY tengan en cuenta que estos cálculos dependen de inventos que todavía no se han hecho a esa escala, inventos que se supone que limpiarán la atmósfera de cantidades astronómicas de dióxido de carbono [...] Pero quizá la idea más equivocada sobre la crisis climática es que tenemos que ‘reducir’ las emisiones [...] Sin embargo, eso es solo el comienzo de un proceso rápido que debe llevar al fin de las emisiones en un par de décadas o menos. Y cuando digo ‘fin’ quiero decir cero y, luego, pasar rápidamente a cifras negativas. Eso descarta automáticamente la mayoría de las políticas actuales”.\n\nTomado y adaptado de: Thunberg, G. (2019). El discurso completo de Greta Thunberg ante el Parlamento británico: “Volveremos a clase cuando escuchéis a la ciencia”. El País. https://www.eldiario.es/internacional/greta-thunberg-parlamento-britanico-volveremos_1_1581512.html`,
             text: "¿Cuál de los siguientes hechos permite sustentar el reclamo de la joven por políticas concretas contra el cambio climático?",
             options: [
-                { id: 'A', text: "El aumento de ventas de carros eléctricos en América Latina en un 21,7%." },
-                { id: 'B', text: "El aumento de la pobreza mundial por la pandemia de la COVID-19." },
-                { id: 'C', text: "Reino Unido ha reducido en un 37% la explosión de dióxido de carbono al ambiente, aunque todavía no ha conseguido eliminar completamente la generación de estos gases." },
-                { id: 'D', text: "El crecimiento continuo y sostenido de la capacidad instalada de producción de energía eólica a nivel mundial." }
+                { id: 'A', text: "Durante 2022, la venta de carros eléctricos en América Latina aumentó un 21,7 % frente al año anterior, aunque la mayoría de estos son importados, pues las empresas que se encargan de ensamblar vehículos en la región todavía no los producen." },
+                { id: 'B', text: "Si bien las tasas de pobreza en el mundo se han reducido a más de la mitad desde el 2000, la pandemia de la COVID-19 podría aumentar la pobreza a nivel mundial hasta llegar a afectar a 500 millones de personas más o a un 8 % más de la población mundial." },
+                { id: 'C', text: "Desde 1990, Reino Unido ha reducido en un 37 % la explosión de dióxido de carbono al ambiente, gracias al cierre de sus viejas plantas de carbón, aunque todavía no ha conseguido eliminar completamente la generación de estos gases contaminantes." },
+                { id: 'D', text: "El crecimiento continuo y sostenido de la capacidad instalada de producción de energía eólica a nivel mundial en los últimos 10 años ha tenido un repunte reciente, gracias al desarrollo de máquinas cada vez más potentes y adaptadas a distintos entornos." }
             ],
             correct: 'C'
         },
         {
             id: 12,
-            context: "Una ley en Colombia establecía lo siguiente: 'Artículo 1.º- Para atender a la reducción y civilización de las tribus indígenas en el territorio colombiano, se divide este en seis corregimientos [...]'.",
+            context: `Una ley en Colombia establecía lo siguiente:\n“Artículo 1.º- Para atender a la reducción y civilización de las tribus indígenas en el territorio colombiano, se divide este en seis corregimientos [...]”.`,
             text: "¿Cuál de los siguientes argumentos permite afirmar que esta ley es anterior a la Constitución política de 1991?",
             options: [
                 { id: 'A', text: "Antes de la Constitución de 1991 existía un mayor número de asentamientos indígenas en el país." },
@@ -172,7 +176,7 @@
         },
         {
             id: 13,
-            context: "Un análisis del comportamiento de setenta niños en edad preescolar le permitió a un grupo de investigadores de una universidad concluir que los niños, desde los dos años y medio, pueden discriminar a personas con diferencias sociales y culturales. Al respecto, los investigadores afirman que: 'Para el estudio, nos basamos en las actitudes y comportamientos de las madres, debido a que ellas son las que cumplen el papel de formar a sus hijos e hijas en valores'.",
+            context: `Un análisis del comportamiento de setenta niños en edad preescolar le permitió a un grupo de investigadores de una universidad concluir que los niños, desde los dos años y medio, pueden discriminar a personas con diferencias sociales y culturales. Al respecto, los investigadores afirman que:\n“Para el estudio, nos basamos en las actitudes y comportamientos de las madres, debido a que ellas son las que cumplen el papel de formar a sus hijos e hijas en valores”.`,
             text: "¿La afirmación de los investigadores contiene algún prejuicio?",
             options: [
                 { id: 'A', text: "No, porque en la infancia quienes realmente asumen el cuidado y formación de los hijos son las madres." },
@@ -184,7 +188,7 @@
         },
         {
             id: 14,
-            context: "Un periodista se aproxima a un grupo de personas que está llevando a cabo una manifestación. Al preguntarle a una de ellas sobre sus motivos para manifestarse, esta contesta lo siguiente: 'Buscamos promover el conocimiento y el respeto hacia la diversidad sexual, la educación sexual científica y sin prejuicios morales, y las relaciones interpersonales libres de toda forma de violencia de género'.",
+            context: `Un periodista se aproxima a un grupo de personas que está llevando a cabo una manifestación. Al preguntarle a una de ellas sobre sus motivos para manifestarse, esta contesta lo siguiente: “Buscamos promover el conocimiento y el respeto hacia la diversidad sexual, la educación sexual científica y sin prejuicios morales, y las relaciones interpersonales libres de toda forma de violencia de género”.`,
             text: "¿Cuál de las siguientes sería una postura que esta persona probablemente adoptaría?",
             options: [
                 { id: 'A', text: "El respeto hacia el otro en una relación de pareja depende de la adopción de valores familiares tradicionales." },
@@ -196,7 +200,7 @@
         },
         {
             id: 15,
-            context: "En respuesta a la solicitud de adaptar la infraestructura de una empresa para hacerla más accesible a los trabajadores con discapacidad, el jefe de la empresa contestó lo siguiente: 'Es cierto que existen muchas barreras para que las personas con discapacidad se integren al mercado laboral. El Estado, en principio, debería asumir un papel más activo frente a esta población, pues los ajustes a la infraestructura no son una responsabilidad que deba asumir exclusivamente una empresa. Además, no se debe pensar que la discapacidad radica en la limitación, ya que el problema de la discapacidad radica en las actitudes personales que impiden superarla de forma efectiva'.",
+            context: `En respuesta a la solicitud de adaptar la infraestructura de una empresa para hacerla más accesible a los trabajadores con discapacidad, el jefe de la empresa contestó lo siguiente: “Es cierto que existen muchas barreras para que las personas con discapacidad se integren al mercado laboral. El Estado, en principio, debería asumir un papel más activo frente a esta población, pues los ajustes a la infraestructura no son una responsabilidad que deba asumir exclusivamente una empresa. Además, no se debe pensar que la discapacidad radica en la limitación, ya que el problema de la discapacidad radica en las actitudes personales que impiden superarla de forma efectiva”.`,
             text: "¿Cuál de los siguientes enunciados del jefe de la empresa contiene un prejuicio cuestionable?",
             options: [
                 { id: 'A', text: "Existen muchas barreras para que las personas con discapacidad se integren al mercado laboral." },
@@ -208,61 +212,61 @@
         },
         {
             id: 16,
-            context: "Durante el siglo XX en Colombia, el fenómeno conocido como 'El Bogotazo' tras el magnicidio de Jorge Eliécer Gaitán desató un periodo de intensa confrontación armada entre los partidos tradicionales (Liberal y Conservador). Para poner fin a la violencia bipartidista, los líderes de ambos partidos tradicionales pactaron un acuerdo de alternancia en el poder presidencial y distribución equitativa de los cargos públicos por un periodo de dieciséis años, conocido como el Frente Nacional.",
-            text: "Una consecuencia política directa y no deseada del establecimiento del Frente Nacional en Colombia fue",
+            context: `Durante el siglo XX en Colombia, el magnicidio de Jorge Eliécer Gaitán en 1948 desencadenó el periodo conocido como "La Violencia" entre los partidos tradicionales Liberal y Conservador. Para poner freno a la confrontación armada y retornar a la institucionalidad civil tras la dictadura del general Gustavo Rojas Pinilla, los líderes de ambos partidos tradicionales pactaron un acuerdo político de alternancia paritaria en la Presidencia de la República y reparto igualitario de los cargos de los tres poderes del Estado durante 16 años (1958-1974), conocido como el Frente Nacional.`,
+            text: "Una consecuencia política directa y no deseada del establecimiento del Frente Nacional en Colombia fue:",
             options: [
-                { id: 'A', text: "el fortalecimiento inmediato de la economía de libre mercado y el cese absoluto de toda huelga sindical en el país." },
-                { id: 'B', text: "la exclusión institucional de terceras fuerzas políticas, lo cual incentivó el surgimiento de movimientos insurgentes armados de izquierda." },
-                { id: 'C', text: "la disolución definitiva de los partidos Liberal y Conservador en favor de una asamblea constituyente popular permanente." },
-                { id: 'D', text: "la instauración de una dictadura cívico-militar indefinida que abolió el Congreso de la República y las elecciones populares." }
+                { id: 'A', text: "El fortalecimiento inmediato de la economía de libre mercado y el cese absoluto de toda protesta sindical en las ciudades." },
+                { id: 'B', text: "La exclusión institucional de terceras fuerzas políticas y movimientos de izquierda, lo que propició el surgimiento de grupos insurgentes armados." },
+                { id: 'C', text: "La disolución definitiva de los partidos Liberal y Conservador en favor de una asamblea constituyente popular permanente." },
+                { id: 'D', text: "La suspensión definitiva de la Constitución de 1886 para adoptar un modelo federal semejante al de los Estados Unidos." }
             ],
             correct: 'B'
         },
         {
             id: 17,
-            context: "En un municipio intermedio, el alcalde expide un decreto que prohíbe el tránsito de motocicletas con acompañante (parrillero) durante los fines de semana entre las 6:00 p.m. y las 5:00 a.m. La administración municipal justifica la medida con base en las estadísticas de hurtos. Frente a esto, un colectivo de trabajadores nocturnos y estudiantes universitarios protesta enérgicamente, argumentando que la motocicleta es su único medio de transporte accesible y económico para regresar seguros a sus hogares.",
-            text: "En esta situación descrita, ¿entre cuáles dimensiones o derechos se presenta una tensión fundamental?",
+            context: `En un municipio intermedio del país, la administración municipal expidió un decreto que prohíbe de manera general la circulación de motocicletas con acompañante (parrillero) durante los fines de semana en horario nocturno, justificando la medida en la reducción de hurtos y homicidios según estadísticas de la Policía Nacional. Frente a esto, un colectivo conformado por trabajadores de restaurantes, guardias de seguridad y estudiantes nocturnos convocó a un plantón pacífico, alegando que la motocicleta es su única herramienta económica y segura de transporte hacia las zonas veredales donde residen.`,
+            text: "En la situación descrita, ¿entre cuáles dimensiones o derechos se presenta una tensión fundamental?",
             options: [
-                { id: 'A', text: "Entre la seguridad pública ciudadana y los derechos al trabajo y a la libre locomoción de un sector de la población." },
-                { id: 'B', text: "Entre el derecho al medio ambiente sano y el fomento económico del gremio de ensambladoras de motocicletas." },
-                { id: 'C', text: "Entre la autonomía judicial de la Fiscalía y las facultades tributarias del Concejo Municipal." },
-                { id: 'D', text: "Entre la libertad de culto de las comunidades religiosas y el deber ciudadano de pagar impuestos municipales." }
+                { id: 'A', text: "Entre la seguridad pública ciudadana y los derechos fundamentales al trabajo y a la libre locomoción de un sector de la población." },
+                { id: 'B', text: "Entre el derecho al medio ambiente sano y el fomento comercial del gremio de ensambladoras de vehículos motorizados." },
+                { id: 'C', text: "Entre la autonomía judicial de la Fiscalía y las facultades impositivas y presupuestales del Concejo Municipal." },
+                { id: 'D', text: "Entre la libertad de cultos de las comunidades religiosas y el deber cívico de pagar peajes en vías municipales." }
             ],
             correct: 'A'
         },
         {
             id: 18,
-            context: "El artículo 113 de la Constitución Política de Colombia establece que son ramas del poder público: la legislativa, la ejecutiva y la judicial. Además de los órganos que las integran existen otros, autónomos e independientes, para el cumplimiento de las demás funciones del Estado.",
-            text: "¿Cuál es el propósito principal de dividir el poder del Estado en ramas independientes con funciones de control recíproco (frenos y contrapesos)?",
+            context: `El artículo 113 de la Constitución Política de Colombia consagra que son ramas del poder público la legislativa, la ejecutiva y la judicial, las cuales tienen funciones separadas pero colaboran armónicamente para la realización de los fines del Estado. Asimismo, establece la existencia de órganos autónomos e independientes para el control disciplinario, la vigilancia fiscal y la organización electoral.`,
+            text: "¿Cuál es el propósito central de dividir el poder del Estado bajo el principio de frenos y contrapesos (checks and balances)?",
             options: [
-                { id: 'A', text: "Permitir que el Presidente de la República pueda modificar libremente la Constitución cuando el Congreso rechace sus leyes." },
-                { id: 'B', text: "Evitar la concentración excesiva de poder en una sola entidad o persona, protegiendo así los derechos ciudadanos y la democracia." },
-                { id: 'C', text: "Garantizar que las decisiones del Estado sean tomadas de manera exclusiva por los jueces de las altas cortes judiciales." },
-                { id: 'D', text: "Acelerar los trámites administrativos impidiendo que los ciudadanos puedan interponer acciones legales o tutelas." }
+                { id: 'A', text: "Facilitar que el Presidente de la República pueda anular las decisiones del Congreso durante emergencias económicas." },
+                { id: 'B', text: "Evitar la concentración autoritaria y el abuso del poder en una sola entidad o persona, salvaguardando las libertades ciudadanas." },
+                { id: 'C', text: "Garantizar que todas las sentencias y leyes del país sean dictadas exclusivamente por los jueces de las altas cortes." },
+                { id: 'D', text: "Acelerar la contratación pública eliminando el control previo y las auditorías de los organismos de control estatal." }
             ],
             correct: 'B'
         },
         {
             id: 19,
-            context: "Un líder comunal observa que una empresa privada de curtiembres está vertiendo residuos químicos directamente a la quebrada que abastece de agua a su vereda, ocasionando olores nauseabundos, la muerte de peces y enfermedades gastrointestinales en varios niños del sector. El líder ha acudido a la empresa, pero sus directivos afirman que cuentan con un permiso provisional y se niegan a detener los vertimientos.",
-            text: "De acuerdo con el ordenamiento jurídico colombiano, ¿cuál es el mecanismo constitucional más idóneo para defender el derecho colectivo al medio ambiente sano de esta comunidad?",
+            context: `Los habitantes de una vereda agrícola descubren que una industria de agroquímicos asentada en la parte alta de la cuenca vierte periódicamente residuos tóxicos a la quebrada que surte el acueducto comunitario, provocando la muerte de fauna acuática y brotes dermatológicos en los niños de la zona. Tras solicitar formalmente a la empresa detener los vertimientos, los directivos se negaron argumentando que cuentan con un permiso ambiental en trámite ante la Corporación Autónoma Regional.`,
+            text: "De acuerdo con el ordenamiento constitucional colombiano, ¿cuál es el mecanismo jurídico más idóneo para amparar el derecho colectivo al medio ambiente sano y a la salubridad de esta comunidad?",
             options: [
                 { id: 'A', text: "El recurso de Habeas Corpus." },
                 { id: 'B', text: "La Acción Popular." },
-                { id: 'C', text: "La Acción de Tutela para reclamar indemnización patrimonial." },
-                { id: 'D', text: "El Derecho de Petición ante el Congreso de la República." }
+                { id: 'C', text: "Una Acción de Inconstitucionalidad contra el Plan Nacional de Desarrollo." },
+                { id: 'D', text: "Un Derecho de Petición dirigido al Ministerio de Comercio Exterior." }
             ],
             correct: 'B'
         },
         {
             id: 20,
-            context: "La Constitución de 1886 definía a Colombia como un Estado centralizado bajo el lema de 'Regeneración o Catástrofe', reconociendo a la religión católica como elemento esencial del orden social. En contraste, la Constitución de 1991 proclamó a Colombia como un Estado social de derecho, organizado en forma de república unitaria pero descentralizada, participativa y pluralista, fundada en el respeto de la dignidad humana y la diversidad étnica.",
-            text: "¿Cuál de las siguientes situaciones cotidianas refleja la aplicación práctica del cambio constitucional introducido en 1991 frente al modelo de 1886?",
+            context: `La Constitución de 1886 definía a Colombia como un Estado confesional católico, unitario y centralizado bajo la égida de la Regeneración. Por el contrario, la Constitución de 1991 proclamó a Colombia como un Estado social de derecho, organizado en forma de república unitaria descentralizada, participativa, pluralista y laica, fundada en el respeto irrestricto de la dignidad humana y el reconocimiento de la diversidad étnica y cultural de la nación.`,
+            text: "¿Cuál de las siguientes situaciones cotidianas refleja de manera concreta el cambio constitucional introducido en 1991 frente al modelo de 1886?",
             options: [
-                { id: 'A', text: "Una institución educativa pública que impone de forma obligatoria la asistencia a misas católicas para poder graduar a los estudiantes." },
-                { id: 'B', text: "Un tribunal de justicia que rechaza la validez del matrimonio civil argumentando la supremacía de las normas eclesiásticas." },
-                { id: 'C', text: "Un colegio oficial que permite que un estudiante profese una religión distinta a la mayoritaria y respeta su derecho a no ser discriminado." },
-                { id: 'D', text: "Un gobernador departamental que nombra a los alcaldes municipales de manera directa sin convocar a elecciones populares." }
+                { id: 'A', text: "Un colegio público oficial que sanciona a un alumno por manifestar abiertamente creencias religiosas distintas a las de la mayoría." },
+                { id: 'B', text: "Un juez civil que rehúsa tramitar un divorcio argumentando que el matrimonio es un sacramento indisoluble de la Iglesia." },
+                { id: 'C', text: "Una institución educativa pública que garantiza el libre desarrollo de la personalidad y respeta que sus estudiantes profesen cualquier credo o ninguno." },
+                { id: 'D', text: "El Presidente de la República designando directamente a los gobernadores departamentales sin mediación de elección popular." }
             ],
             correct: 'C'
         }
@@ -271,7 +275,7 @@
     let currentStep = 'intro';
     let currentQIdx = 0;
     let userAnswers = new Array(questions.length).fill(null);
-    let timeLeft = 3600;
+    let timeLeft = 3600; // 60 minutos estándar
     let timerId = null;
     let studentName = "";
     let currentUser = null;
@@ -293,7 +297,7 @@
 
                 if (intento && intento.finalizado) {
                     alert("Ya has presentado este simulacro previamente. Tu intento se encuentra cerrado.");
-                    window.location.href = "../modulos.html";
+                    window.location.href = "modulos.html";
                     return;
                 }
             } else {
@@ -330,7 +334,7 @@
                                 INICIAR SIMULACRO
                             </button>
                             <div class="text-center">
-                                <a href="../modulos.html" class="text-xs text-slate-400 hover:text-slate-600 font-semibold underline">Volver a la Ruta de Módulos</a>
+                                <a href="modulos.html" class="text-xs text-slate-400 hover:text-slate-600 font-semibold underline">Volver a la Ruta de Módulos</a>
                             </div>
                         </div>
                     </div>
@@ -402,7 +406,7 @@
                             </p>
                         </div>
 
-                        <a href="../modulos.html" class="w-full inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 transition-all text-sm cursor-pointer">
+                        <a href="modulos.html" class="w-full inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 transition-all text-sm cursor-pointer">
                             Volver a la Ruta de Entrenamiento
                         </a>
 
@@ -432,6 +436,7 @@
         render();
     }
 
+    // AVANCE INMEDIATO AL MARCAR OPCIÓN
     function selectOption(id) {
         userAnswers[currentQIdx] = id;
         if (currentQIdx < questions.length - 1) {
@@ -564,11 +569,11 @@ El resultado obtenido evidencia dificultades sustanciales en la consolidación d
             }
         }
 
-        // --- ACTUALIZACIÓN DE GUARDADO CON NOMBRE E INSTITUCIÓN ---
+        // --- REGISTRO EN SUPABASE ---
         if (currentUser) {
             try {
                 const meta = currentUser.user_metadata || {};
-                const institucionUser = meta.institucion || "I.E. Gabriel García Márquez";
+                const institucionUser = meta.institucion || meta.institucion_educativa || "Logos Edu";
                 
                 const { error } = await sbClient.from('intentos').insert({
                     user_id: currentUser.id,
