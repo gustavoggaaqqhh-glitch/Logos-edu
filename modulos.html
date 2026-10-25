@@ -120,16 +120,16 @@
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let todosLosSimulacros = [];
-    let intentosRealizados = new Set();
+    let mapaIntentos = {}; // Claves normalizadas por materia y número
     let areaActual = 'todas';
 
     // Áreas oficiales del Saber 11
     const catalogoAreas = [
-      { clave: 'sociales',    nombre: 'Ciencias Sociales y Ciudadanas', prefijo: 'sociales',       idOffset: 0 },
-      { clave: 'matematicas', nombre: 'Matemáticas',                     prefijo: 'matematicas',    idOffset: 200 },
-      { clave: 'ingles',      nombre: 'Inglés',                          prefijo: 'ingles',         idOffset: 400 },
-      { clave: 'ciencias',    nombre: 'Ciencias Naturales',              prefijo: 'ciencias',       idOffset: 300 },
-      { clave: 'lectura',     nombre: 'Lectura Crítica',                 prefijo: 'lecturacritica', idOffset: 100 }
+      { clave: 'sociales',    nombre: 'Ciencias Sociales y Ciudadanas', prefijo: 'sociales' },
+      { clave: 'matematicas', nombre: 'Matemáticas',                     prefijo: 'matematicas' },
+      { clave: 'ingles',      nombre: 'Inglés',                          prefijo: 'ingles' },
+      { clave: 'ciencias',    nombre: 'Ciencias Naturales',              prefijo: 'ciencias' },
+      { clave: 'lectura',     nombre: 'Lectura Crítica',                 prefijo: 'lecturacritica' }
     ];
 
     function generar14Simulacros() {
@@ -137,11 +137,10 @@
 
       catalogoAreas.forEach(area => {
         for (let i = 1; i <= 14; i++) {
-          const simId = area.idOffset + i;
           const estaDisponible = (i === 1); // SOLO EL SIMULACRO 1 DISPONIBLE
 
           lista.push({
-            id: simId,
+            id: `${area.clave}_${i}`,
             numero: i,
             nombre: `Simulacro ${i}: Entrenamiento Saber 11`,
             area: area.clave,
@@ -185,7 +184,12 @@
       }
 
       simulacrosFiltrados.forEach(sim => {
-        const yaPresento = intentosRealizados.has(sim.id);
+        // Verificar si existe intento registrado para este simulacro específico
+        const idIntento = mapaIntentos[sim.id] || 
+                          mapaIntentos[sim.archivo] || 
+                          (sim.numero === 1 && mapaIntentos[sim.area]);
+
+        const yaPresento = !!idIntento;
 
         let badgeHtml = "";
         let botonHtml = "";
@@ -196,7 +200,7 @@
           // 1. YA PRESENTADO -> RETROALIMENTACIÓN EN AZUL
           bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
-          botonHtml = `<button onclick="window.location.href='retroalimentacion.html?id=${sim.id}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
+          botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${idIntento}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
           subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu intento ha sido registrado. Puedes consultar el dictamen de retroalimentación.</p>`;
         } else if (sim.disponible) {
           // 2. SOLO EL 1: DISPONIBLE EN VERDE
@@ -253,11 +257,43 @@
       if (userId) {
         const { data: intentos } = await client
           .from('intentos')
-          .select('simulacro_id, finalizado')
+          .select('*')
           .eq('user_id', userId);
 
-        if (intentos) {
-          intentosRealizados = new Set(intentos.filter(i => i.finalizado).map(i => i.simulacro_id));
+        if (intentos && intentos.length > 0) {
+          intentos.forEach(i => {
+            const intentoId = i.id;
+            const materiaRaw = (i.materia || '').toLowerCase();
+            const sidRaw = String(i.simulacro_id || '');
+
+            // Mapeo por texto de materia en Supabase
+            if (materiaRaw.includes('social')) {
+              mapaIntentos['sociales'] = intentoId;
+              mapaIntentos['sociales_1'] = intentoId;
+              mapaIntentos['sociales1.html'] = intentoId;
+            } else if (materiaRaw.includes('lectura') || materiaRaw.includes('critica')) {
+              mapaIntentos['lectura'] = intentoId;
+              mapaIntentos['lectura_1'] = intentoId;
+              mapaIntentos['lecturacritica1.html'] = intentoId;
+            } else if (materiaRaw.includes('matematica')) {
+              mapaIntentos['matematicas'] = intentoId;
+              mapaIntentos['matematicas_1'] = intentoId;
+              mapaIntentos['matematicas1.html'] = intentoId;
+            } else if (materiaRaw.includes('ingles')) {
+              mapaIntentos['ingles'] = intentoId;
+              mapaIntentos['ingles_1'] = intentoId;
+              mapaIntentos['ingles1.html'] = intentoId;
+            } else if (materiaRaw.includes('natural') || materiaRaw.includes('ciencia')) {
+              mapaIntentos['ciencias'] = intentoId;
+              mapaIntentos['ciencias_1'] = intentoId;
+              mapaIntentos['ciencias1.html'] = intentoId;
+            }
+
+            // Mapeo si en Supabase se guardó directamente como 'lectura_1', 'sociales_1' o archivo
+            if (sidRaw) {
+              mapaIntentos[sidRaw] = intentoId;
+            }
+          });
         }
       }
 
