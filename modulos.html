@@ -57,13 +57,13 @@
       <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div class="max-w-2xl">
           <span class="inline-block px-3 py-1 rounded-full bg-blue-500/30 text-blue-200 text-xs font-semibold tracking-wide uppercase mb-3 border border-blue-400/20">
-            Ecosistema Integral Saber 11
+            Ecosistema Integral Saber 11 • Modo Pruebas Abierto
           </span>
           <h1 class="text-3xl font-extrabold tracking-tight mb-2">
             Ruta de Entrenamiento por Áreas Nucleares
           </h1>
           <p class="text-blue-200/90 text-sm leading-relaxed mb-4 md:mb-0">
-            Selecciona el área evaluativa para ver los simulacros programados. El progreso es secuencial y cada prueba cuenta con un intento único regulado con retroalimentación formativa.
+            Selecciona el área evaluativa para ver los simulacros programados. En este modo de revisión las pruebas están habilitadas para ensayar tantas veces como sea necesario.
           </p>
         </div>
         
@@ -120,14 +120,11 @@
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let todosLosSimulacros = [];
-    let intentosRealizados = new Set();
     let areaActual = 'todas';
 
-    // Generador automático de rutas estándar según el área y número de simulacro
+    // Generador de nombres estándar según tu estructura
     function obtenerNombreArchivoSimulacro(sim) {
       const areaTexto = (sim.area || 'sociales').toLowerCase();
-      
-      // Extraer el número del simulacro (del nombre como "Simulacro 1" o del id si no viniera)
       const numeroCoincidencia = sim.nombre ? sim.nombre.match(/\d+/) : null;
       const numero = numeroCoincidencia ? numeroCoincidencia[0] : sim.id;
 
@@ -147,13 +144,6 @@
       return `${prefijo}${numero}.html`;
     }
 
-    function formatearFecha(fechaStr) {
-      if (!fechaStr) return '';
-      const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
-      return new Date(fechaStr).toLocaleDateString('es-CO', opciones);
-    }
-
-    // Alternar filtros de materia
     function cambiarFiltro(area, botonPulsado) {
       areaActual = area;
       const botones = document.querySelectorAll('.btn-filtro');
@@ -183,47 +173,13 @@
         return;
       }
 
-      const ahora = new Date();
-
       simulacrosFiltrados.forEach(sim => {
-        const fechaInicio = sim.fecha_inicio ? new Date(sim.fecha_inicio) : null;
-        const fechaFin = sim.fecha_fin ? new Date(sim.fecha_fin) : null;
-        const fechaRetro = sim.fecha_retroalimentacion ? new Date(sim.fecha_retroalimentacion) : null;
-        const yaPresento = intentosRealizados.has(sim.id);
-
         const archivoHtmlDestino = obtenerNombreArchivoSimulacro(sim);
 
-        let badgeHtml = "";
-        let botonHtml = "";
-        let bordeClase = "border-slate-200 bg-white/95 backdrop-blur-md";
-
-        if (yaPresento) {
-          bordeClase = "border-emerald-300 bg-emerald-50/70 backdrop-blur-md";
-          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
-          if (fechaRetro && ahora >= fechaRetro) {
-            botonHtml = `<button onclick="window.location.href='retroalimentacion.html?id=${sim.id}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
-          } else {
-            botonHtml = `<button disabled class="px-6 py-2.5 bg-slate-100 text-slate-400 font-semibold rounded-xl text-sm border border-slate-200 cursor-not-allowed">Prueba Finalizada</button>`;
-          }
-        } else if (!sim.activo || (fechaInicio && ahora < fechaInicio)) {
-          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200 mb-2">⏳ PRÓXIMAMENTE</span>`;
-          botonHtml = `<button disabled class="px-6 py-2.5 bg-slate-100 text-slate-400 font-semibold rounded-xl text-sm border border-slate-200 cursor-not-allowed">No disponible aún</button>`;
-        } else if (fechaFin && ahora > fechaFin) {
-          bordeClase = "border-rose-200 bg-rose-50/70 backdrop-blur-md";
-          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200 mb-2">⚠️ PLAZO VENCIDO</span>`;
-          botonHtml = `<button disabled class="px-6 py-2.5 bg-slate-100 text-slate-400 font-semibold rounded-xl text-sm border border-slate-200 cursor-not-allowed">Plazo Vencido</button>`;
-        } else {
-          bordeClase = "border-blue-400 bg-white/95 backdrop-blur-md ring-1 ring-blue-100";
-          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 mb-2">• DISPONIBLE AHORA</span>`;
-          botonHtml = `<button onclick="window.location.href='${archivoHtmlDestino}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
-        }
-
-        let subtextoFecha = "";
-        if (yaPresento && fechaRetro) {
-          subtextoFecha = `<p class="text-xs text-slate-500 mt-1">🗓️ Retroalimentación diagnóstica: ${formatearFecha(fechaRetro)}</p>`;
-        } else if (!yaPresento && fechaInicio && ahora < fechaInicio) {
-          subtextoFecha = `<p class="text-xs text-slate-500 mt-1">🗓️ Habilitación: ${formatearFecha(fechaInicio)}</p>`;
-        }
+        // EN MODO PRUEBAS: Siempre disponible con botón activo para entrar las veces deseadas
+        const bordeClase = "border-blue-400 bg-white/95 backdrop-blur-md ring-1 ring-blue-100";
+        const badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• HABILITADO (MODO TRABAJO)</span>`;
+        const botonHtml = `<button onclick="window.location.href='${archivoHtmlDestino}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
 
         const card = document.createElement("div");
         card.className = `p-5 rounded-2xl border ${bordeClase} shadow-sm transition flex flex-col md:flex-row md:items-center justify-between gap-4`;
@@ -232,7 +188,6 @@
             ${badgeHtml}
             <h3 class="text-base font-bold text-slate-900">${sim.nombre}</h3>
             <p class="text-xs text-slate-500">${sim.descripcion || ''}</p>
-            ${subtextoFecha}
           </div>
           <div class="flex items-center md:justify-end">
             ${botonHtml}
@@ -244,9 +199,7 @@
 
     async function iniciar() {
       const { data: { session } } = await client.auth.getSession();
-      let userId = null;
       if (session && session.user) {
-        userId = session.user.id;
         const metadata = session.user.user_metadata || {};
         const nombre = metadata.full_name || metadata.documento || session.user.email.split('@')[0];
         document.getElementById("txt-nombre-estudiante").textContent = nombre;
@@ -271,17 +224,6 @@
       }
 
       todosLosSimulacros = simulacros;
-
-      if (userId) {
-        const { data: intentos } = await client
-          .from('intentos')
-          .select('simulacro_id, finalizado')
-          .eq('user_id', userId);
-
-        if (intentos) {
-          intentosRealizados = new Set(intentos.filter(i => i.finalizado).map(i => i.simulacro_id));
-        }
-      }
       renderizarTarjetas();
     }
 
