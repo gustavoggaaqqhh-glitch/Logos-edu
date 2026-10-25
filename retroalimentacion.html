@@ -62,7 +62,7 @@
           <div>
             <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Logos Edu</h1>
             <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Ecosistema Pedagógico de Evaluación Saber 11</p>
-            <p class="text-sm text-blue-700 font-extrabold mt-1" id="txt-nombre-simulacro">Cargando materia...</p>
+            <p class="text-sm text-blue-700 font-extrabold mt-1" id="txt-nombre-simulacro">Cargando...</p>
           </div>
         </div>
         <div class="text-left sm:text-right text-xs text-slate-500 space-y-0.5">
@@ -76,7 +76,7 @@
         <div class="sm:col-span-2 space-y-1">
           <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Estudiante Evaluado</span>
           <p id="txt-estudiante" class="text-base font-extrabold text-slate-900 uppercase">Cargando...</p>
-          <p id="txt-materia-sub" class="text-slate-600 font-bold">Materia: Identificando área...</p>
+          <p id="txt-materia-sub" class="text-slate-700 font-bold text-sm">Materia: Cargando...</p>
         </div>
         <div class="flex sm:flex-col justify-around sm:justify-center items-center sm:items-end border-t sm:border-t-0 sm:border-l border-slate-200 pt-3 sm:pt-0">
           <div class="text-center sm:text-right">
@@ -132,18 +132,26 @@
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const urlParams = new URLSearchParams(window.location.search);
-    const INTENTO_ID = urlParams.get('intento_id');
-    const MATERIA_PARAM = urlParams.get('materia');
+    const INTENTO_ID = urlParams.get('intento_id') || urlParams.get('id');
+    const MATERIA_PARAM = (urlParams.get('materia') || '').toLowerCase();
 
-    function formatearNombreMateria(materia, simNum) {
-      const m = (materia || '').toLowerCase();
-      let nombreBase = "Entrenamiento Saber 11";
-      if (m.includes('lectura') || m.includes('critica')) nombreBase = "Lectura Crítica";
-      else if (m.includes('social')) nombreBase = "Ciencias Sociales y Ciudadanas";
-      else if (m.includes('matematica')) nombreBase = "Matemáticas";
-      else if (m.includes('ingles')) nombreBase = "Inglés";
-      else if (m.includes('ciencia') || m.includes('natural')) nombreBase = "Ciencias Naturales";
-      return `Simulacro ${simNum || 1} • ${nombreBase}`;
+    // Limpia y normaliza el nombre oficial de la materia
+    function obtenerNombreLimpio(materiaTexto, textoIA) {
+      const combo = `${materiaTexto || ''} ${textoIA || ''}`.toLowerCase();
+      if (combo.includes('social') || combo.includes('ciudadan')) return "Ciencias Sociales y Ciudadanas";
+      if (combo.includes('lectura') || combo.includes('critica') || combo.includes('filosof')) return "Lectura Crítica";
+      if (combo.includes('matematica')) return "Matemáticas";
+      if (combo.includes('ingles')) return "Inglés";
+      if (combo.includes('natural') || combo.includes('ciencia') || combo.includes('biolog')) return "Ciencias Naturales";
+      return "Saber 11";
+    }
+
+    // Calcula el número de simulacro entre 1 y 14
+    function obtenerNumeroSimulacro(sid) {
+      if (!sid) return 1;
+      const num = parseInt(sid);
+      if (isNaN(num)) return 1;
+      return num > 14 ? 1 : num;
     }
 
     async function cargarInforme() {
@@ -157,13 +165,13 @@
 
       let intento = null;
 
-      // 1. Buscar intento por su ID único si viene en la URL
-      if (INTENTO_ID) {
+      // 1. Buscar intento por su ID específico
+      if (INTENTO_ID && INTENTO_ID !== 'undefined') {
         const { data } = await sbClient.from('intentos').select('*').eq('id', INTENTO_ID).maybeSingle();
         intento = data;
       }
 
-      // 2. Si no viene por ID o no lo halla, buscar por la materia solicitada
+      // 2. Si no viene ID, buscar por la materia solicitada
       if (!intento && user && MATERIA_PARAM) {
         const { data } = await sbClient.from('intentos')
           .select('*')
@@ -175,21 +183,33 @@
         intento = data;
       }
 
+      // 3. Fallback: último intento
+      if (!intento && user) {
+        const { data } = await sbClient.from('intentos')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        intento = data;
+      }
+
       const caja = document.getElementById('caja-informe');
 
       if (!intento) {
-        caja.innerHTML = `<p class="text-rose-600 font-bold">No se encontró el intento específico de esta materia. Regresa a la ruta de módulos para seleccionarlo.</p>`;
+        caja.innerHTML = `<p class="text-rose-600 font-bold">No se encontró ningún intento registrado para esta prueba.</p>`;
         return;
       }
 
-      // Identificar y rotular la materia con exactitud
-      const materiaNombre = intento.materia || MATERIA_PARAM || "Área Saber 11";
-      const tituloOficial = formatearNombreMateria(materiaNombre, intento.simulacro_id);
-      document.getElementById('txt-nombre-simulacro').textContent = tituloOficial;
-      document.getElementById('txt-materia-sub').textContent = `Materia: ${materiaNombre.toUpperCase()} (Simulacro ${intento.simulacro_id || 1})`;
+      const textoInforme = intento.retroalimentacion_ia || intento.informe_ia || '';
+      const materiaLimpia = obtenerNombreLimpio(intento.materia || MATERIA_PARAM, textoInforme);
+      const numeroSim = obtenerNumeroSimulacro(intento.simulacro_id);
 
-      // Cálculos de desempeño
-      const aciertos = (intento.puntaje_global !== null && intento.puntaje_global !== undefined) 
+      // Se muestra la materia limpia y el número del 1 al 14
+      document.getElementById('txt-nombre-simulacro').textContent = `Simulacro ${numeroSim} • ${materiaLimpia}`;
+      document.getElementById('txt-materia-sub').innerHTML = `Materia: <span class="text-blue-700">${materiaLimpia}</span> (Simulacro ${numeroSim})`;
+
+      const aciertos = intento.puntaje_global !== null && intento.puntaje_global !== undefined 
                         ? intento.puntaje_global 
                         : (intento.aciertos || 0);
       const total = intento.total_preguntas || 20;
@@ -198,9 +218,7 @@
       document.getElementById('txt-aciertos').textContent = `${aciertos}/${total}`;
       document.getElementById('txt-porcentaje').textContent = `${pct}%`;
 
-      // Renderizado del análisis pedagógico
-      const textoInforme = intento.retroalimentacion_ia || intento.informe_ia;
-      if (textoInforme) {
+      if (textoInforme && textoInforme.trim().length > 30) {
         if (typeof marked !== 'undefined') {
           caja.innerHTML = marked.parse(textoInforme);
         } else {
@@ -208,9 +226,7 @@
         }
       } else {
         caja.innerHTML = `
-          <p><strong>Informe de Desempeño:</strong></p>
-          <p>Has alcanzado ${aciertos} aciertos sobre un total de ${total} preguntas evaluadas en ${materiaNombre} (${pct}% de efectividad).</p>
-          <p>La síntesis cualitativa detallada se encuentra registrada en el sistema de seguimiento docente.</p>
+          <p class="text-slate-500 italic">La retroalimentación cualitativa se encuentra en proceso de validación docente.</p>
         `;
       }
     }
