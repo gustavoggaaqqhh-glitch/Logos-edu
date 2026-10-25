@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preicfes Simulacros IE Gabriel García Márquez - Lectura Crítica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .text-content { line-height: 1.8; }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white !important; color: black !important; }
+            @page { margin: 0.8cm; size: portrait; }
+            .results-container { box-shadow: none !important; border: none !important; width: 100% !important; }
+        }
+        .print-only { display: none; }
+        .option-card:hover:not(:disabled) { border-color: #2563eb; background-color: #f8fafc; }
+        .option-selected { border-color: #1d4ed8; background-color: #eff6ff; box-shadow: 0 0 0 2px #3b82f6; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 2px solid black; padding: 8px; text-align: center; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+<div id="app" class="min-h-screen flex flex-col">
+    <!-- Contenido inyectado por JavaScript -->
+</div>
+
+<script>
+    // Configura aquí la ruta de tu imagen:
+    // 1. Si está en la misma carpeta: "petricor.png"
+    // 2. Si la subes a internet: "https://i.ibb.co/.../petricor.png"
+    let petricorImage = "petricor.png";
+
+    const petricorFallbackSvg = `
+        <div class="w-full max-w-lg mx-auto bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 text-xs text-amber-950 font-sans shadow-inner">
+            <div class="text-center font-extrabold text-base border-b-2 border-amber-400 pb-2 mb-3 tracking-wide uppercase">PETRICOR: EL OLOR DE LA LLUVIA</div>
+            <div class="space-y-3">
+                <div class="bg-sky-100 p-3 rounded-xl border border-sky-300">
+                    <span class="font-bold text-sky-900 block mb-1">1. Impacto:</span>
+                    Cuando las gotas de lluvia impactan contra el suelo, se forman burbujas de aire.
+                </div>
+                <div class="bg-amber-100 p-3 rounded-xl border border-amber-300">
+                    <span class="font-bold text-amber-900 block mb-1">2. Captura:</span>
+                    Estas burbujas "atrapan" partículas de la tierra (aceites y químicos producidos por bacterias).
+                </div>
+                <div class="bg-orange-100 p-3 rounded-xl border border-orange-300">
+                    <span class="font-bold text-orange-900 block mb-1">3. Efervescencia:</span>
+                    Las burbujas hacen efervescencia como champaña y esparcen las partículas en el ambiente.
+                </div>
+                <div class="bg-emerald-100 p-3 rounded-xl border border-emerald-300">
+                    <span class="font-bold text-emerald-900 block mb-1">4. Resultado / Cierre:</span>
+                    El conjunto de partículas es lo que produce ese olor llamado "petricor" — o como lo conoces tú: <strong>tierra mojada</strong>.
+                </div>
+            </div>
+            <div class="text-[10px] text-gray-500 mt-2 text-right italic font-semibold">Fuente: "How the Smell of Rain Bubbles From the Ground" - The New York Times / Pictoline</div>
+        </div>
+    `;
+
+    const questions = [
+        {
+            num: 1,
+            text: `El placer y el dolor en el epicureísmo
+La filosofía epicúrea tiene una finalidad ética*, pues pretende guiarnos para alcanzar la buena vida. Para el epicureísmo esta es la vida placentera, ya que considera que el fin último de todas nuestras acciones es conseguir placer y evitar dolor; por ello, el epicureísmo identifica el placer con el bien y el dolor con el mal.
+Epicuro da por lo menos dos razones complementarias por las cuales considera que el propósito de la buena vida debe ser el placer. Por un lado, menciona el hecho de que, sin necesidad de pensarlo y desde su nacimiento, todas las criaturas vivientes, por instinto, se contentan con el placer y sienten rechazo al dolor. Por otro lado, Epicuro toma a los sentimientos de placer y dolor como criterios esenciales de decisión y conducta, en tanto que son eventos reales que no pueden ser refutados: no hay razón o evidencia alguna que pueda hacernos dudar de que estamos sintiendo dolor o placer; es un hecho real que los sentimos, pues, ¿cómo podría ser falsa la sensación de dolor ante un golpe?
+Así, si lo que trae placer es lo que elegimos y lo que trae dolor es lo que evitamos, son nuestros sentimientos los que nos permiten deliberar qué debemos elegir y evitar, pues ellos no se equivocan. De esta manera, esa tendencia instintiva y natural hacia buscar el placer y evitar el dolor concuerda con lo que, para el epicureísmo, es el criterio ético más fundamental y verdadero.
+La ética es el campo de la filosofía que estudia los principios para decidir correctamente.`,
+            question: "¿Cuál de las siguientes opciones es una paráfrasis correcta del segundo párrafo del texto?",
+            image: null,
+            options: [
+                { id: 'A', text: "Para Epicuro hay dos formas de concebir la vida: aquella que busca el placer y aquella que busca evitar el dolor del nacimiento." },
+                { id: 'B', text: "Para Epicuro hay dos formas en la que todo ser vivo concibe la buena vida: la primera es la búsqueda del dolor y la segunda es huir del placer." },
+                { id: 'C', text: "Para Epicuro todos buscamos alcanzar una buena vida sin pensar en el dolor o en el placer. Desde que nacemos obramos guiados por el instinto." },
+                { id: 'D', text: "Para Epicuro son ciertas dos cosas: que todos buscamos el placer y rechazamos el dolor, y que los sentimientos son los que determinan nuestras decisiones." }
+            ]
+        },
+        {
+            num: 2,
+            text: `El placer y el dolor en el epicureísmo
+La filosofía epicúrea tiene una finalidad ética*, pues pretende guiarnos para alcanzar la buena vida. Para el epicureísmo esta es la vida placentera, ya que considera que el fin último de todas nuestras acciones es conseguir placer y evitar dolor; por ello, el epicureísmo identifica el placer con el bien y el dolor con el mal.
+Epicuro da por lo menos dos razones complementarias por las cuales considera que el propósito de la buena vida debe ser el placer. Por un lado, menciona el hecho de que, sin necesidad de pensarlo y desde su nacimiento, todas las criaturas vivientes, por instinto, se contentan con el placer y sienten rechazo al dolor. Por otro lado, Epicuro toma a los sentimientos de placer y dolor como criterios esenciales de decisión y conducta, en tanto que son eventos reales que no pueden ser refutados: no hay razón o evidencia alguna que pueda hacernos dudar de que estamos sintiendo dolor o placer; es un hecho real que los sentimos, pues, ¿cómo podría ser falsa la sensación de dolor ante un golpe?
+Así, si lo que trae placer es lo que elegimos y lo que trae dolor es lo que evitamos, son nuestros sentimientos los que nos permiten deliberar qué debemos elegir y evitar, pues ellos no se equivocan. De esta manera, esa tendencia instintiva y natural hacia buscar el placer y evitar el dolor concuerda con lo que, para el epicureísmo, es el criterio ético más fundamental y verdadero.
+La ética es el campo de la filosofía que estudia los principios para decidir correctamente.
+ 
+Lea los siguientes dos enunciados tomados del texto:
+1.    La filosofía epicúrea tiene una finalidad ética, pues pretende guiarnos para alcanzar la buena vida.
+2.    Para el epicureísmo esta es la vida placentera, ya que considera que el fin último de todas nuestras acciones es conseguir placer y evitar dolor.`,
+            question: "¿Qué relación hay entre ambos enunciados?",
+            image: null,
+            options: [
+                { id: 'A', text: "El primer enunciado rechaza la idea expuesta en el segundo enunciado." },
+                { id: 'B', text: "El segundo enunciado es una síntesis del primer enunciado." },
+                { id: 'C', text: "El primer enunciado da una hipótesis y el segundo enunciado la refuta." },
+                { id: 'D', text: "El segundo enunciado amplía lo dicho en el primer enunciado." }
+            ]
+        },
+        {
+            num: 3,
+            text: `El placer y el dolor en el epicureísmo
+La filosofía epicúrea tiene una finalidad ética*, pues pretende guiarnos para alcanzar la buena vida. Para el epicureísmo esta es la vida placentera, ya que considera que el fin último de todas nuestras acciones es conseguir placer y evitar dolor; por ello, el epicureísmo identifica el placer con el bien y el dolor con el mal.
+Epicuro da por lo menos dos razones complementarias por las cuales considera que el propósito de la buena vida debe ser el placer. Por un lado, menciona el hecho de que, sin necesidad de pensarlo y desde su nacimiento, todas las criaturas vivientes, por instinto, se contentan con el placer y sienten rechazo al dolor. Por otro lado, Epicuro toma a los sentimientos de placer y dolor como criterios esenciales de decisión y conducta, en tanto que son eventos reales que no pueden ser refutados: no hay razón o evidencia alguna que pueda hacernos dudar de que estamos sintiendo dolor o placer; es un hecho real que los sentimos, pues, ¿cómo podría ser falsa la sensación de dolor ante un golpe?
+Así, si lo que trae placer es lo que elegimos y lo que trae dolor es lo que evitamos, son nuestros sentimientos los que nos permiten deliberar qué debemos elegir y evitar, pues ellos no se equivocan. De esta manera, esa tendencia instintiva y natural hacia buscar el placer y evitar el dolor concuerda con lo que, para el epicureísmo, es el criterio ético más fundamental y verdadero.
+La ética es el campo de la filosofía que estudia los principios para decidir correctamente.
+ 
+Lea el siguiente fragmento tomado del texto:
+“Epicuro toma a los sentimientos de placer y dolor como criterios esenciales de decisión y conducta, en tanto que son eventos reales que no pueden ser refutados: no hay razón o evidencia alguna que pueda hacernos dudar de que estamos sintiendo dolor o placer; es un hecho real que los sentimos”.`,
+            question: "¿Por qué el enunciado anterior puede ser considerado un argumento a favor de la tesis de que el fin último de todas las acciones humanas es conseguir placer y evitar dolor?",
+            image: null,
+            options: [
+                { id: 'A', text: "Porque justifica la idea de que el dolor y el placer son reales e inevitables al momento de elegir la forma en la que actuamos." },
+                { id: 'B', text: "Porque ejemplifica la teoría de que el placer y el dolor son criterios de decisión al ser sentimientos reales que tiene todo ser humano." },
+                { id: 'C', text: "Porque explica que el fin último de todas las acciones humanas consiste en relacionar el placer con el bien y el dolor con el mal." },
+                { id: 'D', text: "Porque relaciona los sentimientos reales de dolor y de placer existentes instintivamente en el ser humano con los conceptos de bien y de mal." }
+            ]
+        },
+        {
+            num: 4,
+            text: `El placer y el dolor en el epicureísmo
+La filosofía epicúrea tiene una finalidad ética*, pues pretende guiarnos para alcanzar la buena vida. Para el epicureísmo esta es la vida placentera, ya que considera que el fin último de todas nuestras acciones es conseguir placer y evitar dolor; por ello, el epicureísmo identifica el placer con el bien y el dolor con el mal.
+Epicuro da por lo menos dos razones complementarias por las cuales considera que el propósito de la buena vida debe ser el placer. Por un lado, menciona el hecho de que, sin necesidad de pensarlo y desde su nacimiento, todas las criaturas vivientes, por instinto, se contentan con el placer y sienten rechazo al dolor. Por otro lado, Epicuro toma a los sentimientos de placer y dolor como criterios esenciales de decisión y conducta, en tanto que son eventos reales que no pueden ser refutados: no hay razón o evidencia alguna que pueda hacernos dudar de que estamos sintiendo dolor o placer; es un hecho real que los sentimos, pues, ¿cómo podría ser falsa la sensación de dolor ante un golpe?
+Así, si lo que trae placer es lo que elegimos y lo que trae dolor es lo que evitamos, son nuestros sentimientos los que nos permiten deliberar qué debemos elegir y evitar, pues ellos no se equivocan. De esta manera, esa tendencia instintiva y natural hacia buscar el placer y evitar el dolor concuerda con lo que, para el epicureísmo, es el criterio ético más fundamental y verdadero.
+La ética es el campo de la filosofía que estudia los principios para decidir correctamente.
+ 
+Considere el siguiente fragmento del texto:
+“Esa tendencia instintiva y natural hacia buscar el placer y evitar el dolor concuerda con lo que, para el epicureísmo, es el criterio ético más fundamental y verdadero”.`,
+            question: "¿Cuál de los siguientes enunciados presenta una perspectiva similar a la del fragmento?",
+            image: null,
+            options: [
+                { id: 'A', text: "“El comportamiento del ser humano puede ser moldeado de acuerdo con las experiencias agradables y desagradables que se deriven de cada acción”. B. F. Skinner." },
+                { id: 'B', text: "“No hay ninguna diferencia fundamental entre el hombre y los animales en su capacidad de sentir placer y dolor, felicidad y miseria”. C. Darwin." },
+                { id: 'C', text: "“La felicidad es un fin cuya posibilidad descansa en condiciones que solo pueden ser esperadas de la naturaleza, es decir, los medios para la felicidad propia están en la naturaleza tanto externa como interna”. I. Kant." },
+                { id: 'D', text: "“No se trata de concebir el placer como asunto único y verdadero de felicidad, sino de hallar la mejor manera para alcanzar la virtud que es universal y que no se supedita a la sensibilidad”. I. Kant." }
+            ]
+        },
+        {
+            num: 5,
+            text: `El placer y el dolor en el epicureísmo
+La filosofía epicúrea tiene una finalidad ética*, pues pretende guiarnos para alcanzar la buena vida. Para el epicureísmo esta es la vida placentera, ya que considera que el fin último de todas nuestras acciones es conseguir placer y evitar dolor; por ello, el epicureísmo identifica el placer con el bien y el dolor con el mal.
+Epicuro da por lo menos dos razones complementarias por las cuales considera que el propósito de la buena vida debe ser el placer. Por un lado, menciona el hecho de que, sin necesidad de pensarlo y desde su nacimiento, todas las criaturas vivientes, por instinto, se contentan con el placer y sienten rechazo al dolor. Por otro lado, Epicuro toma a los sentimientos de placer y dolor como criterios esenciales de decisión y conducta, en tanto que son eventos reales que no pueden ser refutados: no hay razón o evidencia alguna que pueda hacernos dudar de que estamos sintiendo dolor o placer; es un hecho real que los sentimos, pues, ¿cómo podría ser falsa la sensación de dolor ante un golpe?
+Así, si lo que trae placer es lo que elegimos y lo que trae dolor es lo que evitamos, son nuestros sentimientos los que nos permiten deliberar qué debemos elegir y evitar, pues ellos no se equivocan. De esta manera, esa tendencia instintiva y natural hacia buscar el placer y evitar el dolor concuerda con lo que, para el epicureísmo, es el criterio ético más fundamental y verdadero.
+La ética es el campo de la filosofía que estudia los principios para decidir correctamente.
+ 
+Lea la siguiente pregunta tomada del texto:
+“¿cómo podría ser falsa la sensación de dolor ante un golpe?”`,
+            question: "¿Cuál es la intención del autor con esa pregunta?",
+            image: null,
+            options: [
+                { id: 'A', text: "Advertir sobre el peligro de tomar una decisión." },
+                { id: 'B', text: "Dar el orden de huir del dolor ante un golpe." },
+                { id: 'C', text: "Afirmar la idea de que no se puede dudar del dolor." },
+                { id: 'D', text: "Expresar que los dolores pueden inventarse." }
+            ]
+        },
+        {
+            num: 6,
+            text: `Auténticas bestias negras para Platón, los sofistas fueron unos filósofos y educadores que dominaron la escena intelectual de Atenas a finales del siglo IV a. C. De hecho, la palabra "sofista" no tenía entonces la connotación peyorativa que tiene hoy y que debemos, en buena medida, a la mala imagen que de ellos nos ha transmitido Platón. Sofista significaba simplemente "profesor", y con el término se designaba a una serie de educadores que se ganaban la vida instruyendo a los jóvenes a cambio de una retribución.
+Eran dos los elementos de la sofística que despertaba el recelo, por decirlo menos, entre una nutrida parte de la población griega. El primero de ellos residía en que, contrarios a los sabios de antaño, los sofistas no se reunían en torno a sí a un grupo de discípulos por el mero placer de difundir sus ideas, sino que cobraban y vivían de ello. Esto, que probablemente hoy no nos parezca grave, era visto con escándalo por los sectores más modestos y aristocráticos de la polis. En definitiva, se pensaba que habían cambiado las cosas, los que despreciaban el "vil metal" eran precisamente aquellos que lo tenían garantizado y no tenían necesidad de ganárselo.
+En segundo lugar, y también como diferencia sustancial con los modelos del pasado, la educación impartida por los sofistas no tenía el objetivo técnico de alcanzar y descubrir la verdad, sino que su finalidad era eminentemente práctica: adquirir las técnicas necesarias para imponer el propio argumento. En efecto, en la democracia ateniense, regida por un sistema de participación directa de los ciudadanos en los asuntos de la polis, y con abundantes litigios y juicios, la capacidad de desenvolverse con habilidad en el arte de la palabra era imprescindible para el éxito en la política. En este contexto nacieron y se multiplicaron los sofistas, como maestros de la retórica y la oratoria cuya principal preocupación fue desarrollar y transmitir las técnicas necesarias para defender y convencer a un público de un planteamiento, independientemente de que este fuera verdadero o no, moral o inmoral. Este énfasis práctico los condujo con frecuencia a posiciones escépticas o relativistas: no existía una verdad universal, sino que todo dependía del punto de vista, de los usos y costumbres, de la fuerza de los argumentos. Para Protágoras "el hombre es la medida de todas las cosas", y para Gorgias, nada existe; si existiera, sería incognoscible, y si existiera y fuera cognoscible, sería incomunicable.`,
+            question: "¿Qué supuesto se encuentra presente en el tercer párrafo del texto?",
+            image: null,
+            options: [
+                { id: 'A', text: "Que la búsqueda de la verdad no es un fin práctico." },
+                { id: 'B', text: "Que la participación política en la actualidad no es alta." },
+                { id: 'C', text: "Que los sofistas engañaban a sus discípulos con técnicas retóricas." },
+                { id: 'D', text: "Que la búsqueda teórica de la verdad puede ayudar a vencer en un juicio." }
+            ]
+        },
+        {
+            num: 7,
+            text: `Auténticas bestias negras para Platón, los sofistas fueron unos filósofos y educadores que dominaron la escena intelectual de Atenas a finales del siglo IV a. C. De hecho, la palabra "sofista" no tenía entonces la connotación peyorativa que tiene hoy y que debemos, en buena medida, a la mala imagen que de ellos nos ha transmitido Platón. Sofista significaba simplemente "profesor", y con el término se designaba a una serie de educadores que se ganaban la vida instruyendo a los jóvenes a cambio de una retribución.
+Eran dos los elementos de la sofística que despertaba el recelo, por decirlo menos, entre una nutrida parte de la población griega. El primero de ellos residía en que, contrarios a los sabios de antaño, los sofistas no se reunían en torno a sí a un grupo de discípulos por el mero placer de difundir sus ideas, sino que cobraban y vivían de ello. Esto, que probablemente hoy no nos parezca grave, era visto con escándalo por los sectores más modestos y aristocráticos de la polis. En definitiva, se pensaba que habían cambiado las cosas, los que despreciaban el "vil metal" eran precisamente aquellos que lo tenían garantizado y no tenían necesidad de ganárselo.
+En segundo lugar, y también como diferencia sustancial con los modelos del pasado, la educación impartida por los sofistas no tenía el objetivo técnico de alcanzar y descubrir la verdad, sino que su finalidad era eminentemente práctica: adquirir las técnicas necesarias para imponer el propio argumento. En efecto, en la democracia ateniense, regida por un sistema de participación directa de los ciudadanos en los asuntos de la polis, y con abundantes litigios y juicios, la capacidad de desenvolverse con habilidad en el arte de la palabra era imprescindible para el éxito en la política. En este contexto nacieron y se multiplicaron los sofistas, como maestros de la retórica y la oratoria cuya principal preocupación fue desarrollar y transmitir las técnicas necesarias para defender y convencer a un público de un planteamiento, independientemente de que este fuera verdadero o no, moral o inmoral. Este énfasis práctico los condujo con frecuencia a posiciones escépticas o relativistas: no existía una verdad universal, sino que todo dependía del punto de vista, de los usos y costumbres, de la fuerza de los argumentos. Para Protágoras "el hombre es la medida de todas las cosas", y para Gorgias, nada existe; si existiera, sería incognoscible, y si existiera y fuera cognoscible, sería incomunicable.
+ 
+Considere las siguientes afirmaciones del texto:
+1.   "no existía una verdad con mayúsculas, sino que todo dependía del punto de vista, de los usos y costumbres, de la fuerza de los argumentos".
+2.   "nada existía; si existiera sería incognoscible, y si existiera y fuera cognoscible, sería incomunicable".`,
+            question: "La afirmación 1 NO justifica la afirmación 2 por la siguiente razón:",
+            image: null,
+            options: [
+                { id: 'A', text: "Que todo dependa del punto de vista y la cultura prueba que nada existe." },
+                { id: 'B', text: "Que todo dependa del punto de vista y la cultura no prueba que nada existe." },
+                { id: 'C', text: "Que el hombre sea la medida de todas las cosas prueba que hay muchas verdades universales." },
+                { id: 'D', text: "Que el hombre sea la medida de todas las cosas muestra que no dependen del punto de vista de alguien." }
+            ]
+        },
+        {
+            num: 8,
+            text: `Ética para Amador (fragmento)
+Quieres darte la buena vida: estupendo. Pero también quieres que esa buena vida no sea la buena vida de un coliflor o de un escarabajo, con todo mi respeto para ambas especies, sino una buena vida humana. Es lo que te corresponde, creo yo. Y estoy seguro de que a ello no renunciarías por nada del mundo. Ser humano, ya lo hemos indicado antes, consiste principalmente en tener relaciones con los otros seres humanos. Si pudieras tener muchísimo dinero, una casa más lujosa que un palacio de las mil y una noches, las mejores ropas, los más exquisitos alimentos —en tu caso, muchísimas lentejas—, los más sofisticados aparatos, etc., pero todo ello a costa de no volver a ver ni a ser visto por ningún ser humano jamás, ¿estarías contento? ¿Cuánto tiempo podrías vivir así sin volverte loco? ¿No es la mayor de las locuras querer las cosas a costa de la relación con las personas? ¡Pero si precisamente la gracia de todas esas cosas radica en que te permiten —o parecen permitirte— relacionarte más favorablemente con los demás! Por medio del dinero se espera poder deslumbrar o comprar a los otros; las ropas son para gustarles o para que nos envidien; y lo mismo la buena casa, los mejores vinos, etcétera. Muy pocas cosas conservan su gracia en la soledad; y si la soledad es completa y definitiva, todas las cosas resultan tristes inevitablemente. La buena vida humana es una buena vida entre seres humanos o de lo contrario puede que sea vida, pero no será ni buena ni humana.`,
+            question: "Entre las siguientes opciones, ¿cuál podría reemplazar, sin cambiar el sentido, la palabra \"deslumbrar\" que aparece en la frase: \"Por medio del dinero se espera poder deslumbrar o comprar a los otros [...]\"?",
+            image: null,
+            options: [
+                { id: 'A', text: "Encandilar." },
+                { id: 'B', text: "Impresionar." },
+                { id: 'C', text: "Ilusionar." },
+                { id: 'D', text: "Engañar." }
+            ]
+        },
+        {
+            num: 9,
+            text: `Quieres darte la buena vida: estupendo. Pero también quieres que esa buena vida no sea la buena vida de un coliflor o de un escarabajo, con todo mi respeto para ambas especies, sino una buena vida humana. Es lo que te corresponde, creo yo. Y estoy seguro de que a ello no renunciarías por nada del mundo. Ser humano, ya lo hemos indicado antes, consiste principalmente en tener relaciones con los otros seres humanos. Si pudieras tener muchísimo dinero, una casa más lujosa que un palacio de las mil y una noches, las mejores ropas, los más exquisitos alimentos —en tu caso, muchísimas lentejas—, los más sofisticados aparatos, etc., pero todo ello a costa de no volver a ver ni a ser visto por ningún ser humano jamás, ¿estarías contento? ¿Cuánto tiempo podrías vivir así sin volverte loco? ¿No es la mayor de las locuras querer las cosas a costa de la relación con las personas? ¡Pero si precisamente la gracia de todas esas cosas radica en que te permiten —o parecen permitirte— relacionarte más favorablemente con los demás! Por medio del dinero se espera poder deslumbrar o comprar a los otros; las ropas son para gustarles o para que nos envidien; y lo mismo la buena casa, los mejores vinos, etcétera. Muy pocas cosas conservan su gracia en la soledad; y si la soledad es completa y definitiva, todas las cosas resultan tristes inevitablemente. La buena vida humana es una buena vida entre seres humanos o de lo contrario puede que sea vida, pero no será ni buena ni humana.
+ 
+Lea el siguiente fragmento del texto:
+\"Quieres darte la buena vida: estupendo. Pero también quieres que esa buena vida no sea la buena vida de un coliflor o de un escarabajo, con todo mi respeto para ambas especies, sino una buena vida humana\".`,
+            question: "¿Qué función cumple este fragmento dentro del texto?",
+            image: null,
+            options: [
+                { id: 'A', text: "Presenta la tesis general del texto." },
+                { id: 'B', text: "Introduce el tema que se trata en el texto." },
+                { id: 'C', text: "Expone la conclusión general del texto." },
+                { id: 'D', text: "Sintetiza el contenido del texto." }
+            ]
+        },
+        {
+            num: 10,
+            text: `Quieres darte la buena vida: estupendo. Pero también quieres que esa buena vida no sea la buena vida de un coliflor o de un escarabajo, con todo mi respeto para ambas especies, sino una buena vida humana. Es lo que te corresponde, creo yo. Y estoy seguro de que a ello no renunciarías por nada del mundo. Ser humano, ya lo hemos indicado antes, consiste principalmente en tener relaciones con los otros seres humanos. Si pudieras tener muchísimo dinero, una casa más lujosa que un palacio de las mil y una noches, las mejores ropas, los más exquisitos alimentos —en tu caso, muchísimas lentejas—, los más sofisticados aparatos, etc., pero todo ello a costa de no volver a ver ni a ser visto por ningún ser humano jamás, ¿estarías contento? ¿Cuánto tiempo podrías vivir así sin volverte loco? ¿No es la mayor de las locuras querer las cosas a costa de la relación con las personas? ¡Pero si precisamente la gracia de todas esas cosas radica en que te permiten —o parecen permitirte— relacionarte más favorablemente con los demás! Por medio del dinero se espera poder deslumbrar o comprar a los otros; las ropas son para gustarles o para que nos envidien; y lo mismo la buena casa, los mejores vinos, etcétera. Muy pocas cosas conservan su gracia en la soledad; y si la soledad es completa y definitiva, todas las cosas resultan tristes inevitablemente. La buena vida humana es una buena vida entre seres humanos o de lo contrario puede que sea vida, pero no será ni buena ni humana.`,
+            question: "¿Qué tipo de estrategia argumentativa utiliza el autor para convencer al lector de su posición?",
+            image: null,
+            options: [
+                { id: 'A', text: "El autor introduce el tema y la tesis con ironía, para hacer entender lo contrario de lo que dice, con la intención de restarle credibilidad a dicha tesis." },
+                { id: 'B', text: "El autor contextualiza el problema sobre la buena vida, presenta algunas opiniones suyas sobre el tema y concluye con la tesis contraria." },
+                { id: 'C', text: "El autor introduce el tema y la tesis, a través de diversas preguntas retóricas, ofreciendo ejemplos que lo conducen a una conclusión." },
+                { id: 'D', text: "El autor contextualiza el problema sobre la buena vida, presenta su tesis y la defiende con la ayuda de ejemplos dados por autoridades en el tema." }
+            ]
+        },
+        {
+            num: 11,
+            text: `Nuestro cerebro, ¿hecho para la música? (fragmento)
+La relación entre los humanos y lo que hoy reconocemos como música se remonta a más de 40.000 años atrás, desde los principios de nuestra civilización. Nuestros antepasados, en ese entonces, ya tocaban flautas de hueso y percusiones. Los instrumentos se fueron diversificando y multiplicando, pasando por la creación de instrumentos de madera, cuerda y metal, hasta llegar a las guitarras eléctricas y consolas de música electrónica de hoy en día. Casi todas las sociedades humanas conocidas han tenido música, lo que sugiere que nuestra apreciación por ella es innata; incluso bebés de dos meses de nacidos se voltean cuando escuchan sonidos agradables y le dan la espalda a los disonantes. Dada su universalidad, entonces, ¿será que la música podría haber ayudado en la supervivencia humana de alguna forma? ¿Tendría alguna ventaja o beneficio? Algunos investigadores sugieren que puede haber ayudado en el cortejo. Otros dicen que promueve la cohesión de grupo, tal como lo hace hoy en día. Incluso, puede ser un simple accidente feliz, una dulzura auditiva, que casualmente terminó creando una rumba cerebral.
+ 
+Considere el siguiente apartado del texto:
+“Casi todas las sociedades humanas conocidas han tenido música, lo que sugiere que nuestra apreciación por ella es innata”.`,
+            question: "¿Cuál es la función de la expresión “lo que”?",
+            image: null,
+            options: [
+                { id: 'A', text: "Plantear dos opciones opuestas sobre una teoría." },
+                { id: 'B', text: "Introducir una relación de causalidad entre la primera y la segunda idea." },
+                { id: 'C', text: "Aclarar el sentido de la primera idea a partir de la segunda." },
+                { id: 'D', text: "Afirmar una idea similar a la que se presenta al principio de la oración." }
+            ]
+        },
+        {
+            num: 12,
+            text: `Nuestro cerebro, ¿hecho para la música? (fragmento)
+La relación entre los humanos y lo que hoy reconocemos como música se remonta a más de 40.000 años atrás, desde los principios de nuestra civilización. Nuestros antepasados, en ese entonces, ya tocaban flautas de hueso y percusiones. Los instrumentos se fueron diversificando y multiplicando, pasando por la creación de instrumentos de madera, cuerda y metal, hasta llegar a las guitarras eléctricas y consolas de música electrónica de hoy en día. Casi todas las sociedades humanas conocidas han tenido música, lo que sugiere que nuestra apreciación por ella es innata; incluso bebés de dos meses de nacidos se voltean cuando escuchan sonidos agradables y le dan la espalda a los disonantes. Dada su universalidad, entonces, ¿será que la música podría haber ayudado en la supervivencia humana de alguna forma? ¿Tendría alguna ventaja o beneficio? Algunos investigadores sugieren que puede haber ayudado en el cortejo. Otros dicen que promueve la cohesión de grupo, tal como lo hace hoy en día. Incluso, puede ser un simple accidente feliz, una dulzura auditiva, que casualmente terminó creando una rumba cerebral.`,
+            question: "La trompeta es un instrumento de metal. Teniendo en cuenta lo que dice el texto, la invención de la trompeta ocurrió:",
+            image: null,
+            options: [
+                { id: 'A', text: "Antes de la invención de la flauta de hueso." },
+                { id: 'B', text: "Antes de la aparición de los instrumentos de percusión." },
+                { id: 'C', text: "Después de la aparición de los instrumentos de percusión." },
+                { id: 'D', text: "Después de la aparición de la guitarra eléctrica." }
+            ]
+        },
+        {
+            num: 13,
+            text: `Nuestro cerebro, ¿hecho para la música? (fragmento)
+La relación entre los humanos y lo que hoy reconocemos como música se remonta a más de 40.000 años atrás, desde los principios de nuestra civilización. Nuestros antepasados, en ese entonces, ya tocaban flautas de hueso y percusiones. Los instrumentos se fueron diversificando y multiplicando, pasando por la creación de instrumentos de madera, cuerda y metal, hasta llegar a las guitarras eléctricas y consolas de música electrónica de hoy en día. Casi todas las sociedades humanas conocidas han tenido música, lo que sugiere que nuestra apreciación por ella es innata; incluso bebés de dos meses de nacidos se voltean cuando escuchan sonidos agradables y le dan la espalda a los disonantes. Dada su universalidad, entonces, ¿será que la música podría haber ayudado en la supervivencia humana de alguna forma? ¿Tendría alguna ventaja o beneficio? Algunos investigadores sugieren que puede haber ayudado en el cortejo. Otros dicen que promueve la cohesión de grupo, tal como lo hace hoy en día. Incluso, puede ser un simple accidente feliz, una dulzura auditiva, que casualmente terminó creando una rumba cerebral.`,
+            question: "En el texto, la palabra “disonantes” hace referencia a:",
+            image: null,
+            options: [
+                { id: 'A', text: "Sonidos cautivantes." },
+                { id: 'B', text: "Sonidos intensos." },
+                { id: 'C', text: "Sonidos agudos." },
+                { id: 'D', text: "Sonidos desagradables." }
+            ]
+        },
+        {
+            num: 14,
+            text: `Nuestro cerebro, ¿hecho para la música? (fragmento)
+La relación entre los humanos y lo que hoy reconocemos como música se remonta a más de 40.000 años atrás, desde los principios de nuestra civilización. Nuestros antepasados, en ese entonces, ya tocaban flautas de hueso y percusiones. Los instrumentos se fueron diversificando y multiplicando, pasando por la creación de instrumentos de madera, cuerda y metal, hasta llegar a las guitarras eléctricas y consolas de música electrónica de hoy en día. Casi todas las sociedades humanas conocidas han tenido música, lo que sugiere que nuestra apreciación por ella es innata; incluso bebés de dos meses de nacidos se voltean cuando escuchan sonidos agradables y le dan la espalda a los disonantes. Dada su universalidad, entonces, ¿será que la música podría haber ayudado en la supervivencia humana de alguna forma? ¿Tendría alguna ventaja o beneficio? Algunos investigadores sugieren que puede haber ayudado en el cortejo. Otros dicen que promueve la cohesión de grupo, tal como lo hace hoy en día. Incluso, puede ser un simple accidente feliz, una dulzura auditiva, que casualmente terminó creando una rumba cerebral.
+ 
+Considere el siguiente fragmento del texto:
+“La relación entre los humanos y lo que hoy reconocemos como música se remonta a más de 40.000 años atrás, desde los principios de nuestra civilización”.`,
+            question: "¿Qué función cumple el fragmento en el texto?",
+            image: null,
+            options: [
+                { id: 'A', text: "Presentar la tesis central del texto." },
+                { id: 'B', text: "Introducir el tema que se trata en el texto." },
+                { id: 'C', text: "Resumir el contenido del texto." },
+                { id: 'D', text: "Plantear la conclusión central del texto." }
+            ]
+        },
+        {
+            num: 15,
+            text: `Querido amigo,
+Usted ha decidido dedicarse a la literatura, ¿ahora qué?
+Su decisión de asumir su afición por la literatura como un destino deberá convertirse en servidumbre, en nada menos que esclavitud. Para explicarlo de una manera gráfica, le diré que acaba usted de hacer algo que, por lo visto, hacían en el siglo XIX algunas damas espantadas con el grosor de su cuerpo, que, a fin de recobrar una silueta de sílfide, se tragaban una solitaria. ¿Ha tenido usted ocasión de ver a alguien que lleva en sus entrañas ese horrendo parásito? Yo sí, y puedo asegurarle que aquellas damas eran unas heroínas, unas mártires de la belleza. A comienzos de los años sesenta, en París, yo tenía un magnífico amigo, José María, un muchacho español, pintor y cineasta, que padeció esa enfermedad. Una vez que la solitaria se instaló en su organismo y se consolidó con él, se alimentó de él, creció y se fortaleció a expensas de él, y es dificilísimo expulsarla de ese cuerpo del que se aprovecha, al que tiene colonizado. José María enflaqueció, a pesar de que debía comer y beber líquidos (leche, sobre todo) constantemente para aplacar la ansiedad del animal aposentado en sus entrañas, pues, si no, su malestar se volvía insoportable. Pero todo lo que comía y bebía no era para su gusto y placer, sino para los de la solitaria. Un día, que estábamos conversando en un pequeño bistrot de Montparnasse, me sorprendió con esta confesión: “Nosotros hacemos tantas cosas juntos. Vamos al cine, a exposiciones, a recorrer librerías, y discutimos horas de historia sobre política, libros, amigos comunes. Y tú crees que yo estoy haciendo esas cosas como las haces tú, porque te divierte hacerlas. Pero te equivocas. Yo las hago para ella, la solitaria. Esa es la impresión que tengo: que todo en mi vida, ahora, no lo vivo para mí, sino para ese ser que llevo adentro, del que ya no soy más que un sirviente”.
+Desde entonces, me gusta comparar la situación del escritor con la de mi amigo José María cuando llevaba adentro la solitaria.`,
+            question: "Según el autor, la afición por la literatura puede convertirse en esclavitud. ¿Qué estrategia retórica usa el autor para ilustrar esto?",
+            image: null,
+            options: [
+                { id: 'A', text: "Contraste." },
+                { id: 'B', text: "Exageración." },
+                { id: 'C', text: "Comparación." },
+                { id: 'D', text: "Cita de autoridades." }
+            ]
+        },
+        {
+            num: 16,
+            text: `Querido amigo,
+Usted ha decidido dedicarse a la literatura, ¿ahora qué?
+Su decisión de asumir su afición por la literatura como un destino deberá convertirse en servidumbre, en nada menos que esclavitud. Para explicarlo de una manera gráfica, le diré que acaba usted de hacer algo que, por lo visto, hacían en el siglo XIX algunas damas espantadas con el grosor de su cuerpo, que, a fin de recobrar una silueta de sílfide, se tragaban una solitaria. ¿Ha tenido usted ocasión de ver a alguien que lleva en sus entrañas ese horrendo parásito? Yo sí, y puedo asegurarle que aquellas damas eran unas heroínas, unas mártires de la belleza. A comienzos de los años sesenta, en París, yo tenía un magnífico amigo, José María, un muchacho español, pintor y cineasta, que padeció esa enfermedad. Una vez que la solitaria se instaló en su organismo y se consolidó con él, se alimentó de él, creció y se fortaleció a expensas de él, y es dificilísimo expulsarla de ese cuerpo del que se aprovecha, al que tiene colonizado. José María enflaqueció, a pesar de que debía comer y beber líquidos (leche, sobre todo) constantemente para aplacar la ansiedad del animal aposentado en sus entrañas, pues, si no, su malestar se volvía insoportable. Pero todo lo que comía y bebía no era para su gusto y placer, sino para los de la solitaria. Un día, que estábamos conversando en un pequeño bistrot de Montparnasse, me sorprendió con esta confesión: “Nosotros hacemos tantas cosas juntos. Vamos al cine, a exposiciones, a recorrer librerías, y discutimos horas de historia sobre política, libros, amigos comunes. Y tú crees que yo estoy haciendo esas cosas como las haces tú, porque te divierte hacerlas. Pero te equivocas. Yo las hago para ella, la solitaria. Esa es la impresión que tengo: que todo en mi vida, ahora, no lo vivo para mí, sino para ese ser que llevo adentro, del que ya no soy más que un sirviente”.
+Desde entonces, me gusta comparar la situación del escritor con la de mi amigo José María cuando llevaba adentro la solitaria.`,
+            question: "El fragmento del texto que responde la pregunta \"¿cómo actúa la solitaria dentro del organismo?\" es:",
+            image: null,
+            options: [
+                { id: 'A', text: "Pero todo lo que comía y bebía no era para su gusto y placer, sino para los de la solitaria." },
+                { id: 'B', text: "Una vez que la solitaria se instala en el organismo y se consolidó con él, se alimentó de él, creció y se fortaleció a expensas de él." },
+                { id: 'C', text: "José María enflaqueció, a pesar de que debía comer y beber líquidos (leche, sobre todo) constantemente para aplacar la ansiedad del animal aposentado en sus entrañas." },
+                { id: 'D', text: "Nosotros hacemos tantas cosas juntos. Y tú crees que yo estoy haciendo esas cosas como las haces tú, porque te divierte hacerlas. Pero te equivocas. Yo las hago para ella, la solitaria." }
+            ]
+        },
+        {
+            num: 17,
+            text: `Querido amigo,
+Usted ha decidido dedicarse a la literatura, ¿ahora qué?
+Su decisión de asumir su afición por la literatura como un destino deberá convertirse en servidumbre, en nada menos que esclavitud. Para explicarlo de una manera gráfica, le diré que acaba usted de hacer algo que, por lo visto, hacían en el siglo XIX algunas damas espantadas con el grosor de su cuerpo, que, a fin de recobrar una silueta de sílfide, se tragaban una solitaria. ¿Ha tenido usted ocasión de ver a alguien que lleva en sus entrañas ese horrendo parásito? Yo sí, y puedo asegurarle que aquellas damas eran unas heroínas, unas mártires de la belleza. A comienzos de los años sesenta, en París, yo tenía un magnífico amigo, José María, un muchacho español, pintor y cineasta, que padeció esa enfermedad. Una vez que la solitaria se instaló en su organismo y se consolidó con él, se alimentó de él, creció y se fortaleció a expensas de él, y es dificilísimo expulsarla de ese cuerpo del que se aprovecha, al que tiene colonizado. José María enflaqueció, a pesar de que debía comer y beber líquidos (leche, sobre todo) constantemente para aplacar la ansiedad del animal aposentado en sus entrañas, pues, si no, su malestar se volvía insoportable. Pero todo lo que comía y bebía no era para su gusto y placer, sino para los de la solitaria. Un día, que estábamos conversando en un pequeño bistrot de Montparnasse, me sorprendió con esta confesión: “Nosotros hacemos tantas cosas juntos. Vamos al cine, a exposiciones, a recorrer librerías, y discutimos horas de historia sobre política, libros, amigos comunes. Y tú crees que yo estoy haciendo esas cosas como las haces tú, porque te divierte hacerlas. Pero te equivocas. Yo las hago para ella, la solitaria. Esa es la impresión que tengo: que todo en mi vida, ahora, no lo vivo para mí, sino para ese ser que llevo adentro, del que ya no soy más que un sirviente”.
+Desde entonces, me gusta comparar la situación del escritor con la de mi amigo José María cuando llevaba adentro la solitaria.
+ 
+Considere el siguiente fragmento del texto:
+Un día, que estábamos conversando en un pequeño bistrot de Montparnasse, me sorprendió con esta confesión: \"Nosotros hacemos tantas cosas juntos. Vamos al cine, a exposiciones, a recorrer librerías, y discutimos horas de historia sobre política, libros, amigos comunes. Y tú crees que yo estoy haciendo esas cosas como las haces tú, porque te divierte hacerlas. Pero te equivocas. Yo las hago para ella, la solitaria. Esa es la impresión que tengo: que todo en mi vida, ahora, no lo vivo para mí, sino para ese ser que llevo adentro, del que ya no soy más que un sirviente\".`,
+            question: "El anterior fragmento hace una caracterización de",
+            image: null,
+            options: [
+                { id: 'A', text: "la libertad de José María." },
+                { id: 'B', text: "la esclavitud de José María." },
+                { id: 'C', text: "la soledad de José María." },
+                { id: 'D', text: "la inteligencia de José María." }
+            ]
+        },
+        {
+            num: 18,
+            text: `PETRICOR: EL OLOR DE LA LLUVIA`,
+            question: "Considere el siguiente fragmento del texto: \"las burbujas hacen efervescencia como champaña\". ¿Cuál de las siguientes opciones expresa el mismo significado que este fragmento?",
+            image: petricorImage,
+            options: [
+                { id: 'A', text: "Las burbujas de agua están llenas de alcohol, al igual que las burbujas de champaña." },
+                { id: 'B', text: "El agua hierve de la misma manera que la champaña crea burbujas." },
+                { id: 'C', text: "Las burbujas que salen del agua de la misma forma que las burbujas de champaña." },
+                { id: 'D', text: "Las burbujas que salen de la champaña son del mismo color que las del agua." }
+            ]
+        },
+        {
+            num: 19,
+            text: `PETRICOR: EL OLOR DE LA LLUVIA`,
+            question: "Teniendo en cuenta el proceso descrito en el texto, ¿qué función cumple el último cuadro?",
+            image: petricorImage,
+            options: [
+                { id: 'A', text: "Sintetiza el contenido del texto." },
+                { id: 'B', text: "Presenta los contenidos del texto." },
+                { id: 'C', text: "Anuncia la estructura del texto." },
+                { id: 'D', text: "Funciona como el cierre del texto." }
+            ]
+        },
+        {
+            num: 20,
+            text: `PETRICOR: EL OLOR DE LA LLUVIA`,
+            question: "En el último recuadro se presentan dos enunciados: 1. \"El conjunto de partículas es lo que produce efervescencia y el burbujeo\" y 2. \"Es la misma cosa de la que está hecho nuestra atmósfera\". ¿Qué relación establece la palabra \"o\" entre estas dos frases?",
+            image: petricorImage,
+            options: [
+                { id: 'A', text: "Permite establecer una relación de oposición, pues el segundo enunciado se opone al primero." },
+                { id: 'B', text: "Permite establecer una relación de causa-efecto, pues el primer enunciado es la causa del segundo." },
+                { id: 'C', text: "Permite expresar una alternativa, pues el segundo enunciado presenta otra manera de denominar al primero." },
+                { id: 'D', text: "Permite expresar una adición, pues el segundo enunciado agrega nuevas ideas al tema presentado por el primero." }
+            ]
+        }
+    ];
+
+    let currentStep = 'intro';
+    let qIndex = 0;
+    let studentChoices = new Array(questions.length).fill(null);
+    let timeLeft = 3600; // 60 minutos exactos en segundos
+    let studentName = "";
+    let timerInterval = null;
+
+    function render() {
+        const app = document.getElementById('app');
+        if (currentStep === 'intro') {
+            app.innerHTML = `
+                <div class="flex-1 flex items-center justify-center p-6 no-print">
+                    <div class="bg-white max-w-xl w-full rounded-2xl shadow-2xl p-10 border-t-[10px] border-blue-600 text-center">
+                        <div class="mb-8">
+                            <h1 class="text-3xl font-extrabold text-slate-800">Preicfes Simulacros</h1>
+                            <h2 class="text-xl font-bold text-blue-600 uppercase tracking-tighter mt-1">IE Gabriel García Márquez</h2>
+                            <p class="text-xs font-black tracking-widest text-slate-400 uppercase mt-2">Área: Lectura Crítica</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-6 rounded-xl border-2 border-gray-100 text-center">
+                                <label class="block text-xs font-black text-slate-400 uppercase mb-2">Ingresa tu Nombre Completo:</label>
+                                <input type="text" id="nameInput" placeholder="Nombre completo" class="w-full p-4 border-2 rounded-xl outline-none focus:border-blue-500 text-lg font-semibold text-center uppercase">
+                            </div>
+                            
+                            <!-- Opción para cargar la imagen directamente desde el equipo -->
+                            <div class="bg-slate-50 p-4 rounded-xl border border-dashed border-slate-300 text-left">
+                                <label class="block text-xs font-bold text-slate-600 mb-1">
+                                    📷 Cargar imagen de la infografía (opcional):
+                                </label>
+                                <input type="file" id="imageUploader" accept="image/*" onchange="handleImageUpload(event)" class="text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                <span class="block text-[11px] text-slate-400 mt-1">Si no seleccionas ninguna, buscará "petricor.png" o mostrará el diagrama textual de respaldo.</span>
+                            </div>
+
+                            <div class="bg-blue-50 p-5 rounded-xl space-y-2 text-center">
+                                <p class="text-sm font-bold text-blue-800 italic uppercase tracking-widest">Preguntas 1 a 20</p>
+                                <p class="text-sm font-bold text-blue-800 italic">Tiempo Límite: 60 Minutos (1 Hora)</p>
+                            </div>
+                            <button onclick="startExam()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-xl shadow-lg transition-transform active:scale-95 text-xl">
+                                COMENZAR EXAMEN
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+        } else if (currentStep === 'test') {
+            const q = questions[qIndex];
+            app.innerHTML = `
+                <header class="bg-white border-b px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm no-print">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-slate-100 px-3 py-1 rounded-lg border">
+                            <span class="text-[10px] font-black text-slate-400 block uppercase text-center">Pregunta</span>
+                            <span class="text-xl font-bold text-blue-600">${q.num} / ${questions.length}</span>
+                        </div>
+                        <div class="hidden sm:block">
+                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">IE GABRIEL GARCÍA MÁRQUEZ</div>
+                            <div class="text-xs font-bold text-slate-600 truncate max-w-[180px] uppercase">${studentName}</div>
+                        </div>
+                    </div>
+                    <div id="timerDisplay" class="text-2xl font-mono font-black text-red-600 bg-red-50 px-6 py-2 rounded-xl border-2 border-red-100">
+                        ${formatTime(timeLeft)}
+                    </div>
+                </header>
+                <main class="flex-1 p-6 sm:p-10 no-print">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 space-y-6">
+                            ${q.image ? `
+                                <div class="mb-6 flex flex-col items-center">
+                                    <img src="${q.image}" alt="Petricor: el olor de la lluvia" class="rounded-2xl max-w-full md:max-w-md shadow-md border" onerror="this.onerror=null; this.parentElement.innerHTML = \`${petricorFallbackSvg.replace(/`/g, '\\`')}\`;" />
+                                </div>
+                            ` : ''}
+                            <div class="p-6 bg-slate-50 rounded-2xl border-l-8 border-blue-500 text-slate-700 italic text-base leading-relaxed whitespace-pre-wrap text-content">${q.text}</div>
+                            <h2 class="text-xl md:text-2xl font-bold text-slate-800 leading-snug">${q.question}</h2>
+                            <div class="grid gap-3 mt-8">
+                                ${q.options.map(opt => `
+                                    <button onclick="pickOption('${opt.id}')" 
+                                        class="option-card text-left p-5 border-2 rounded-2xl flex items-start transition-all ${studentChoices[qIndex] === opt.id ? 'option-selected' : 'border-slate-100'}">
+                                        <span class="w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold mr-5 shrink-0 ${studentChoices[qIndex] === opt.id ? 'bg-blue-600 text-white border-blue-600' : 'border-slate-300'}">${opt.id}</span>
+                                        <span class="text-lg text-slate-700 leading-tight">${opt.text}</span>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="bg-white border-t p-6 flex justify-between items-center sticky bottom-0 shadow-lg no-print">
+                    <button onclick="move(-1)" ${qIndex === 0 ? 'disabled' : ''} class="px-8 py-3 bg-slate-100 rounded-xl font-bold text-slate-400 disabled:opacity-30">Anterior</button>
+                    ${qIndex === questions.length - 1 ? 
+                        `<button onclick="finishExam()" class="px-10 py-3 bg-green-600 text-white font-bold rounded-xl shadow-md hover:bg-green-700">FINALIZAR</button>` : 
+                        `<button onclick="move(1)" class="px-10 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700">Siguiente</button>`
+                    }
+                </footer>`;
+        } else if (currentStep === 'results') {
+            app.innerHTML = `
+                <div class="p-6 md:p-10 no-print flex-1 flex flex-col items-center">
+                    <div class="bg-white max-w-4xl w-full rounded-[40px] shadow-2xl p-10 border-b-[12px] border-blue-600 text-center results-container">
+                        <h2 class="text-gray-400 font-black tracking-widest text-xs uppercase mb-2">IE Gabriel García Márquez</h2>
+                        <h1 class="text-3xl font-extrabold text-slate-800 mb-4 uppercase">${studentName}</h1>
+                        <div class="text-blue-600 font-bold mb-8 italic uppercase text-sm tracking-widest border-b pb-4">Cuadro de Respuestas Registradas - Lectura Crítica</div>
+                        
+                        <div class="flex justify-center mb-10 overflow-hidden">
+                            <table class="border-2 border-black w-full max-w-2xl text-center">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="w-[15%]"># Preg.</th>
+                                        <th class="w-[35%]">Tu Resp.</th>
+                                        <th class="w-[15%]"># Preg.</th>
+                                        <th class="w-[35%]">Tu Resp.</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white">
+                                    ${Array.from({ length: 10 }).map((_, i) => {
+                                        const idx1 = i;
+                                        const idx2 = i + 10;
+                                        return `
+                                        <tr>
+                                            <td class="font-bold border-r border-black h-12">${questions[idx1].num}</td>
+                                            <td class="font-black text-blue-700 text-xl border-r border-black">${studentChoices[idx1] || '-'}</td>
+                                            <td class="font-bold border-r border-black h-12">${questions[idx2].num}</td>
+                                            <td class="font-black text-blue-700 text-xl">${studentChoices[idx2] || '-'}</td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button onclick="window.print()" class="w-full bg-slate-900 text-white px-10 py-5 rounded-2xl font-bold flex items-center justify-center gap-4 hover:bg-black transition-all shadow-xl">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2-2v4h10z"></path></svg>
+                            IMPRIMIR REGISTRO EN UNA HOJA
+                        </button>
+                    </div>
+                </div>
+
+                <div class="print-only p-12 bg-white min-h-screen text-black">
+                    <div class="text-center border-b-4 border-black pb-4 mb-8">
+                        <h1 class="text-2xl font-black uppercase tracking-tighter text-center">IE GABRIEL GARCÍA MÁRQUEZ</h1>
+                        <h2 class="text-lg font-bold text-center">HOJA DE RESPUESTAS - SIMULACRO LECTURA CRÍTICA</h2>
+                    </div>
+
+                    <div class="flex justify-between items-end mb-8">
+                        <div class="text-xl font-bold uppercase">ESTUDIANTE: <span class="underline">${studentName}</span></div>
+                        <div class="text-sm font-bold border-b border-black w-40 text-center">Fecha: ${new Date().toLocaleDateString()}</div>
+                    </div>
+
+                    <div class="flex justify-center mb-12">
+                        <table class="w-full border-2 border-black">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="w-[15%]">#</th>
+                                    <th class="w-[35%]">Opción Elegida</th>
+                                    <th class="w-[15%]">#</th>
+                                    <th class="w-[35%]">Opción Elegida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Array.from({ length: 10 }).map((_, i) => {
+                                    const idx1 = i;
+                                    const idx2 = i + 10;
+                                    return `
+                                    <tr>
+                                        <td class="font-bold text-sm h-8 border-r border-black">${questions[idx1].num}</td>
+                                        <td class="font-black text-xl border-r border-black">${studentChoices[idx1] || '-'}</td>
+                                        <td class="font-bold text-sm h-8 border-r border-black">${questions[idx2].num}</td>
+                                        <td class="font-black text-xl">${studentChoices[idx2] || '-'}</td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-20 flex justify-around text-center">
+                        <div class="w-64 border-t-2 border-black pt-2 text-xs font-black uppercase">Firma del Estudiante</div>
+                        <div class="w-64 border-t-2 border-black pt-2 text-xs font-black uppercase">Sello Institucional / Firma</div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    function formatTime(s) {
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+    }
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                petricorImage = e.target.result;
+                // Actualizar la imagen en las preguntas 18, 19 y 20
+                questions[17].image = petricorImage;
+                questions[18].image = petricorImage;
+                questions[19].image = petricorImage;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function startExam() {
+        const nameInput = document.getElementById('nameInput');
+        if (!nameInput || !nameInput.value.trim()) {
+            alert("Por favor, ingresa tu nombre completo.");
+            return;
+        }
+        studentName = nameInput.value.trim();
+        currentStep = 'test';
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            const display = document.getElementById('timerDisplay');
+            if (display) display.innerText = formatTime(timeLeft);
+            if (timeLeft <= 0) finishExam();
+        }, 1000);
+        render();
+    }
+
+    function pickOption(id) {
+        studentChoices[qIndex] = id;
+        render();
+    }
+
+    function move(dir) {
+        const newIdx = qIndex + dir;
+        if (newIdx >= 0 && newIdx < questions.length) {
+            qIndex = newIdx;
+            render();
+            window.scrollTo(0, 0);
+        }
+    }
+
+    function finishExam() {
+        clearInterval(timerInterval);
+        currentStep = 'results';
+        render();
+        window.scrollTo(0, 0);
+    }
+
+    window.onload = render;
+</script>
+</body>
+</html>
