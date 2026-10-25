@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logos Edu | Inglés - Prueba 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .context-area { line-height: 1.6; text-align: justify; }
+        .option-card:hover:not(:disabled) { border-color: #2563eb; background-color: #f8fafc; }
+        .option-selected { border-color: #1d4ed8; background-color: #eff6ff; box-shadow: 0 0 0 2px #3b82f6; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 min-h-screen">
+
+    <!-- Pantalla de Inicio -->
+    <div id="welcome-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-200">
+            <div class="text-center mb-8">
+                <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-20 w-auto mx-auto mb-3 object-contain block">
+                <span class="inline-block bg-blue-50 text-blue-700 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-blue-200 tracking-wider mb-2">
+                    SIMULACRO 1 • SABER 11
+                </span>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Inglés (English Test)</h1>
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mt-1">Logos Edu • Formación Rural y Equidad</p>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Nombre del Estudiante</label>
+                    <input type="text" id="student-name-input" 
+                        class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all uppercase"
+                        placeholder="Escribe tu nombre...">
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Condiciones del Examen</span>
+                    <p class="text-sm font-extrabold text-slate-800">20 Preguntas • 60 Minutos • Intento Único</p>
+                </div>
+
+                <button onclick="startQuiz()" id="start-btn" 
+                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl font-black text-white text-base transition-all transform active:scale-95 shadow-lg shadow-blue-500/20 cursor-pointer">
+                    Iniciar Simulacro
+                </button>
+                <div class="text-center">
+                    <a href="modulos.html" class="text-xs text-slate-400 hover:text-slate-600 font-semibold underline">Volver a la Ruta de Módulos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla del Examen -->
+    <div id="quiz-screen" class="hidden min-h-screen p-4 md:p-8 flex flex-col items-center">
+        <div class="max-w-4xl w-full bg-white rounded-2xl shadow-md border border-slate-200 p-4 mb-6 flex justify-between items-center sticky top-4 z-10">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-10 w-auto object-contain">
+                <div id="q-number-circle" class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-blue-700 font-black">1</div>
+                <div>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Logos Edu • Saber 11</p>
+                    <p id="q-counter-text" class="text-sm font-bold text-slate-800">Pregunta 1 de 20</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div id="timer-box" class="flex items-center gap-2 px-4 py-2 rounded-xl border bg-slate-50 border-slate-200 text-slate-700 font-bold transition-colors">
+                    <span class="text-blue-600">⏱</span>
+                    <span id="timer-display" class="font-mono text-lg font-black">60:00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-4xl w-full h-2.5 bg-slate-200 rounded-full mb-8 overflow-hidden">
+            <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-500" style="width: 5%"></div>
+        </div>
+
+        <div class="max-w-4xl w-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="p-8">
+                <div id="q-part-badge" class="text-xs font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-lg w-max mb-4"></div>
+                <h2 id="q-title" class="text-xl font-extrabold text-slate-900 mb-6">Cargando...</h2>
+                <div id="q-text" class="prose prose-slate max-w-none mb-8 text-slate-700 leading-relaxed whitespace-pre-wrap font-normal text-base bg-slate-50 p-6 rounded-2xl border border-slate-200 context-area"></div>
+                <div id="options-container" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Finalización -->
+    <div id="results-screen" class="hidden min-h-screen bg-slate-50 flex items-center justify-center p-6">
+        <div class="max-w-xl w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-200 text-center space-y-6">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-3xl flex items-center justify-center mx-auto shadow-sm text-3xl font-black">
+                ✓
+            </div>
+
+            <div class="space-y-2">
+                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-black uppercase px-3 py-1 rounded-full">
+                    Intento Registrado Oficialmente
+                </span>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">¡Prueba 1 Finalizada con Éxito!</h1>
+                <p class="text-sm text-slate-500 leading-relaxed">
+                    Estudiante: <strong id="res-student-name" class="text-slate-800 uppercase"></strong><br>
+                    Tus respuestas y el dictamen pedagógico han sido asegurados en el sistema de Logos Edu.
+                </p>
+            </div>
+
+            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 text-left space-y-2">
+                <div class="flex items-center gap-2 text-blue-700 font-bold text-sm">
+                    <span>📅</span>
+                    <span>Retroalimentación Pedagógica Programada</span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    El informe individual y la retroalimentación cualitativa están listos para ser consultados en tu ruta de módulos.
+                </p>
+            </div>
+
+            <div>
+                <a href="modulos.html" class="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl font-black text-white text-sm transition-all inline-flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95 cursor-pointer">
+                    ← Volver a la Ruta de Módulos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://uinctluqbmdrehazuyog.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpbmN0bHVxYm1kcmVoYXp1eW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDM2NDUsImV4cCI6MjEwNzQ3OTY0NX0.ANXAyoauMGWAXEKpDYjcAGvCImE738aygvA7JwTEfyI";
+        const SIMULACRO_ID = 401; // ID exclusivo para Inglés 1 en Supabase
+
+        const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let currentUser = null;
+
+        const questions = [
+            {
+                num: 1,
+                part: "PARTE 1: Vocabulario (At a Picnic)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "1. You find this plant on the ground of fields and the countryside.",
+                options: [
+                    { id: 'A', text: "blanket" },
+                    { id: 'B', text: "glass" },
+                    { id: 'C', text: "grass" },
+                    { id: 'D', text: "hat" },
+                    { id: 'E', text: "park" },
+                    { id: 'F', text: "salad" },
+                    { id: 'G', text: "sandwich" },
+                    { id: 'H', text: "table" }
+                ],
+                correct: 'C'
+            },
+            {
+                num: 2,
+                part: "PARTE 1: Vocabulario (At a Picnic)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "2. It has many vegetables and you can eat it in a bowl.",
+                options: [
+                    { id: 'A', text: "blanket" },
+                    { id: 'B', text: "glass" },
+                    { id: 'C', text: "grass" },
+                    { id: 'D', text: "hat" },
+                    { id: 'E', text: "park" },
+                    { id: 'F', text: "salad" },
+                    { id: 'G', text: "sandwich" },
+                    { id: 'H', text: "table" }
+                ],
+                correct: 'F'
+            },
+            {
+                num: 3,
+                part: "PARTE 1: Vocabulario (At a Picnic)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "3. This place has trees and children can play there.",
+                options: [
+                    { id: 'A', text: "blanket" },
+                    { id: 'B', text: "glass" },
+                    { id: 'C', text: "grass" },
+                    { id: 'D', text: "hat" },
+                    { id: 'E', text: "park" },
+                    { id: 'F', text: "salad" },
+                    { id: 'G', text: "sandwich" },
+                    { id: 'H', text: "table" }
+                ],
+                correct: 'E'
+            },
+            {
+                num: 4,
+                part: "PARTE 1: Vocabulario (At a Picnic)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "4. You need this to drink lemonade when you are thirsty.",
+                options: [
+                    { id: 'A', text: "blanket" },
+                    { id: 'B', text: "glass" },
+                    { id: 'C', text: "grass" },
+                    { id: 'D', text: "hat" },
+                    { id: 'E', text: "park" },
+                    { id: 'F', text: "salad" },
+                    { id: 'G', text: "sandwich" },
+                    { id: 'H', text: "table" }
+                ],
+                correct: 'B'
+            },
+            {
+                num: 5,
+                part: "PARTE 1: Vocabulario (At a Picnic)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "5. You wear this on your head for the sun.",
+                options: [
+                    { id: 'A', text: "blanket" },
+                    { id: 'B', text: "glass" },
+                    { id: 'C', text: "grass" },
+                    { id: 'D', text: "hat" },
+                    { id: 'E', text: "park" },
+                    { id: 'F', text: "salad" },
+                    { id: 'G', text: "sandwich" },
+                    { id: 'H', text: "table" }
+                ],
+                correct: 'D'
+            },
+            {
+                num: 6,
+                part: "PARTE 2: Vocabulario (Tourist)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "6. Tourists use this drawing to look for famous places to visit.",
+                options: [
+                    { id: 'A', text: "airport" },
+                    { id: 'B', text: "bus" },
+                    { id: 'C', text: "camera" },
+                    { id: 'D', text: "car" },
+                    { id: 'E', text: "hotel" },
+                    { id: 'F', text: "map" },
+                    { id: 'G', text: "ship" },
+                    { id: 'H', text: "station" }
+                ],
+                correct: 'F'
+            },
+            {
+                num: 7,
+                part: "PARTE 2: Vocabulario (Tourist)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "7. You can take photos with this.",
+                options: [
+                    { id: 'A', text: "airport" },
+                    { id: 'B', text: "bus" },
+                    { id: 'C', text: "camera" },
+                    { id: 'D', text: "car" },
+                    { id: 'E', text: "hotel" },
+                    { id: 'F', text: "map" },
+                    { id: 'G', text: "ship" },
+                    { id: 'H', text: "station" }
+                ],
+                correct: 'C'
+            },
+            {
+                num: 8,
+                part: "PARTE 2: Vocabulario (Tourist)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "8. It's small and you drive it to go to new places.",
+                options: [
+                    { id: 'A', text: "airport" },
+                    { id: 'B', text: "bus" },
+                    { id: 'C', text: "camera" },
+                    { id: 'D', text: "car" },
+                    { id: 'E', text: "hotel" },
+                    { id: 'F', text: "map" },
+                    { id: 'G', text: "ship" },
+                    { id: 'H', text: "station" }
+                ],
+                correct: 'D'
+            },
+            {
+                num: 9,
+                part: "PARTE 2: Vocabulario (Tourist)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "9. On this, you can go from a beach to the sea.",
+                options: [
+                    { id: 'A', text: "airport" },
+                    { id: 'B', text: "bus" },
+                    { id: 'C', text: "camera" },
+                    { id: 'D', text: "car" },
+                    { id: 'E', text: "hotel" },
+                    { id: 'F', text: "map" },
+                    { id: 'G', text: "ship" },
+                    { id: 'H', text: "station" }
+                ],
+                correct: 'G'
+            },
+            {
+                num: 10,
+                part: "PARTE 2: Vocabulario (Tourist)",
+                instruction: "Seleccione la palabra que más se relacione con la frase.",
+                text: "10. Here tourists take planes to visit different places around the world.",
+                options: [
+                    { id: 'A', text: "airport" },
+                    { id: 'B', text: "bus" },
+                    { id: 'C', text: "camera" },
+                    { id: 'D', text: "car" },
+                    { id: 'E', text: "hotel" },
+                    { id: 'F', text: "map" },
+                    { id: 'G', text: "ship" },
+                    { id: 'H', text: "station" }
+                ],
+                correct: 'A'
+            },
+            {
+                num: 11,
+                part: "PARTE 3: Comprensión de avisos",
+                instruction: "¿Dónde puede ver estos avisos? Marque A, B o C.",
+                text: "Notice: [ Fantastic apple pies for birthdays! ]",
+                options: [
+                    { id: 'A', text: "in a cake shop" },
+                    { id: 'B', text: "in a fruit shop" },
+                    { id: 'C', text: "in a candy shop" }
+                ],
+                correct: 'A'
+            },
+            {
+                num: 12,
+                part: "PARTE 3: Comprensión de avisos",
+                instruction: "¿Dónde puede ver estos avisos? Marque A, B o C.",
+                text: "Notice: [ Play with me! Children 2+ ]",
+                options: [
+                    { id: 'A', text: "on a doll box" },
+                    { id: 'B', text: "on a milk box" },
+                    { id: 'C', text: "on a shoe box" }
+                ],
+                correct: 'A'
+            },
+            {
+                num: 13,
+                part: "PARTE 3: Comprensión de avisos",
+                instruction: "¿Dónde puede ver estos avisos? Marque A, B o C.",
+                text: "Notice: [ GET ONE FOR YOUR BIRTHDAY! Chocolate and banana for $20 | Chocolate and coconut for $25 ]",
+                options: [
+                    { id: 'A', text: "in a cake store" },
+                    { id: 'B', text: "in a flower store" },
+                    { id: 'C', text: "in a drug store" }
+                ],
+                correct: 'A'
+            },
+            {
+                num: 14,
+                part: "PARTE 3: Comprensión de avisos",
+                instruction: "¿Dónde puede ver estos avisos? Marque A, B o C.",
+                text: "Notice: [ Pick up food here. Enjoy! ]",
+                options: [
+                    { id: 'A', text: "at a playground" },
+                    { id: 'B', text: "in a cafeteria" },
+                    { id: 'C', text: "on a bus" }
+                ],
+                correct: 'B'
+            },
+            {
+                num: 15,
+                part: "PARTE 3: Comprensión de avisos",
+                instruction: "¿Dónde puede ver estos avisos? Marque A, B o C.",
+                text: "Notice: [ Today 2x3 on balls and games for children ]",
+                options: [
+                    { id: 'A', text: "in a playground" },
+                    { id: 'B', text: "in a classroom" },
+                    { id: 'C', text: "in a sports store" }
+                ],
+                correct: 'C'
+            },
+            {
+                num: 16,
+                part: "PARTE 4: Conversaciones cortas",
+                instruction: "Complete las cinco conversaciones. Marque A, B o C.",
+                text: "16. Why didn't you put your new coat on yesterday?",
+                options: [
+                    { id: 'A', text: "I liked jeans." },
+                    { id: 'B', text: "Let's dress up." },
+                    { id: 'C', text: "It was too warm." }
+                ],
+                correct: 'C'
+            },
+            {
+                num: 17,
+                part: "PARTE 4: Conversaciones cortas",
+                instruction: "Complete las cinco conversaciones. Marque A, B o C.",
+                text: "17. This movie is about a really big family.",
+                options: [
+                    { id: 'A', text: "Is it good?" },
+                    { id: 'B', text: "Is that a lot?" },
+                    { id: 'C', text: "Is your mom OK?" }
+                ],
+                correct: 'A'
+            },
+            {
+                num: 18,
+                part: "PARTE 4: Conversaciones cortas",
+                instruction: "Complete las cinco conversaciones. Marque A, B o C.",
+                text: "18. Why are they hiding?",
+                options: [
+                    { id: 'A', text: "Come here now!" },
+                    { id: 'B', text: "I've got no idea." },
+                    { id: 'C', text: "Is it near?" }
+                ],
+                correct: 'B'
+            },
+            {
+                num: 19,
+                part: "PARTE 4: Conversaciones cortas",
+                instruction: "Complete las cinco conversaciones. Marque A, B o C.",
+                text: "19. Everyone bought tickets for the rock concert.",
+                options: [
+                    { id: 'A', text: "Is it on Saturday?" },
+                    { id: 'B', text: "There was noise." },
+                    { id: 'C', text: "It is fair!" }
+                ],
+                correct: 'A'
+            },
+            {
+                num: 20,
+                part: "PARTE 4: Conversaciones cortas",
+                instruction: "Complete las cinco conversaciones. Marque A, B o C.",
+                text: "20. It seems I'll be the new boss of the business department.",
+                options: [
+                    { id: 'A', text: "Excuse me!" },
+                    { id: 'B', text: "It's ready!" },
+                    { id: 'C', text: "Congratulations!" }
+                ],
+                correct: 'C'
+            }
+        ];
+
+        let state = {
+            studentName: "",
+            currentIdx: 0,
+            answers: new Array(questions.length).fill(null),
+            timeLeft: 3600,
+            timer: null
+        };
+
+        async function inicializarSesion() {
+            try {
+                const { data: { session } } = await sbClient.auth.getSession();
+                if (session && session.user) {
+                    currentUser = session.user;
+                    const meta = currentUser.user_metadata || {};
+                    state.studentName = meta.full_name || meta.documento || currentUser.email.split('@')[0];
+                    document.getElementById('student-name-input').value = state.studentName;
+
+                    const { data: intentoPrevio } = await sbClient
+                        .from('intentos')
+                        .select('id, finalizado')
+                        .eq('simulacro_id', SIMULACRO_ID)
+                        .eq('user_id', currentUser.id)
+                        .maybeSingle();
+
+                    if (intentoPrevio && intentoPrevio.finalizado) {
+                        alert("Ya has presentado este simulacro previamente. Tu intento se encuentra cerrado.");
+                        window.location.href = "modulos.html";
+                        return;
+                    }
+                } else {
+                    state.studentName = "ESTUDIANTE";
+                    document.getElementById('student-name-input').value = "ESTUDIANTE";
+                }
+            } catch (e) {
+                console.error("Error al validar sesión:", e);
+            }
+        }
+
+        function startQuiz() {
+            const input = document.getElementById('student-name-input');
+            state.studentName = (input.value.trim() || state.studentName || "ESTUDIANTE").toUpperCase();
+
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            state.timer = setInterval(() => {
+                state.timeLeft--;
+                updateTimerDisplay();
+                if (state.timeLeft <= 0) {
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(state.timeLeft / 60);
+            const secs = state.timeLeft % 60;
+            const display = document.getElementById('timer-display');
+            if (display) {
+                display.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+            if (state.timeLeft < 300) {
+                const box = document.getElementById('timer-box');
+                if (box) box.classList.add('bg-red-50', 'border-red-200', 'text-red-600', 'animate-pulse');
+            }
+        }
+
+        function renderQuestion() {
+            const q = questions[state.currentIdx];
+            document.getElementById('q-part-badge').innerText = q.part;
+            document.getElementById('q-title').innerText = `Pregunta ${q.num}: ${q.instruction}`;
+            document.getElementById('q-text').innerText = q.text;
+            document.getElementById('q-number-circle').innerText = q.num;
+            document.getElementById('q-counter-text').innerText = `Pregunta ${state.currentIdx + 1} de ${questions.length}`;
+            document.getElementById('progress-bar').style.width = `${((state.currentIdx + 1) / questions.length) * 100}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach(opt => {
+                const isSelected = state.answers[state.currentIdx] === opt.id;
+                const btn = document.createElement('button');
+                btn.className = `w-full group text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-4 cursor-pointer option-card ${isSelected ? 'option-selected' : 'border-slate-100'}`;
+                btn.onclick = () => selectOption(opt.id);
+                btn.innerHTML = `
+                    <span class="shrink-0 w-10 h-10 rounded-xl border-2 flex items-center justify-center font-black text-sm transition-colors ${isSelected ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-100 text-slate-600 border-slate-200'}">${opt.id}</span>
+                    <span class="text-slate-700 text-base font-semibold self-center">${opt.text}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(id) {
+            state.answers[state.currentIdx] = id;
+            if (state.currentIdx < questions.length - 1) {
+                state.currentIdx++;
+                renderQuestion();
+                window.scrollTo(0, 0);
+            } else {
+                finishQuiz();
+            }
+        }
+
+        async function finishQuiz() {
+            clearInterval(state.timer);
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('res-student-name').innerText = state.studentName;
+
+            let score = 0;
+            questions.forEach((q, idx) => {
+                if (state.answers[idx] === q.correct) {
+                    score++;
+                }
+            });
+
+            const pct = Math.round((score / questions.length) * 100);
+            let nivel = pct >= 80 ? "Superior" : pct >= 60 ? "Alto" : pct >= 40 ? "Básico" : "Bajo";
+
+            const dictamenInmediato = `### 1. Diagnóstico Global y Nivel de Desempeño (Inglés)
+**Nivel de Rendimiento: ${nivel} (${pct}% de Efectividad).**
+El estudiante completó la evaluación oficial de Inglés con un total de **${score} de ${questions.length}** aciertos. El dictamen refleja destreza en la identificación léxica básica y comprensión pragmática de enunciados cotidianos.
+
+### 2. Ponderación de Competencias Evaluadas
+- **Vocabulario y Lexicón (Partes 1 y 2):** Dominio en la asociación de definiciones con términos descriptivos del entorno y turismo.
+- **Pragmática y Conversaciones (Partes 3 y 4):** Consistencia en la interpretación de avisos institucionales y estructuración de respuestas coherentes para diálogos cortos.
+
+### 3. Recomendaciones de Fortalecimiento
+- Profundizar en modismos y conectores frecuentes en interacciones escritas.
+- Revisar las estructuras gramaticales de tiempos pasados y futuros en diálogos cotidianos.`;
+
+            if (currentUser) {
+                try {
+                    const meta = currentUser.user_metadata || {};
+                    const institucionUser = meta.institucion || meta.institucion_educativa || "Logos Edu";
+                    
+                    await sbClient.from('intentos').insert([
+                        {
+                            user_id: currentUser.id,
+                            simulacro_id: SIMULACRO_ID,
+                            puntaje_global: score,
+                            respuestas: state.answers,
+                            finalizado: true,
+                            fecha_finalizado: new Date().toISOString(),
+                            retroalimentacion_ia: dictamenInmediato,
+                            nombre_estudiante: state.studentName,
+                            institucion: institucionUser
+                        }
+                    ]);
+                } catch(e) {
+                    console.error("Excepción registrando intento de inglés:", e);
+                }
+            }
+        }
+
+        window.onload = () => {
+            inicializarSesion();
+        };
+    </script>
+</body>
+</html>
