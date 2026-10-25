@@ -165,7 +165,7 @@
         : todosLosSimulacros.filter(s => s.area === areaActual);
 
       simulacrosFiltrados.forEach(sim => {
-        const infoIntento = (sim.numero === 1 && mapaIntentos[sim.materiaClave]) ||
+        const infoIntento = mapaIntentos[sim.materiaClave] || 
                             mapaIntentos[`${sim.materiaClave}_${sim.numero}`] || 
                             mapaIntentos[sim.id];
 
@@ -178,25 +178,25 @@
         let subtexto = "";
 
         if (listoRetro) {
-          // ESTADO 1: YA LISTO CON INFORME -> AZUL ACTIVO
+          // ESTADO 1: INFORME LISTO EN SUPABASE -> BOTÓN AZUL
           bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
           botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${infoIntento.id}&materia=${sim.materiaClave}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
           subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu informe cualitativo se encuentra disponible para consultar.</p>`;
         } else if (yaPresento) {
-          // ESTADO 2: TERMINÓ PERO EL INFORME SE ESTÁ PROCESANDO -> GRIS INACTIVO
+          // ESTADO 2: TERMINÓ PERO LA IA TODAVÍA ESTÁ GENERANDO -> BOTÓN GRIS INACTIVO
           bordeClase = "border-slate-300 bg-slate-50/70 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-200 text-slate-700 border border-slate-300 mb-2">✓ PRUEBA ENVIADA</span>`;
           botonHtml = `<button disabled class="px-6 py-2.5 bg-slate-200 text-slate-500 font-bold rounded-xl text-sm border border-slate-300 cursor-not-allowed">⏳ Procesando informe...</button>`;
           subtexto = `<p class="text-xs text-slate-500 font-medium mt-1">Intento cerrado con éxito. El informe estará disponible en unos momentos.</p>`;
         } else if (sim.disponible) {
-          // ESTADO 3: DISPONIBLE PARA PRESENTAR -> VERDE
+          // ESTADO 3: DISPONIBLE (SOLO SIMULACRO 1) -> BOTÓN VERDE
           bordeClase = "border-emerald-300 bg-white/95 backdrop-blur-md ring-1 ring-emerald-100";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• DISPONIBLE AHORA</span>`;
           botonHtml = `<button onclick="window.location.href='${sim.archivo}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
           subtexto = `<p class="text-xs text-slate-500 mt-1">${sim.areaNombre} • 20 Preguntas</p>`;
         } else {
-          // ESTADO 4: DEL 2 AL 14 BLOQUEADOS -> ROJO
+          // ESTADO 4: DEL 2 AL 14 BLOQUEADOS -> BOTÓN ROJO
           bordeClase = "border-rose-200 bg-rose-50/30 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 mb-2">🔒 NO DISPONIBLE</span>`;
           botonHtml = `<button disabled class="px-6 py-2.5 bg-rose-50 text-rose-600 font-bold rounded-xl text-sm border border-rose-200 cursor-not-allowed">No disponible aún</button>`;
@@ -239,13 +239,19 @@
         intentos.forEach(item => {
           const sid = item.simulacro_id;
           const textoIA = (item.retroalimentacion_ia || '').toLowerCase();
-          const tieneRetro = (item.retroalimentacion_ia && item.retroalimentacion_ia.trim().length > 30);
+          const materiaBD = (item.materia || '').toLowerCase();
+          
+          // Se considera listo si tiene texto de IA o si la prueba fue marcada como finalizada
+          const tieneRetro = (item.retroalimentacion_ia && item.retroalimentacion_ia.trim().length > 30) || item.finalizado;
           const dataObj = { id: item.id, tieneRetro: tieneRetro };
 
-          if (sid === 57 || textoIA.includes('social') || textoIA.includes('ciudadan')) {
+          // 1. Detección de Sociales (simulacro_id 57 o texto de sociales)
+          if (sid === 57 || materiaBD.includes('social') || textoIA.includes('social') || textoIA.includes('ciudadan')) {
             mapaIntentos['sociales'] = dataObj;
             mapaIntentos['sociales_1'] = dataObj;
-          } else if (sid === 1 || textoIA.includes('lectura') || textoIA.includes('critica') || textoIA.includes('filosof')) {
+          } 
+          // 2. Detección de Lectura Crítica (simulacro_id 1 o texto de lectura)
+          else if (sid === 1 || materiaBD.includes('lectura') || textoIA.includes('lectura') || textoIA.includes('critica') || textoIA.includes('filosof')) {
             mapaIntentos['lectura'] = dataObj;
             mapaIntentos['lectura_1'] = dataObj;
           }
@@ -266,8 +272,8 @@
       });
 
       await cargarIntentos();
-      // Sondeo para actualizar si la IA termina en segundo plano
-      setTimeout(cargarIntentos, 4000);
+      // Recarga automática por si la fila se termina de escribir en Supabase segundos después
+      setTimeout(cargarIntentos, 3500);
     }
 
     iniciar();
