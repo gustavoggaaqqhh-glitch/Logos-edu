@@ -139,7 +139,7 @@
             area: area.clave,
             areaNombre: area.nombre,
             archivo: `${area.prefijo}${i}.html`,
-            disponible: (i === 1)
+            disponible: (i === 1) // Solo el Simulacro 1 abierto
           });
         }
       });
@@ -165,9 +165,10 @@
         : todosLosSimulacros.filter(s => s.area === areaActual);
 
       simulacrosFiltrados.forEach(sim => {
-        const idIntento = mapaIntentos[`${sim.materiaClave}_${sim.numero}`] || 
-                          mapaIntentos[sim.archivo] || 
-                          (sim.numero === 1 && mapaIntentos[sim.materiaClave]);
+        // Detecta el intento guardado (sea id 1, id 57, o por clave de materia)
+        const idIntento = (sim.numero === 1 && mapaIntentos[sim.materiaClave]) ||
+                          mapaIntentos[`${sim.materiaClave}_${sim.numero}`] || 
+                          mapaIntentos[sim.id];
 
         const yaPresento = !!idIntento;
 
@@ -177,16 +178,19 @@
         let subtexto = "";
 
         if (yaPresento) {
+          // 1. COMPLETADO -> BOTÓN AZUL (BLOQUEA REPETICIÓN Y ABRE RETROALIMENTACIÓN)
           bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
-          botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${idIntento}&materia=${sim.materiaClave}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
+          botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${idIntento}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
           subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu intento ha sido registrado. Puedes consultar el dictamen de retroalimentación.</p>`;
         } else if (sim.disponible) {
+          // 2. DISPONIBLE (SOLO SIMULACRO 1) -> VERDE
           bordeClase = "border-emerald-300 bg-white/95 backdrop-blur-md ring-1 ring-emerald-100";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• DISPONIBLE AHORA</span>`;
           botonHtml = `<button onclick="window.location.href='${sim.archivo}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
           subtexto = `<p class="text-xs text-slate-500 mt-1">${sim.areaNombre} • 20 Preguntas</p>`;
         } else {
+          // 3. DEL 2 AL 14 BLOQUEADOS -> ROJO
           bordeClase = "border-rose-200 bg-rose-50/30 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 mb-2">🔒 NO DISPONIBLE</span>`;
           botonHtml = `<button disabled class="px-6 py-2.5 bg-rose-50 text-rose-600 font-bold rounded-xl text-sm border border-rose-200 cursor-not-allowed">No disponible aún</button>`;
@@ -216,38 +220,40 @@
 
       document.getElementById("txt-nombre-estudiante").textContent = session?.user?.user_metadata?.full_name || userName;
 
+      // Consultar la tabla intentos directamente
       let query = client.from('intentos').select('*');
       if (userId) {
         query = query.eq('user_id', userId);
+      } else {
+        query = query.ilike('nombre_estudiante', `%${userName}%`);
       }
 
       const { data: intentos } = await query;
 
       if (intentos && intentos.length > 0) {
         intentos.forEach(item => {
-          const sid = item.simulacro_id || 1;
-          const mat = (item.materia || '').toLowerCase();
+          const sid = item.simulacro_id;
+          const textoIA = (item.retroalimentacion_ia || '').toLowerCase();
+          const intId = item.id;
 
-          if (mat.includes('lectura') || mat.includes('critica')) {
-            mapaIntentos[`lectura_${sid}`] = item.id;
-            mapaIntentos['lectura'] = item.id;
-            mapaIntentos[`lecturacritica${sid}.html`] = item.id;
-          } else if (mat.includes('social')) {
-            mapaIntentos[`sociales_${sid}`] = item.id;
-            mapaIntentos['sociales'] = item.id;
-            mapaIntentos[`sociales${sid}.html`] = item.id;
-          } else if (mat.includes('matematica')) {
-            mapaIntentos[`matematicas_${sid}`] = item.id;
-            mapaIntentos['matematicas'] = item.id;
-            mapaIntentos[`matematicas${sid}.html`] = item.id;
-          } else if (mat.includes('ingles')) {
-            mapaIntentos[`ingles_${sid}`] = item.id;
-            mapaIntentos['ingles'] = item.id;
-            mapaIntentos[`ingles${sid}.html`] = item.id;
-          } else if (mat.includes('ciencia') || mat.includes('natural')) {
-            mapaIntentos[`ciencias_${sid}`] = item.id;
-            mapaIntentos['ciencias'] = item.id;
-            mapaIntentos[`ciencias${sid}.html`] = item.id;
+          // Asignación por simulacro_id directo (57 para Sociales, 1 para Lectura)
+          if (sid === 57 || sid === 1) {
+            if (sid === 57 || textoIA.includes('social') || textoIA.includes('ciudadan')) {
+              mapaIntentos['sociales'] = intId;
+              mapaIntentos['sociales_1'] = intId;
+            } else {
+              mapaIntentos['lectura'] = intId;
+              mapaIntentos['lectura_1'] = intId;
+            }
+          }
+
+          // Detección contextual por contenido si el simulacro_id varía
+          if (textoIA.includes('social') || textoIA.includes('ciudadan')) {
+            mapaIntentos['sociales'] = intId;
+            mapaIntentos['sociales_1'] = intId;
+          } else if (textoIA.includes('lectura') || textoIA.includes('critica') || textoIA.includes('texto')) {
+            mapaIntentos['lectura'] = intId;
+            mapaIntentos['lectura_1'] = intId;
           }
         });
       }
@@ -265,11 +271,7 @@
         window.location.href = "index.html";
       });
 
-      // Carga inmediata
       await cargarIntentos();
-
-      // Recarga automática a los 3 segundos por si Supabase estaba terminando de escribir en segundo plano
-      setTimeout(cargarIntentos, 3000);
     }
 
     iniciar();
