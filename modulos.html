@@ -139,7 +139,7 @@
             area: area.clave,
             areaNombre: area.nombre,
             archivo: `${area.prefijo}${i}.html`,
-            disponible: (i === 1) // Solo el 1 abierto
+            disponible: (i === 1) // Estricto: SOLO EL SIMULACRO 1 ESTÁ HABILITADO
           });
         }
       });
@@ -165,42 +165,39 @@
         : todosLosSimulacros.filter(s => s.area === areaActual);
 
       simulacrosFiltrados.forEach(sim => {
-        const infoIntento = mapaIntentos[sim.materiaClave] || 
-                            mapaIntentos[`${sim.materiaClave}_${sim.numero}`] || 
-                            mapaIntentos[sim.id];
+        // Validación exacta: Solo busca intento para el simulacro 1 de su materia específica
+        let idIntento = null;
+        if (sim.numero === 1) {
+          idIntento = mapaIntentos[`${sim.materiaClave}_1`];
+        }
 
-        const yaPresento = !!infoIntento;
-        const listoRetro = yaPresento && infoIntento.tieneRetro;
+        const yaPresento = !!idIntento;
 
         let badgeHtml = "";
         let botonHtml = "";
         let bordeClase = "";
         let subtexto = "";
 
-        if (listoRetro) {
-          // ESTADO 1: INFORME LISTO EN SUPABASE -> BOTÓN AZUL
-          bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
-          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
-          botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${infoIntento.id}&materia=${sim.materiaClave}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
-          subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu informe cualitativo se encuentra disponible para consultar.</p>`;
-        } else if (yaPresento) {
-          // ESTADO 2: TERMINÓ PERO LA IA TODAVÍA ESTÁ GENERANDO -> BOTÓN GRIS INACTIVO
-          bordeClase = "border-slate-300 bg-slate-50/70 backdrop-blur-md";
-          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-200 text-slate-700 border border-slate-300 mb-2">✓ PRUEBA ENVIADA</span>`;
-          botonHtml = `<button disabled class="px-6 py-2.5 bg-slate-200 text-slate-500 font-bold rounded-xl text-sm border border-slate-300 cursor-not-allowed">⏳ Procesando informe...</button>`;
-          subtexto = `<p class="text-xs text-slate-500 font-medium mt-1">Intento cerrado con éxito. El informe estará disponible en unos momentos.</p>`;
-        } else if (sim.disponible) {
-          // ESTADO 3: DISPONIBLE (SOLO SIMULACRO 1) -> BOTÓN VERDE
-          bordeClase = "border-emerald-300 bg-white/95 backdrop-blur-md ring-1 ring-emerald-100";
-          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• DISPONIBLE AHORA</span>`;
-          botonHtml = `<button onclick="window.location.href='${sim.archivo}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
-          subtexto = `<p class="text-xs text-slate-500 mt-1">${sim.areaNombre} • 20 Preguntas</p>`;
-        } else {
-          // ESTADO 4: DEL 2 AL 14 BLOQUEADOS -> BOTÓN ROJO
+        // Regla 1: Si es del 2 al 14, SIEMPRE BLOQUEADO EN ROJO
+        if (sim.numero > 1) {
           bordeClase = "border-rose-200 bg-rose-50/30 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 mb-2">🔒 NO DISPONIBLE</span>`;
           botonHtml = `<button disabled class="px-6 py-2.5 bg-rose-50 text-rose-600 font-bold rounded-xl text-sm border border-rose-200 cursor-not-allowed">No disponible aún</button>`;
           subtexto = `<p class="text-xs text-rose-500 font-medium mt-1">Próximamente según el calendario oficial de entrenamiento.</p>`;
+        }
+        // Regla 2: Si es el Simulacro 1 y ya se presentó, AZUL CON RETROALIMENTACIÓN
+        else if (yaPresento) {
+          bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
+          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
+          botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${idIntento}&materia=${sim.materiaClave}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
+          subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu informe cualitativo se encuentra disponible para consultar.</p>`;
+        }
+        // Regla 3: Si es el Simulacro 1 y no se ha presentado, VERDE DISPONIBLE
+        else {
+          bordeClase = "border-emerald-300 bg-white/95 backdrop-blur-md ring-1 ring-emerald-100";
+          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• DISPONIBLE AHORA</span>`;
+          botonHtml = `<button onclick="window.location.href='${sim.archivo}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
+          subtexto = `<p class="text-xs text-slate-500 mt-1">${sim.areaNombre} • 20 Preguntas</p>`;
         }
 
         const card = document.createElement("div");
@@ -240,20 +237,15 @@
           const sid = item.simulacro_id;
           const textoIA = (item.retroalimentacion_ia || '').toLowerCase();
           const materiaBD = (item.materia || '').toLowerCase();
-          
-          // Se considera listo si tiene texto de IA o si la prueba fue marcada como finalizada
-          const tieneRetro = (item.retroalimentacion_ia && item.retroalimentacion_ia.trim().length > 30) || item.finalizado;
-          const dataObj = { id: item.id, tieneRetro: tieneRetro };
 
-          // 1. Detección de Sociales (simulacro_id 57 o texto de sociales)
+          // Asignación estricta y diferenciada:
+          // Sociales 1 (ID 57 en Supabase o texto explícito de sociales)
           if (sid === 57 || materiaBD.includes('social') || textoIA.includes('social') || textoIA.includes('ciudadan')) {
-            mapaIntentos['sociales'] = dataObj;
-            mapaIntentos['sociales_1'] = dataObj;
-          } 
-          // 2. Detección de Lectura Crítica (simulacro_id 1 o texto de lectura)
-          else if (sid === 1 || materiaBD.includes('lectura') || textoIA.includes('lectura') || textoIA.includes('critica') || textoIA.includes('filosof')) {
-            mapaIntentos['lectura'] = dataObj;
-            mapaIntentos['lectura_1'] = dataObj;
+            mapaIntentos['sociales_1'] = item.id;
+          }
+          // Lectura Crítica 1 (ID 1 en Supabase o texto de lectura)
+          else if (sid === 1 || materiaBD.includes('lectura') || textoIA.includes('lectura') || textoIA.includes('critica')) {
+            mapaIntentos['lectura_1'] = item.id;
           }
         });
       }
@@ -272,8 +264,6 @@
       });
 
       await cargarIntentos();
-      // Recarga automática por si la fila se termina de escribir en Supabase segundos después
-      setTimeout(cargarIntentos, 3500);
     }
 
     iniciar();
