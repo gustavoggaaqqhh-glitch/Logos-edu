@@ -116,15 +116,16 @@
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let todosLosSimulacros = [];
-    let mapaIntentos = {};
+    let mapaIntentos = {}; 
     let areaActual = 'todas';
 
+    // Mapeo exacto según tu base de datos de Supabase
     const catalogoAreas = [
-      { clave: 'sociales',    nombre: 'Ciencias Sociales y Ciudadanas', prefijo: 'sociales' },
-      { clave: 'lectura',     nombre: 'Lectura Crítica',                 prefijo: 'lecturacritica' },
-      { clave: 'matematicas', nombre: 'Matemáticas',                     prefijo: 'matematicas' },
-      { clave: 'ciencias',    nombre: 'Ciencias Naturales',              prefijo: 'ciencias' },
-      { clave: 'ingles',      nombre: 'Inglés',                          prefijo: 'ingles' }
+      { clave: 'sociales',    nombre: 'Ciencias Sociales y Ciudadanas', prefijo: 'sociales',       idSupabase: 57 },
+      { clave: 'lectura',     nombre: 'Lectura Crítica',                 prefijo: 'lecturacritica', idSupabase: 1 },
+      { clave: 'matematicas', nombre: 'Matemáticas',                     prefijo: 'matematicas',    idSupabase: 201 },
+      { clave: 'ciencias',    nombre: 'Ciencias Naturales',              prefijo: 'ciencias',       idSupabase: 301 },
+      { clave: 'ingles',      nombre: 'Inglés',                          prefijo: 'ingles',         idSupabase: 401 }
     ];
 
     function generar14Simulacros() {
@@ -132,14 +133,14 @@
       catalogoAreas.forEach(area => {
         for (let i = 1; i <= 14; i++) {
           lista.push({
-            id: `${area.clave}_${i}`,
             materiaClave: area.clave,
             numero: i,
             nombre: `Simulacro ${i}: Entrenamiento Saber 11`,
             area: area.clave,
             areaNombre: area.nombre,
             archivo: `${area.prefijo}${i}.html`,
-            disponible: (i === 1) // Estricto: SOLO EL SIMULACRO 1 ESTÁ HABILITADO
+            // Asigna el ID real de Supabase solo al simulacro 1
+            idSupabaseEsperado: (i === 1) ? area.idSupabase : null
           });
         }
       });
@@ -165,39 +166,35 @@
         : todosLosSimulacros.filter(s => s.area === areaActual);
 
       simulacrosFiltrados.forEach(sim => {
-        // Validación exacta: Solo busca intento para el simulacro 1 de su materia específica
-        let idIntento = null;
-        if (sim.numero === 1) {
-          idIntento = mapaIntentos[`${sim.materiaClave}_1`];
-        }
-
-        const yaPresento = !!idIntento;
-
         let badgeHtml = "";
         let botonHtml = "";
         let bordeClase = "";
         let subtexto = "";
 
-        // Regla 1: Si es del 2 al 14, SIEMPRE BLOQUEADO EN ROJO
+        // REGLA 1: DEL 2 AL 14 SIEMPRE BLOQUEADOS EN ROJO
         if (sim.numero > 1) {
           bordeClase = "border-rose-200 bg-rose-50/30 backdrop-blur-md";
           badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 mb-2">🔒 NO DISPONIBLE</span>`;
           botonHtml = `<button disabled class="px-6 py-2.5 bg-rose-50 text-rose-600 font-bold rounded-xl text-sm border border-rose-200 cursor-not-allowed">No disponible aún</button>`;
           subtexto = `<p class="text-xs text-rose-500 font-medium mt-1">Próximamente según el calendario oficial de entrenamiento.</p>`;
-        }
-        // Regla 2: Si es el Simulacro 1 y ya se presentó, AZUL CON RETROALIMENTACIÓN
-        else if (yaPresento) {
-          bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
-          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
-          botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${idIntento}&materia=${sim.materiaClave}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
-          subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu informe cualitativo se encuentra disponible para consultar.</p>`;
-        }
-        // Regla 3: Si es el Simulacro 1 y no se ha presentado, VERDE DISPONIBLE
+        } 
+        // REGLA 2: SIMULACRO 1 EVALUADO CONTRA SUPABASE
         else {
-          bordeClase = "border-emerald-300 bg-white/95 backdrop-blur-md ring-1 ring-emerald-100";
-          badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• DISPONIBLE AHORA</span>`;
-          botonHtml = `<button onclick="window.location.href='${sim.archivo}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
-          subtexto = `<p class="text-xs text-slate-500 mt-1">${sim.areaNombre} • 20 Preguntas</p>`;
+          const intento = mapaIntentos[sim.idSupabaseEsperado];
+
+          if (intento) {
+            // Ya se presentó: BOTÓN AZUL "VER RETROALIMENTACIÓN"
+            bordeClase = "border-blue-200 bg-blue-50/40 backdrop-blur-md";
+            badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mb-2">✓ COMPLETADO (INTENTO CERRADO)</span>`;
+            botonHtml = `<button onclick="window.location.href='retroalimentacion.html?intento_id=${intento.id}'" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Ver Retroalimentación</button>`;
+            subtexto = `<p class="text-xs text-blue-700 font-medium mt-1">✓ Tu intento ha sido registrado. Puedes consultar el dictamen de retroalimentación.</p>`;
+          } else {
+            // No se ha presentado: BOTÓN VERDE "PRESENTAR PRUEBA"
+            bordeClase = "border-emerald-300 bg-white/95 backdrop-blur-md ring-1 ring-emerald-100";
+            badgeHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">• DISPONIBLE AHORA</span>`;
+            botonHtml = `<button onclick="window.location.href='${sim.archivo}'" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">Presentar Prueba</button>`;
+            subtexto = `<p class="text-xs text-slate-500 mt-1">${sim.areaNombre} • 20 Preguntas</p>`;
+          }
         }
 
         const card = document.createElement("div");
@@ -223,30 +220,18 @@
 
       document.getElementById("txt-nombre-estudiante").textContent = session?.user?.user_metadata?.full_name || userName;
 
-      let query = client.from('intentos').select('*');
+      // Leer directamente la tabla intentos
+      let query = client.from('intentos').select('id, simulacro_id, user_id, finalizado');
       if (userId) {
         query = query.eq('user_id', userId);
-      } else {
-        query = query.ilike('nombre_estudiante', `%${userName}%`);
       }
 
       const { data: intentos } = await query;
 
       if (intentos && intentos.length > 0) {
         intentos.forEach(item => {
-          const sid = item.simulacro_id;
-          const textoIA = (item.retroalimentacion_ia || '').toLowerCase();
-          const materiaBD = (item.materia || '').toLowerCase();
-
-          // Asignación estricta y diferenciada:
-          // Sociales 1 (ID 57 en Supabase o texto explícito de sociales)
-          if (sid === 57 || materiaBD.includes('social') || textoIA.includes('social') || textoIA.includes('ciudadan')) {
-            mapaIntentos['sociales_1'] = item.id;
-          }
-          // Lectura Crítica 1 (ID 1 en Supabase o texto de lectura)
-          else if (sid === 1 || materiaBD.includes('lectura') || textoIA.includes('lectura') || textoIA.includes('critica')) {
-            mapaIntentos['lectura_1'] = item.id;
-          }
+          // Guarda cada intento bajo su simulacro_id exacto (57 o 1)
+          mapaIntentos[item.simulacro_id] = { id: item.id };
         });
       }
 
