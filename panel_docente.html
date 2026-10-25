@@ -194,581 +194,14 @@
         const GEMINI_API_KEY = "AIzaSyDSypb-t82azUtj1CBKjxGg4DHFZRKp-kE";
         
         const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        // BANCO DE ÍTEMS CON ARGUMENTACIÓN PEDAGÓGICA PARA DOCENTES
-        const bancoPreguntasDocente = {
-            1: [
-                {
-                    id: 1,
-                    titulo: "1. Polémica entre centralistas y federalistas",
-                    contexto: "A continuación, se presentan dos textos escritos por Antonio Nariño sobre la polémica entre centralistas y federalistas durante la independencia de la Nueva Granada. El primero fue escrito en 1811, cuando acababan de ocurrir los primeros gritos de independencia a lo largo de todo el reino. El segundo, mucho más tardío, se publicó en 1823, cuando las últimas acciones militares contra los españoles se estaban librando en lo que entonces era ya Colombia.\n\n1. \"[...] el sistema de convertir nuestras provincias en estados soberanos para hacer la federación es una locura hija de la precipitación de nuestros juicios y de una ambición mal entendida. No es la extensión del terreno, no es la población, no son las riquezas ni las luces que forman la fuerza de un imperio por sí solas: la suma total de todas estas cosas forman su fuerza; y si nosotros en lugar de acumular nuestras luces, nuestras riquezas y nuestras fuerzas, las dividimos en otras tantas partes como tenemos de provincias, ¿cuál será el resultado?\".\nTomado y adaptado de: Nariño, A. (1811). La Bagatela N.º 5.\n\n2. \"[...] el Gobierno federal es [...] el más adecuado para la libertad y el menos expuesto al abuso por el contrapeso que oponen las partes federadas. De aquí se deduce que, mientras tengamos sobre nosotros el Gobierno español, mientras este no reconozca nuestra independencia, lo que nos conviene es unidad de acción y el sistema centralista; pero que reconocida la independencia por la España, hallándonos sin peligros y con los elementos necesarios, la federación será la llama de la libertad\".\nTomado y adaptado de: Nariño, A. (1823). Los toros de Fucha.",
-                    pregunta: "En el plazo de doce años, Antonio Nariño cambió su percepción sobre el sistema federalista: pasó de atacarlo en 1811 a defenderlo en 1823. ¿Qué razón explica el cambio de perspectiva del prócer de la independencia sobre este modelo político?",
-                    opciones: [
-                        { id: 'A', texto: "Porque, para Nariño, el modelo centralista garantizaba la unión de fuerzas de todas las provincias en la guerra contra España, algo necesario en 1823." },
-                        { id: 'B', texto: "Porque, para Nariño, el modelo federalista velaba por las libertades individuales, pero imponía límites en el ejercicio del poder de cada provincia federada." },
-                        { id: 'C', texto: "Porque, para Nariño, el modelo centralista era adecuado para la Nueva Granada, ya que se asemejaba al modelo de administración que tenía la Corona española." },
-                        { id: 'D', texto: "Porque, para Nariño, el modelo federalista era útil en países libres y, por tanto, lo rechaza en 1811, pero lo defiende en 1823 con la independencia consolidada." }
-                    ],
-                    correcta: 'D',
-                    argumentacion: "En el texto de 1823 Nariño sostiene explícitamente que el centralismo era una necesidad transitoria de guerra para mantener la 'unidad de acción' frente a la amenaza española, pero que una vez reconocida la independencia y en tiempos de libertad consolidada, el federalismo es el sistema más idóneo para evitar abusos de poder."
-                },
-                {
-                    id: 2,
-                    titulo: "2. Conflicto en cabildo indígena",
-                    contexto: "Las autoridades de un cabildo indígena prohibieron la caza del jaguar en su territorio, pues en su cosmovisión este animal tiene un valor espiritual y cumple un papel esencial para el equilibrio ecológico. Pedro, un campesino que no pertenece a la comunidad indígena, fue sorprendido cazando un jaguar en el territorio del cabildo, por lo que fue condenado por las autoridades indígenas a una multa para compensar a la comunidad por el daño causado. Pedro se opone a la condena porque no hace parte de la comunidad indígena y el jaguar atacaba con frecuencia el ganado de su propiedad.",
-                    pregunta: "¿Cuáles dimensiones se encuentran en conflicto en la problemática presentada?",
-                    opciones: [
-                        { id: 'A', texto: "La cultural y la ambiental, porque la cosmovisión del cabildo indígena respecto al jaguar se opone al interés de Pedro en el cuidado del medio ambiente." },
-                        { id: 'B', texto: "La jurisdiccional y la cultural, porque al interés de la comunidad indígena de imponer una sanción se opone el hecho de que Pedro no pertenece a esa comunidad." },
-                        { id: 'C', texto: "La ambiental y la religiosa, porque el interés del cabildo indígena en la protección del jaguar se opone a su cosmovisión respecto al valor espiritual de este animal." },
-                        { id: 'D', texto: "La económica y la ambiental, porque el interés del cabildo indígena de imponer una sanción económica va en contra de la protección del jaguar en su territorio." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "El conflicto enfrenta el ámbito jurisdiccional (los límites de la Jurisdicción Especial Indígena consagrada en el art. 246 de la Constitución sobre personas no indígenas en su territorio) y la dimensión cultural (la cosmovisión y normas ancestrales de protección animal frente a un campesino externo con intereses productivos propios)."
-                },
-                {
-                    id: 3,
-                    titulo: "3. Libertad de prensa",
-                    contexto: "Un periodista ha estado divulgando notas de prensa con el fin de acusar de actos de corrupción a la alcaldesa de un municipio, sin haber verificado la credibilidad de las fuentes consultadas para elaborar los señalamientos.\nAnte el reclamo que le hizo la alcaldesa, el periodista argumentó que podía seguir publicando estas acusaciones porque en el país existe la libertad de prensa y él, como periodista, puede difundir todo lo que considere importante para la opinión pública, así no haya sido verificado.",
-                    pregunta: "De las siguientes opciones, ¿cuál representa un argumento que contradice lo señalado por el periodista con respecto a la libertad de prensa en el país?",
-                    opciones: [
-                        { id: 'A', texto: "La libertad de prensa en el país protege a los periodistas cuando divulgan información de manera veraz e imparcial." },
-                        { id: 'B', texto: "La libertad de expresión es un derecho constitucional que respalda la actividad periodística en el país sin restricción alguna." },
-                        { id: 'C', texto: "La libertad de prensa sobre hechos políticos es una de las bases que sostiene la libertad y la democracia de cualquier país." },
-                        { id: 'D', texto: "Existe persecución a los periodistas cuando las noticias que publican ellos son cuestionadas por actores políticos." }
-                    ],
-                    correcta: 'A',
-                    argumentacion: "El artículo 20 de la Constitución Política garantiza la libertad de expresar y difundir el pensamiento, pero establece de manera vinculante la responsabilidad de emitir 'información veraz e imparcial'. Difundir acusaciones sin verificación contradice los límites constitucionales y éticos del ejercicio periodístico."
-                },
-                {
-                    id: 4,
-                    titulo: "4. Construcción de la represa Gibe",
-                    contexto: "\"La construcción de la represa Gibe puede convertirse en un evento trascendental para el continente africano. Se espera que esta represa sea la más grande de África y que funcione como una hidroeléctrica que genere grandes ingresos, al brindar empleo y llevar electricidad a muchas partes del continente. Sin embargo, para su construcción, es necesario hacer varias intervenciones en el río Omo, algo que alarma a algunas entidades, pues este río es uno de los más biodiversos del planeta y su intervención podría acabar con miles de animales y plantas nativas\".",
-                    pregunta: "¿Cuáles de las siguientes dimensiones están presentes en la anterior descripción de la situación?",
-                    opciones: [
-                        { id: 'A', texto: "La social y la cultural." },
-                        { id: 'B', texto: "La económica y la social." },
-                        { id: 'C', texto: "La cultural y la ambiental." },
-                        { id: 'D', texto: "La ambiental y la económica." }
-                    ],
-                    correcta: 'D',
-                    argumentacion: "El texto evidencia de forma explícita el contraste entre la dimensión económica (generación de ingresos millonarios, electrificación productiva y empleo) y la dimensión ambiental (destrucción de la biodiversidad acuática y ribereña de especies nativas en el río Omo)."
-                },
-                {
-                    id: 5,
-                    titulo: "5. Discursos tras atentados en Francia",
-                    contexto: "Los siguientes son reportes periodísticos sobre dos discursos diferentes pronunciados acerca de los atentados terroristas ocurridos en Francia, en 2015. Léalos detenidamente:\nFragmento A. \"Aunque el presidente francés dijo que el Gobierno ha hecho grandes avances aprobando nuevas leyes y reforzando la seguridad, de acuerdo con el Gobierno, el nivel de alerta sigue siendo alto [...] Igualmente, explicó que en el último año [...] se dictaron medidas contra medio centenar de extranjeros a fin de impedir que puedan entrar en territorio francés por sospechas terroristas\".\nFragmento B. \"[...] el presidente francés se dirige por segunda vez en 48 horas a la nación, para condenar los hechos, y llamar a la calma y la unidad sin fisuras. El miércoles calificó a las víctimas como héroes que habían muerto por defender los valores de la República y pidió que los franceses dejaran a un lado sus diferencias ('nada puede dividirnos')\".",
-                    pregunta: "A partir de la información contenida en los dos discursos, es correcto afirmar que se pronunció primero:",
-                    opciones: [
-                        { id: 'A', texto: "el fragmento A, porque promueve el caos y la confusión inmediata luego de los atentados; el B se refiere a un momento de calma y unidad que solo se logra después de un consenso nacional." },
-                        { id: 'B', texto: "el fragmento B, porque este garantiza el cubrimiento inmediato de la noticia de los atentados; el A se refiere a un momento en el que ya se ha superado la crisis que se desató a raíz de los atentados." },
-                        { id: 'C', texto: "el fragmento A, porque es una respuesta que hace un llamado a la prevención en contra de los extranjeros; el B habla sobre procesos a largo plazo, como fortalecer la sociedad a futuro." },
-                        { id: 'D', texto: "el fragmento B porque es una respuesta inmediata que hace un llamado a la calma y la unidad; el A habla sobre procesos a largo plazo, como la aprobación de leyes y políticas de seguridad." }
-                    ],
-                    correcta: 'D',
-                    argumentacion: "El fragmento B corresponde a las primeras '48 horas' de contingencia emocional y llamado institucional a la cohesión, mientras que el fragmento A describe un balance de políticas públicas, leyes aprobadas y medidas migratorias evaluadas 'en el último año', evidenciando posterioridad temporal."
-                },
-                {
-                    id: 6,
-                    titulo: "6. Erradicación de cultivos ilícitos",
-                    contexto: "La erradicación de cultivos ilícitos, como la coca, es una de las principales problemáticas que vive Colombia... En esta problemática confluyen varios actores e intereses: El Estado (eliminar cultivos), GAO (financiar delincuencia), Campesinos (obligados a cultivar), Naciones Unidas (informes) y Estados Unidos (financiación).",
-                    pregunta: "Si se lleva a cabo la estrategia de erradicación manual de cultivos ilícitos, ¿entre quiénes es probable que se dé un conflicto?",
-                    opciones: [
-                        { id: 'A', texto: "Los campesinos víctimas de los GAO y las Naciones Unidas." },
-                        { id: 'B', texto: "Los Estados Unidos y las Naciones Unidas." },
-                        { id: 'C', texto: "La fuerza pública y los campesinos víctimas de los GAO." },
-                        { id: 'D', texto: "La fuerza pública y los grupos armados organizados." }
-                    ],
-                    correcta: 'D',
-                    argumentacion: "Los Grupos Armados Organizados (GAO) derivan su sustento financiero bélico del narcotráfico y defienden militarmente sus enclaves de producción cocalera mediante minas antipersonal y hostigamientos frente a la Fuerza Pública desplegada en la erradicación."
-                },
-                {
-                    id: 7,
-                    titulo: "7. Clientelismo",
-                    contexto: "El clientelismo consiste en un arreglo de intercambios entre gobernantes y terceros, de manera que ambos pueden beneficiarse recíprocamente: los primeros, al recibir apoyo político, y los segundos, al recibir bienes y servicios o un tratamiento privilegiado o excepcional en ciertos asuntos.",
-                    pregunta: "Teniendo en cuenta esta definición, el clientelismo justifica la creación de entes de control a los gobernantes, porque",
-                    opciones: [
-                        { id: 'A', texto: "es antiético que un gobernante o dirigente político busque beneficiarse electoralmente de un grupo de ciudadanos." },
-                        { id: 'B', texto: "es inconveniente que un gobernante haga alianzas políticas con otros dirigentes para mantenerse en el poder." },
-                        { id: 'C', texto: "es necesario evitar que los gobernantes usen su posición privilegiada para ser elegidos con favores, a cambio de votos." },
-                        { id: 'D', texto: "es reprochable que los gobernantes adopten medidas populares para aumentar su aceptación entre los ciudadanos." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "El clientelismo desvirtúa el interés general y distorsiona la igualdad electoral al privatizar recursos públicos en forma de dádivas o favores a cambio de votos, lo que hace indispensable el control preventivo y sancionatorio de entes como la Procuraduría y la Contraloría."
-                },
-                {
-                    id: 8,
-                    titulo: "8. Familia y Matrimonio en Colombia",
-                    contexto: "En el 2011, la Corte Constitucional de Colombia estableció que las parejas conformadas por personas del mismo sexo sí constituyen una familia. Cinco años después, la misma entidad reconoció la validez del matrimonio igualitario para estas mismas parejas. Antes de eso, solo las parejas heterosexuales podían casarse legalmente...",
-                    pregunta: "Con base en la información anterior, ¿cuál de las siguientes afirmaciones es una de las razones por las cuales se modificó el concepto legal de matrimonio y familia en Colombia?",
-                    opciones: [
-                        { id: 'A', texto: "Para restringir los derechos de las familias católicas, ya que, al considerar todos los matrimonios como iguales, se reduce la dimensión sagrada del matrimonio." },
-                        { id: 'B', texto: "Para privilegiar los derechos de los homosexuales, ya que estas personas ahora recibirán un trato preferencial por su orientación sexual." },
-                        { id: 'C', texto: "Para facilitar la convivencia en una sociedad cambiante, ya que las normas deben adaptarse a las transformaciones sociales." },
-                        { id: 'D', texto: "Para priorizar los valores de la sociedad, ya que estos son el centro de la vida en comunidad y no deberían modificarse." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "La jurisprudencia constitucional reconoce el principio de la 'Constitución viviente': el marco normativo debe responder a la evolución de las relaciones humanas y sociales garantizando igualdad de derechos y no discriminación ante nuevas realidades familiares."
-                },
-                {
-                    id: 9,
-                    titulo: "9. Minería artesanal y mercurio",
-                    contexto: "En un municipio, un grupo de mineros artesanales ha aumentado sus ingresos al encontrar un punto del río en el cual se puede extraer oro con la ayuda de mercurio. La comunidad del municipio aledaño se ha visto afectada por esta situación, porque el río se ha contaminado con los desechos tóxicos que genera la actividad minera y es la única fuente de agua que tienen los habitantes para el consumo e irrigación de cultivos. Ante esto, la alcaldesa del municipio considera necesario establecer una normatividad que regule este tipo de actividades.",
-                    pregunta: "¿Cuál es la razón que mejor justifica por qué debería establecerse allí una normatividad que regule las actividades de extracción minera en el municipio?",
-                    opciones: [
-                        { id: 'A', texto: "Para que los mineros busquen más lugares de extracción de oro sin tener problemas con las autoridades." },
-                        { id: 'B', texto: "Para garantizar los derechos a la salud y a un ambiente sano de los pobladores y el derecho de los mineros al trabajo." },
-                        { id: 'C', texto: "Para que se pueda subsidiar la compra de agua para los pobladores, por medio de las ganancias que genera la explotación minera." },
-                        { id: 'D', texto: "Para establecer periodos de alternancia en la extracción del oro, para que los mineros descansen y permitan que el agua no se contamine tanto." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "Una norma reguladora justa busca ponderar derechos constitucionales en tensión: amparar el derecho colectivo al agua y al medio ambiente sano frente a la toxicidad del mercurio, al tiempo que formaliza y reconvierte laboralmente la actividad económica de los mineros."
-                },
-                {
-                    id: 10,
-                    titulo: "10. El Manifiesto Comunista",
-                    contexto: "\"Un fantasma recorre Europa: el fantasma del comunismo. Todas las fuerzas de la vieja Europa se han unido en santa cruzada para acosar a ese fantasma [...] No hay un solo partido de oposición a quien los adversarios gobernantes no motjen de comunista [...] De este hecho, se desprenden dos consecuencias: la primera es que el comunismo se halla ya reconocido como una potencia por todas las potencias europeas. La segunda, que ya es hora de que los comunistas expresen a la luz del día y ante el mundo entero sus ideas, sus tendencias, sus aspiraciones, saliendo así al paso de esa leyenda del espectro comunista, con un manifiesto de su partido [...]\".",
-                    pregunta: "¿Este texto fue escrito en el siglo XX?",
-                    opciones: [
-                        { id: 'A', texto: "No, ya que fue escrito en el siglo XIX como respuesta a las transformaciones provocadas por la Revolución Industrial en Europa." },
-                        { id: 'B', texto: "Sí, porque el texto describe cómo el Partido Comunista empezó a obtener el poder en varias potencias europeas y a perseguir cualquier fuerza política opositora." },
-                        { id: 'C', texto: "No, porque el comunismo solo tuvo relevancia después de la segunda mitad del siglo XX, durante el enfrentamiento entre la Unión Soviética y los países capitalistas en la Guerra Fría." },
-                        { id: 'D', texto: "Sí, porque el contexto del escrito es la consolidación del comunismo en Europa como fuerza política y, por tanto, el rechazo del mismo por los regímenes gobernantes y sus aliados." }
-                    ],
-                    correcta: 'A',
-                    argumentacion: "El Manifiesto del Partido Comunista fue redactado por Karl Marx y Friedrich Engels y publicado en Londres en 1848 (siglo XIX), en pleno apogeo de las revoluciones proletarias europeas y las contradicciones de la Revolución Industrial."
-                },
-                {
-                    id: 11,
-                    titulo: "11. Plan de Ordenamiento Territorial (POT)",
-                    contexto: "En Colombia, se debe tener un Plan de Ordenamiento Territorial (POT) en cada uno de los municipios, para organizar y planear el desarrollo físico del territorio. “Un POT se define como el conjunto de objetivos, directrices, políticas, estrategias, metas, programas, actuaciones y normas adoptadas para orientar y administrar el desarrollo físico del territorio y la utilización del suelo. Señala, pues, los derroteros de las diferentes acciones urbanísticas posibles que pueden emprenderse. Las ciudades deben crecer ordenadamente, de manera tal que los recursos con que se cuenta para el desarrollo de la comunidad, se empleen eficientemente y de manera sostenible en el tiempo. El POT nos pone de presente que no todo está permitido y que lo que sí lo está, debe ser en función de la obtención del desarrollo más equitativo posible”.",
-                    pregunta: "¿Cuál de los siguientes conceptos se aplica en la anterior definición de un POT?",
-                    opciones: [
-                        { id: 'A', texto: "Desarrollo equitativo y sustentable." },
-                        { id: 'B', texto: "Capital político y social." },
-                        { id: 'C', texto: "Participación política." },
-                        { id: 'D', texto: "Crecimiento económico." }
-                    ],
-                    correcta: 'A',
-                    argumentacion: "La definición citada enfatiza directamente el empleo de recursos 'de manera sostenible en el tiempo' y el uso regulado del suelo 'en función de la obtención del desarrollo más equitativo posible'."
-                },
-                {
-                    id: 12,
-                    titulo: "12. Energía eólica en Colombia",
-                    contexto: "En España, se han instalado miles de generadores de energía eólica... se está analizando la posibilidad de instalar este tipo de generadores en una región desértica en el norte de Colombia, para satisfacer las necesidades energéticas de la población del lugar. Esta población produce la mayor parte de la energía que consume a partir de la quema de madera, lo que genera problemas de contaminación y deforestación.",
-                    pregunta: "¿Cuál de las siguientes condiciones NO sería necesaria para implementar esta medida, de energía eólica, en dicha región del territorio colombiano?",
-                    opciones: [
-                        { id: 'A', texto: "Que sea posible convencer a la población de los efectos negativos de la quema de madera para que abandone dicha práctica." },
-                        { id: 'B', texto: "Que la población no se vea incomodada por el impacto que tendría la instalación de los generadores en el paisaje." },
-                        { id: 'C', texto: "Que sea posible reforestar las selvas de donde se ha extraído la madera que la población ha utilizado tradicionalmente para generar energía." },
-                        { id: 'D', texto: "Que la capacidad de producción de los generadores eólicos que se instalarían sea suficiente para satisfacer las necesidades energéticas de la población." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "La viabilidad técnica e inmediata de proveer energía limpia mediante aerogeneradores depende de la suficiencia del viento, la aceptación social y la capacidad de la red; la reforestación de zonas intervenidas con anterioridad es un beneficio ecológico deseable, pero no un prerrequisito técnico indispensable para que los molinos funcionen."
-                },
-                {
-                    id: 13,
-                    titulo: "13. Inseguridad y Xenofobia",
-                    contexto: "Un político de una ciudad del país se encuentra muy preocupado por el aumento en la inseguridad que se ha venido presentando en los últimos años... afirma el político: \"Ya se han registrado muchos casos de personas atracadas por estos ciudadanos inmigrantes. Recomiendo a la población tener mucho cuidado al momento de relacionarse en la calle con cualquier persona que parezca tener un acento del país vecino. También, hago un llamado a la comunidad para que continúe denunciando los casos de atraco que cometen las personas de ese país\".",
-                    pregunta: "Ahora bien, en esta situación, las palabras pronunciadas por el político",
-                    opciones: [
-                        { id: 'A', texto: "promueven el rechazo hacia los inmigrantes del país vecino porque la gente va a tratarlos con sospecha, sean o no atracadores." },
-                        { id: 'B', texto: "ignoran que el origen de la inseguridad puede deberse a las necesidades económicas que atraviesan los inmigrantes." },
-                        { id: 'C', texto: "desconocen que la comunidad no está obligada a participar ni a denunciar los atracos que se cometen en la ciudad." },
-                        { id: 'D', texto: "motivan a que las personas de un país que se encuentran en situaciones de pobreza, decidan irse a vivir a otro país." }
-                    ],
-                    correcta: 'A',
-                    argumentacion: "Las declaraciones incurren en generalización estigmatizante y xenofobia al asociar el origen nacional y el acento de una población entera con la delincuencia, fomentando conductas discriminatorias hacia personas inocentes."
-                },
-                {
-                    id: 14,
-                    titulo: "14. Propuestas políticas para la democracia",
-                    contexto: "Un líder político afirmó lo siguiente durante una entrevista: “Volveremos a participar en las elecciones cuando:\n1. El calendario electoral vuelva a ser estable y no haya intervención por parte del presidente.\n2. Aumenten los controles por parte de entes independientes en los puestos de votación.\n3. Los ciudadanos no sufran represalias por expresar su preferencia electoral.\n4. Se les permita a los ciudadanos crear y pertenecer a partidos políticos diferentes al de Gobierno.\n5. Las decisiones tomadas en las urnas se respeten y los candidatos elegidos puedan posesionarse”.",
-                    pregunta: "¿Cuál es el propósito de las medidas propuestas?",
-                    opciones: [
-                        { id: 'A', texto: "Establecer límites a la democracia, modificando el calendario electoral y concentrando el poder en los partidos políticos existentes." },
-                        { id: 'B', texto: "Fortalecer la democracia, priorizando la gobernabilidad del partido político en el poder y creando un consenso nacional, al disminuir la oposición." },
-                        { id: 'C', texto: "Establecer límites a la democracia, controlando el número de partidos que pueden postular candidatos y debilitando la figura presidencial." },
-                        { id: 'D', texto: "Fortalecer la democracia representativa, garantizando condiciones para ejercer la oposición y disminuyendo los límites al ejercicio electoral." }
-                    ],
-                    correcta: 'D',
-                    argumentacion: "Los 5 puntos exigen garantías fundamentales del Estado de derecho: libertad de sufragio sin coacción, imparcialidad arbitral, pluralismo político y alternancia pacífica del poder, pilares de la democracia representativa."
-                },
-                {
-                    id: 15,
-                    titulo: "15. Amazonía y Pueblos Indígenas",
-                    contexto: "Representantes de los gremios minero y petrolero han enviado un comunicado al Gobierno con la intención de obtener los permisos necesarios para intervenir la selva amazónica. Estos gremios argumentan que esta intervención les permitiría mejorar la competitividad de este sector del mercado y generar empleos para las comunidades de la región del Amazonas. Por otra parte, los líderes de algunos pueblos indígenas del Amazonas llevan varios meses pidiendo la ayuda del Gobierno para proteger los territorios de sus “hermanos aislados”...",
-                    pregunta: "De acuerdo con los intereses involucrados en la situación descrita, ¿entre quiénes sería más probable que se genere un conflicto?",
-                    opciones: [
-                        { id: 'A', texto: "Entre los pueblos indígenas y los académicos." },
-                        { id: 'B', texto: "Entre el gremio minero y los pueblos indígenas." },
-                        { id: 'C', texto: "Entre el Ministerio de Minas y Energía y el gremio petrolero." },
-                        { id: 'D', texto: "Entre los grupos madereros ilegales y el gremio petrolero." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "Existe una incompatibilidad territorial frontal entre el interés del gremio extractivo de abrir frentes de explotación comercial y el mandato ético y constitucional de los pueblos originarios de preservar intacto el hábitat selvático de comunidades en aislamiento voluntario."
-                },
-                {
-                    id: 16,
-                    titulo: "16. Acción de Tutela y Derecho Fundamental a la Salud",
-                    contexto: "En un municipio, la EPS de una persona de 68 años con una enfermedad crónica degenerativa se niega a suministrarle un medicamento formulado por su médico tratante, argumentando que este fármaco no se encuentra incluido en el Plan de Beneficios en Salud (PBS) y que la paciente debe asumir su costo. La paciente no cuenta con ingresos económicos suficientes para comprar el medicamento y su estado de salud empeora progresivamente.",
-                    pregunta: "¿Cuál es el mecanismo constitucional idóneo y prioritario al que puede acudir la ciudadana para exigir la entrega inmediata del medicamento?",
-                    opciones: [
-                        { id: 'A', texto: "Una Acción Popular, porque la negación de medicamentos afecta los derechos colectivos de toda la comunidad de usuarios de la EPS." },
-                        { id: 'B', texto: "Una Acción de Tutela, porque se encuentra amenazado de manera inminente su derecho fundamental a la salud y a la vida digna." },
-                        { id: 'C', texto: "Una Demanda de Inconstitucionalidad, porque la norma que regula el Plan de Beneficios viola la Constitución." },
-                        { id: 'D', texto: "Una Acción de Cumplimiento, para obligar a los jueces a sancionar a los directivos de la entidad promotora de salud." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "El artículo 86 de la Constitución consagra la Acción de Tutela como el instrumento preferente y sumario para proteger de forma inmediata derechos fundamentales individuales frente a la vulneración o negligencia de entidades públicas o prestadores privados de salud."
-                },
-                {
-                    id: 17,
-                    titulo: "17. Consulta Previa y Proyectos Extractivos",
-                    contexto: "Una empresa multinacional obtuvo una concesión estatal para construir una represa hidroeléctrica que inundará 1.200 hectáreas en una cuenca hidrográfica habitada ancestralmente por comunidades afrodescendientes e indígenas. El Ministerio de Ambiente otorgó la licencia ambiental sin haber convocado a las autoridades locales de estas comunidades, alegando que el proyecto es de 'interés público y soberanía energética nacional'. Los líderes comunitarios interpusieron una demanda exigiendo suspender las obras.",
-                    pregunta: "¿Cuál es el principio constitucional en el que se sustentan las comunidades para reclamar la suspensión de la obra?",
-                    opciones: [
-                        { id: 'A', texto: "El principio de libre competencia económica frente a las empresas públicas del sector energético." },
-                        { id: 'B', texto: "El derecho a la consulta previa, libre e informada cuando se pretenden ejecutar proyectos en territorios de minorías étnicas." },
-                        { id: 'C', texto: "El derecho a la expropiación por vía administrativa de proyectos de infraestructura estratégica." },
-                        { id: 'D', texto: "El principio de inmunidad tributaria territorial de las comunidades étnicas organizadas." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "El Convenio 169 de la OIT y la jurisprudencia constitucional colombiana establecen la Consulta Previa como un derecho fundamental de obligatorio cumplimiento antes de otorgar licencias o intervenir territorios ancestrales de comunidades étnicas."
-                },
-                {
-                    id: 18,
-                    titulo: "18. Mecanismos de Participación Ciudadana",
-                    contexto: "En un municipio con vocación agrícola, la administración municipal planea autorizar proyectos de fracturación hidráulica (fracking) para extracción de gas. La ciudadanía, alarmada por el impacto hídrico sobre las fuentes de agua subterránea, decide organizarse democráticamente para que sea el pueblo en las urnas el que decida de manera vinculante si se permite o no dicha actividad extractiva en el territorio municipal.",
-                    pregunta: "¿Cuál mecanismo de participación ciudadana formal establecido en la legislación colombiana se ajusta a este propósito?",
-                    opciones: [
-                        { id: 'A', texto: "La Consulta Popular." },
-                        { id: 'B', texto: "El Plebiscito." },
-                        { id: 'C', texto: "El Referendo Derogatorio." },
-                        { id: 'D', texto: "El Cabildo Abierto." }
-                    ],
-                    correcta: 'A',
-                    argumentacion: "La Consulta Popular (Ley 134 de 1994) es el mecanismo mediante el cual se somete a consideración del pueblo una pregunta de carácter general sobre un asunto de trascendencia municipal o departamental, y su decisión adoptada en las urnas resulta obligatoria y vinculante."
-                },
-                {
-                    id: 19,
-                    titulo: "19. Separación de Poderes y Frenos y Contrapesos",
-                    contexto: "Durante una crisis de orden público, el Presidente de la República expidió un decreto con fuerza de ley que restringe de forma permanente las reuniones públicas y autoriza la detención preventiva sin orden judicial. La Corte Constitucional procedió a revisar de oficio dicho decreto y lo declaró inexequible, argumentando que desconoce garantías sustanciales consagradas en la Carta Política y excede las facultades del Ejecutivo.",
-                    pregunta: "La decisión adoptada por la Corte Constitucional evidencia:",
-                    opciones: [
-                        { id: 'A', texto: "La superioridad jerárquica del poder judicial sobre los electores y la soberanía popular." },
-                        { id: 'B', texto: "El principio de frenos y contrapesos para evitar la concentración arbitraria del poder en el Ejecutivo." },
-                        { id: 'C', texto: "Una vulneración al principio de seguridad y defensa nacional en estados de excepción." },
-                        { id: 'D', texto: "El debilitamiento de la democracia al subordinar decisiones de ministros a jueces locales." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "En un Estado constitucional de derecho, las ramas del poder operan bajo frenos y contrapesos (checks and balances). El control automático de constitucionalidad evita que el Presidente suspenda garantías fundamentales o abuse de estados excepcionales."
-                },
-                {
-                    id: 20,
-                    titulo: "20. Política Fiscal: Progresividad y Equidad",
-                    contexto: "El Congreso de la República debate una reforma tributaria para financiar programas de alimentación escolar y saneamiento básico en zonas rurales dispersas. Un sector de congresistas propone incrementar el impuesto al valor agregado (IVA) de la canasta familiar al 19%, mientras que otro sector plantea que el recaudo debe obtenerse aumentando los impuestos al patrimonio y a la renta de las corporaciones y personas con los ingresos más altos del país.",
-                    pregunta: "Desde la perspectiva de los principios tributarios de equidad y progresividad constitucional, la segunda propuesta es más adecuada porque:",
-                    opciones: [
-                        { id: 'A', texto: "Garantiza que quienes tienen mayor capacidad contributiva aporten una proporción superior de sus recursos para beneficio común." },
-                        { id: 'B', texto: "Elimina por completo la necesidad de que los ciudadanos de ingresos medios tributen al Estado." },
-                        { id: 'C', texto: "Permite que el recaudo sea asumido equitativamente por los sectores que no consumen bienes de primera necesidad." },
-                        { id: 'D', texto: "Impide el crecimiento de las empresas privadas para asegurar el monopolio comercial de la economía estatal." }
-                    ],
-                    correcta: 'A',
-                    argumentacion: "El artículo 363 constitucional consagra el principio de progresividad tributaria: la carga impositiva debe ser directamente proporcional a la capacidad económica del contribuyente, gravando con mayor tarifa a los mayores ingresos para redistribuir la riqueza."
-                }
-            ],
-            2: [
-                {
-                    id: 1,
-                    titulo: "1. Selva Amazónica y Comunidades Aisladas",
-                    contexto: "Representantes de los gremios minero y petrolero han enviado un comunicado al Gobierno con la intención de obtener los permisos necesarios para intervenir la selva amazónica. Estos gremios argumentan que esta intervención les permitiría mejorar la competitividad de este sector del mercado y generar empleos para las comunidades de la región del Amazonas. Por otra parte, los líderes de algunos pueblos indígenas del Amazonas llevan varios meses pidiendo la ayuda del Gobierno para proteger los territorios de sus 'hermanos aislados', pueblos indígenas que han decidido voluntariamente aislarse en las selvas huyendo de la esclavitud, la violencia y las enfermedades que la civilización occidental ha traído consigo durante los últimos cinco siglos.",
-                    pregunta: "En relación con la propuesta planteada por el Ministerio de Minas y Energía, ¿cuál de las siguientes opciones describe una posible reacción o respuesta que NO se tuvo en cuenta en dicha propuesta?",
-                    opciones: [
-                        { id: 'A', texto: "Que los gremios petroleros y mineros solo quieran beneficiarse de la extracción ilegal de la mayor cantidad de recursos del Amazonas." },
-                        { id: 'B', texto: "Que los académicos no tengan en cuenta los beneficios que conlleva el modelo extractivo legal que busca el desarrollo económico del país." },
-                        { id: 'C', texto: "Que los pueblos indígenas aislados voluntariamente no acepten entablar ningún tipo de relación con la sociedad occidental." },
-                        { id: 'D', texto: "Que los grupos madereros ilegales no tengan las vías para poder negociar la explotación legal de los bosques amazónicos." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "La propuesta del Ministerio y de los gremios asume de antemano que la llegada de empresas traerá desarrollo y acuerdos con las poblaciones locales, omitiendo que los pueblos en aislamiento voluntario han ejercido su derecho legítimo a no tener ningún contacto ni someterse a la lógica comercial externa."
-                },
-                {
-                    id: 2,
-                    titulo: "2. Mercados Campesinos y Tratados Comerciales",
-                    contexto: "Un grupo de campesinos productores de papa se ha visto afectado por la entrada en vigencia de un tratado de libre comercio que ha permitido el ingreso al país de alimentos extranjeros que son más económicos, incluyendo la papa. La situación se ha complicado tanto para ellos, que sus ingresos se han reducido considerablemente y se ha puesto en riesgo su permanencia como agricultores. Ante esta situación, deciden rescatar una antigua tradición: los mercados campesinos, donde pueden vender sus productos sin intermediarios y a precios más bajos.",
-                    pregunta: "¿Cuáles de las siguientes dimensiones se privilegiaron en la solución propuesta por los campesinos?",
-                    opciones: [
-                        { id: 'A', texto: "Social y política." },
-                        { id: 'B', texto: "Cultural y social." },
-                        { id: 'C', texto: "Económica y cultural." },
-                        { id: 'D', texto: "Política y comercial." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "La solución implementada conjuga la dimensión económica (recuperar la rentabilidad y el ingreso al comercializar directamente sin cadenas de intermediación) con la dimensión cultural (el rescate de la tradición comunitaria de plazas y trueques campesinos)."
-                },
-                {
-                    id: 3,
-                    titulo: "3. Presupuesto y Acueducto",
-                    contexto: "Para llevar agua a varios municipios, el gobernador de un departamento propone la extensión del sistema de acueducto con presupuesto del Gobierno nacional. Después de varios estudios, un equipo de ingenieros entrega el diseño del proyecto. Este diseño contempla el trazado que tendrá el acueducto, el presupuesto general que se requiere para construirlo, el plan para proteger la flora y la fauna de la región, y la reubicación temporal de algunas familias que viven donde se llevarán a cabo las obras. Ahora bien, cuando el gobernador pretende dar inicio al proyecto, el Gobierno nacional le comunica que, si se considera el diseño entregado por los ingenieros, no habrá dinero suficiente para ejecutar la obra.",
-                    pregunta: "¿Qué aspecto descrito anteriormente obstaculiza el desarrollo del acueducto?",
-                    opciones: [
-                        { id: 'A', texto: "El aspecto social, pues las familias que viven en la zona de la obra no podrán ser reubicadas permanentemente." },
-                        { id: 'B', texto: "El aspecto económico, pues los requerimientos de diseño de la obra no se ajustan al presupuesto del Gobierno." },
-                        { id: 'C', texto: "El aspecto ambiental, pues el diseño no especifica qué sucederá con la flora y la fauna presente en la zona." },
-                        { id: 'D', texto: "El aspecto logístico, pues los ingenieros no especifican el trazado definitivo del acueducto." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "El factor limitante directo identificado en la situación es de índole fiscal y financiero: el costo total presupuestado en los estudios de ingeniería supera los recursos asignados por el Gobierno nacional."
-                },
-                {
-                    id: 4,
-                    titulo: "4. Acuerdos de Paz y Fuerzas Militares",
-                    contexto: "Como resultado del acuerdo de paz firmado por un Gobierno y un grupo armado al margen de la ley, se establecieron zonas veredales transitorias de normalización (ZVTN), las cuales consisten en locaciones rurales donde se concentran los militantes del grupo armado para iniciar su transición a la vida civil. En estas zonas, el ejército del país debe custodiar a los miembros del grupo armado, en lugar de combatirlo.",
-                    pregunta: "De acuerdo con lo expuesto, ¿por qué es posible que se dé esta situación?",
-                    opciones: [
-                        { id: 'A', texto: "Porque el Gobierno nacional quiere que el grupo armado conviva con el Ejército, para que en el futuro haga parte de él." },
-                        { id: 'B', texto: "Porque el Gobierno nacional ha dado un giro hacia el socialismo y ha decidido poner a su Ejército al servicio del grupo armado." },
-                        { id: 'C', texto: "Porque el grupo armado ahora controla las ZVTN and tienen miembros del Ejército a su disposición." },
-                        { id: 'D', texto: "Porque la función de las Fuerzas Armadas se adecuó al nuevo contexto sociopolítico del país." }
-                    ],
-                    correcta: 'D',
-                    argumentacion: "Los tratados de paz con cese al fuego bilateral y dejación de armas transforman el rol misional de las Fuerzas Armadas: pasan de la confrontación bélica a garantizar la seguridad perimetral, la estabilidad territorial y el cumplimiento de los acuerdos de reincorporación."
-                },
-                {
-                    id: 5,
-                    titulo: "5. Discurso Político y Cambio Climático",
-                    contexto: "En Estados Unidos existe un debate sobre el cambio climático, definido como variaciones del clima atribuidas directa o indirectamente a la actividad humana. Al respecto, el presidente de un país, escéptico del cambio climático, escribió en su red social de internet las siguientes dos frases: 1. 'Por el cambio climático que deberíamos estar preocupados es el provocado por las armas nucleares que están en las manos de líderes locos o incompetentes'. 2. 'Hace frío afuera. ¿Dónde demonios está el cambio climático?'.",
-                    pregunta: "A partir de la información anterior, ¿resultan confiables las afirmaciones del presidente en su red social acerca del cambio climático?",
-                    opciones: [
-                        { id: 'A', texto: "Sí, porque, como presidente, tiene acceso a información precisa sobre los aspectos relevantes del planeta." },
-                        { id: 'B', texto: "No, porque, como presidente, tiene intereses en que el país que gobierna siga siendo competitivo en la economía mundial." },
-                        { id: 'C', texto: "No, porque, al ser un político, los temas de la ciencia naturales le son ajenos a sus conocimientos de la vida diaria." },
-                        { id: 'D', texto: "Sí, porque, al ser difundido en una red social con tantos seguidores, lo expresado tiene un impacto a nivel de la economía internacional." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "Los líderes políticos de potencias industriales suelen desestimar la evidencia climática rigurosa debido a presiones económicas internas y la búsqueda de rentabilidad energética, confunden clima con meteorología cotidiana e instrumentalizan el discurso con fines electorales y de competitividad."
-                },
-                {
-                    id: 6,
-                    titulo: "6. Teoría de la Dependencia",
-                    contexto: "La teoría de la dependencia argumenta que la pobreza que existe en los países del sur se debe a condiciones históricas que han estructurado el mercado global de tal manera que favorece a los países del norte y mantiene a los países del sur en un estado constante de pobreza. Es así como, desde sus inicios, los países del sur han servido como proveedores de materia prima para los países del norte y, a cambio, han sido receptores de aquellos productos terminados.",
-                    pregunta: "¿Cuál de las siguientes situaciones se ajusta al modelo teórico descrito?",
-                    opciones: [
-                        { id: 'A', texto: "Un país latinoamericano desarrolla tecnología industrial que le permite procesar materias primas para generar productos con valor añadido." },
-                        { id: 'B', texto: "Una compañía multinacional adquiere, en un país pobre, materias primas a bajo costo, las procesa e incrementa su valor añadido para, luego, vender sus productos en el país pobre." },
-                        { id: 'C', texto: "Un país desarrollado de Europa genera riquezas gracias a sus adelantos tecnológicos y, luego, impulsa el avance de la industria de países en desarrollo." },
-                        { id: 'D', texto: "Una organización internacional regula las relaciones comerciales entre países, para asegurarse de que los países que venden materias primas no cobren de más." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "La teoría formulada por la CEPAL y pensadores del sur describe exactamente la asimetría del comercio centro-periferia: exportación de bienes primarios sin procesar a precios bajos e importación de bienes manufacturados con alto valor agregado, perpetuando el déficit estructural."
-                },
-                {
-                    id: 7,
-                    titulo: "7. Desarrollo Sostenible",
-                    contexto: "La Organización de las Naciones Unidas (ONU) define el 'desarrollo sostenible' como la satisfacción de las necesidades de la generación presente sin comprometer la capacidad de las generaciones futuras para satisfacer sus propias necesidades. Consta de tres pilares: el desarrollo económico, el desarrollo social y la protección del medio ambiente de manera equilibrada.",
-                    pregunta: "De acuerdo con la anterior definición, una política económica es sostenible cuando",
-                    opciones: [
-                        { id: 'A', texto: "privilegia la industrialización para generar empleo por encima de la necesidad de disminuir los gases de efecto invernadero." },
-                        { id: 'B', texto: "le da la misma importancia a la generación de riqueza y a la explotación ilimitada de los recursos naturales." },
-                        { id: 'C', texto: "le da la misma importancia a la generación de riqueza para las personas y a la protección del medio ambiente." },
-                        { id: 'D', texto: "prohíbe totalmente aprovechar económicamente los bienes y servicios ecosistémicos de lagos, ríos y bosques para lograr su conservación." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "El postulado central del Informe Brundtland y la ONU exige la coexistencia armónica y equilibrada entre el bienestar material humano (crecimiento económico equitativo) y los límites de absorción y regeneración de los ecosistemas (conservación ambiental)."
-                },
-                {
-                    id: 8,
-                    titulo: "8. División del Trabajo (Adam Smith)",
-                    contexto: "Para Adam Smith, economista y filósofo escocés del siglo XVIII, la división del trabajo aumenta la productividad, pues cada persona se enfoca en producir aquello en lo que es mejor y, luego, lo intercambia de forma mercantil por los otros bienes y servicios que necesita.",
-                    pregunta: "Según el concepto de división del trabajo, para Smith, el mercado",
-                    opciones: [
-                        { id: 'A', texto: "genera injusticias sociales al separar a las personas en clases sociales según sus ingresos." },
-                        { id: 'B', texto: "lleva la economía al fracaso, pues no hay coordinación entre productores y consumidores." },
-                        { id: 'C', texto: "hace que las personas se vuelvan más ignorantes, pues no saben cómo producir ciertos bienes." },
-                        { id: 'D', texto: "es una forma eficiente de repartir los bienes que se han producido mediante la especialización." }
-                    ],
-                    correcta: 'D',
-                    argumentacion: "En la teoría clásica del libre mercado expuesta en 'La Riqueza de las Naciones', la especialización de funciones maximiza la destreza y ahorra tiempo productivo, siendo el mercado el mecanismo natural y espontáneo de asignación eficiente."
-                },
-                {
-                    id: 9,
-                    titulo: "9. Especies Invasoras y Ecosistemas Marinos",
-                    contexto: "El Gobierno está investigando el impacto que tiene el pez león en los ecosistemas marítimos colombianos y las formas de combatirlo. El pez león, especie originaria de Asia, se ha convertido en una amenaza o 'plaga' para los ecosistemas marítimos y se ha extendido a las costas del Caribe colombiano. Por un lado, es una amenaza para el hombre, y por otro, es una amenaza para las especies nativas.",
-                    pregunta: "¿Para cuál de los siguientes objetivos de investigación del Gobierno sería útil la anterior información?",
-                    opciones: [
-                        { id: 'A', texto: "Establecer el impacto económico que provocan las plagas en la fauna y flora del Caribe colombiano." },
-                        { id: 'B', texto: "Promover la caza del pez león para fortalecer la economía de las zonas pesqueras en el Caribe." },
-                        { id: 'C', texto: "Determinar los factores que han provocado una disminución de la fauna en algunas costas colombianas." },
-                        { id: 'D', texto: "Establecer la cantidad de especies nativas existentes antes de la aparición del pez león." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "El texto aporta insumos directos para explicar la alteración de la cadena trófica marina: la introducción de depredadores invasores sin enemigos biológicos naturales es uno de los principales factores bióticos que reducen la población de peces y corales nativos."
-                },
-                {
-                    id: 10,
-                    titulo: "10. Mecanismos de Participación: Referendo",
-                    contexto: "En Colombia, una importante firma encuestadora reveló que, desde hace cuatro años, la corrupción es percibida por la ciudadanía como uno de los problemas más graves que afecta al país. Un grupo de jóvenes decide promover el aumento de las penas para los delitos de corrupción y deciden promover un referendo aprobatorio de iniciativa ciudadana.",
-                    pregunta: "En esta situación, y teniendo en cuenta la Constitución Política de Colombia, ¿pueden los jóvenes continuar con su propuesta de referendo?",
-                    opciones: [
-                        { id: 'A', texto: "No, pues solo pueden proponer leyes de la República los integrantes del Congreso de la República y del Gobierno nacional." },
-                        { id: 'B', texto: "No, pues solo pueden pronunicarse sobre temas políticos los expertos y los representantes elegidos popularmente." },
-                        { id: 'C', texto: "Sí, pues en Colombia existen los referendos como mecanismos para que los ciudadanos propongan cambios normativos de manera directa." },
-                        { id: 'D', texto: "Sí, pues en Colombia existen los referendos para que cada una de las decisiones públicas en el país sea consultada a la ciudadanía." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "El artículo 103 de la Constitución y la Ley 134 de 1994 habilitan el referendo de iniciativa popular para que el pueblo convoque a las urnas la aprobación o modificación de un proyecto de ley o de reforma constitucional cumpliendo los umbrales de firmas requeridos."
-                },
-                {
-                    id: 11,
-                    titulo: "11. Activismo Climático y Evidencia Científica",
-                    contexto: "En 2019, una joven de 16 años pronunció el siguiente discurso ante el Parlamento Británico sobre el desarrollo sostenible y la urgencia de actuar decididamente para frenar el cambio climático: 'La crisis climática es el conflicto más fácil y el más difícil al que nos hemos enfrentado. Alrededor del 2030, habremos desatado una reacción en cadena irreversible que seguramente pondrá fin a nuestra civilización tal como la conocemos'.",
-                    pregunta: "¿Cuál de los siguientes hechos permite sustentar el reclamo de la joven por políticas concretas contra el cambio climático?",
-                    opciones: [
-                        { id: 'A', texto: "El aumento de ventas de carros eléctricos en América Latina en un 21,7%." },
-                        { id: 'B', texto: "El aumento de la pobreza mundial por la pandemia de la COVID-19." },
-                        { id: 'C', texto: "Reino Unido ha reducido en un 37% la explosión de dióxido de carbono al ambiente, aunque todavía no ha conseguido eliminar completamente la generación de estos gases." },
-                        { id: 'D', texto: "El crecimiento continuo y sostenido de la capacidad instalada de producción de energía eólica a nivel mundial." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "Demuestra que, aunque los países desarrollados implementen políticas parciales de reducción, las medidas actuales son insuficientes frente a la aceleración de la crisis, validando la exigencia de compromisos vinculantes de cero emisiones antes de 2030."
-                },
-                {
-                    id: 12,
-                    titulo: "12. Indigenismo y Constitución de 1991",
-                    contexto: "Una ley en Colombia establecía lo siguiente: 'Artículo 1.º- Para atender a la reducción y civilización de las tribus indígenas en el territorio colombiano, se divide este en seis corregimientos [...]'.",
-                    pregunta: "¿Cuál de los siguientes argumentos permite afirmar que esta ley es anterior a la Constitución política de 1991?",
-                    opciones: [
-                        { id: 'A', texto: "Antes de la Constitución de 1991 existía un mayor número de asentamientos indígenas en el país." },
-                        { id: 'B', texto: "Las expresiones del artículo son contrarias a la protección de la diversidad étnica establecida en la Constitución de 1991." },
-                        { id: 'C', texto: "A partir de la Constitución de 1991, se potenció un cambio hacia un Estado más descentralizado." },
-                        { id: 'D', texto: "A partir de la Constitución de 1991, es necesario agotar la consulta previa para aprobar ese tipo de leyes." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "Los conceptos colonialistas de 'reducción' y 'civilización' (propios de la Ley 89 de 1890) son frontalmente incompatibles con los artículos 1 y 7 de la Carta de 1991, que reconoce y protege la diversidad étnica y cultural de la nación colombiana como sujetos autónomos de derechos."
-                },
-                {
-                    id: 13,
-                    titulo: "13. Prejuicios de Género en la Crianza",
-                    contexto: "Un análisis del comportamiento de setenta niños en edad preescolar le permitió a un grupo de investigadores de una universidad concluir que los niños, desde los dos años y medio, pueden discriminar a personas con diferencias sociales y culturales. Al respecto, los investigadores afirman que: 'Para el estudio, nos basamos en las actitudes y comportamientos de las madres, debido a que ellas son las que cumplen el papel de formar a sus hijos e hijas en valores'.",
-                    pregunta: "¿La afirmación de los investigadores contiene algún prejuicio?",
-                    opciones: [
-                        { id: 'A', texto: "No, porque en la infancia quienes realmente asumen el cuidado y formación de los hijos son las madres." },
-                        { id: 'B', texto: "Sí, porque está afirmando que las madres son las únicas responsables de la formación de los hijos." },
-                        { id: 'C', texto: "No, porque las madres siempre cuidan con afecto a sus hijos enseñándoles todos los valores." },
-                        { id: 'D', texto: "Sí, porque supone que las madres no tienen el papel de sostener económicamente a los hijos." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "Asume un estereotipo machista tradicional de división de roles al atribuir exclusivamente a la mujer la carga afectiva y moral de la crianza, desconociendo la corresponsabilidad paterna, familiar y educativa en la socialización infantil."
-                },
-                {
-                    id: 14,
-                    titulo: "14. Transformación Social y Diversidad",
-                    contexto: "Un periodista se aproxima a un grupo de personas que está llevando a cabo una manifestación. Al preguntarle a una de ellas sobre sus motivos para manifestarse, esta contesta lo siguiente: 'Buscamos promover el conocimiento y el respeto hacia la diversidad sexual, la educación sexual científica y sin prejuicios morales, y las relaciones interpersonales libres de toda forma de violencia de género'.",
-                    pregunta: "¿Cuál de las siguientes sería una postura que esta persona probablemente adoptaría?",
-                    opciones: [
-                        { id: 'A', texto: "El respeto hacia el otro en una relación de pareja depende de la adopción de valores familiares tradicionales." },
-                        { id: 'B', texto: "Las manifestaciones son la única ruta que tienen los ciudadanos para lograr los cambios que la sociedad necesita." },
-                        { id: 'C', texto: "Las personas tienen el poder para transformar las condiciones sociales aun cuando estas están fuertemente arraigadas." },
-                        { id: 'D', texto: "La ausencia de sesgos morales en la educación sexual ha hecho que la diversidad sexual sea ampliamente valorada en nuestra sociedad." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "El reclamo de la manifestante se fundamenta en la agencia ciudadana y en los movimientos de cambio social: la convicción de que la acción colectiva y la pedagogía pública son capaces de deconstruir mandatos culturales excluyentes históricamente arraigados."
-                },
-                {
-                    id: 15,
-                    titulo: "15. Inclusión Laboral y Discapacidad",
-                    contexto: "En respuesta a la solicitud de adaptar la infraestructura de una empresa para hacerla más accesible a los trabajadores con discapacidad, el jefe de la empresa contestó lo siguiente: 'Es cierto que existen muchas barreras para que las personas con discapacidad se integren al mercado laboral. El Estado, en principio, debería asumir un papel más activo frente a esta población, pues los ajustes a la infraestructura no son una responsabilidad que deba asumir exclusivamente una empresa. Además, no se debe pensar que la discapacidad radica en la limitación, ya que el problema de la discapacidad radica en las actitudes personales que impiden superarla de forma efectiva'.",
-                    pregunta: "¿Cuál de los siguientes enunciados del jefe de la empresa contiene un prejuicio cuestionable?",
-                    opciones: [
-                        { id: 'A', texto: "Existen muchas barreras para que las personas con discapacidad se integren al mercado laboral." },
-                        { id: 'B', texto: "El Estado, en principio, debería asumir un papel más activo frente a la población con discapacidad." },
-                        { id: 'C', texto: "El problema de la discapacidad radica en las actitudes personales que impiden superarla de forma efectiva." },
-                        { id: 'D', texto: "Los ajustes a la infraestructura no son una responsabilidad que deba asumir exclusivamente una empresa." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "Contiene un sesgo revictimizante al individualizar la discapacidad como si fuera una falta de 'voluntad o actitud personal', ignorando el modelo social de derechos que demuestra que la discapacidad se genera por las barreras físicas y del entorno construidas por la sociedad."
-                },
-                {
-                    id: 16,
-                    titulo: "16. Bipartidismo y Frente Nacional",
-                    contexto: "Durante el siglo XX en Colombia, el fenómeno conocido como 'El Bogotazo' tras el magnicidio de Jorge Eliécer Gaitán desató un periodo de intensa confrontación armada entre los partidos tradicionales (Liberal y Conservador). Para poner fin a la violencia bipartidista, los líderes de ambos partidos tradicionales pactaron un acuerdo de alternancia en el poder presidencial y distribución equitativa de los cargos públicos por un periodo de dieciséis años, conocido como el Frente Nacional.",
-                    pregunta: "Una consecuencia política directa y no deseada del establecimiento del Frente Nacional en Colombia fue",
-                    opciones: [
-                        { id: 'A', texto: "el fortalecimiento inmediato de la economía de libre mercado y el cese absoluto de toda huelga sindical en el país." },
-                        { id: 'B', texto: "la exclusión institucional de terceras fuerzas políticas, lo cual incentivó el surgimiento de movimientos insurgentes armados de izquierda." },
-                        { id: 'C', texto: "la disolución definitiva de los partidos Liberal y Conservador en favor de una asamblea constituyente popular permanente." },
-                        { id: 'D', texto: "la instauración de una dictadura cívico-militar indefinida que abolió el Congreso de la República y las elecciones populares." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "El monopolio paritario del poder burocrático (1958-1974) clausuró el debate democrático legal para movimientos agrarios, obreros y de izquierda (ANAPO, MRL, PCC), cerrando las vías electorales institucionales e impulsando la vía armada revolucionaria (FARC, ELN, EPL)."
-                },
-                {
-                    id: 17,
-                    titulo: "17. Tensión entre Seguridad y Libre Circulación",
-                    contexto: "En un municipio intermedio, el alcalde expide un decreto que prohíbe el tránsito de motocicletas con acompañante (parrillero) durante los fines de semana entre las 6:00 p.m. y las 5:00 a.m. La administración municipal justifica la medida con base en las estadísticas de hurtos. Frente a esto, un colectivo de trabajadores nocturnos y estudiantes universitarios protesta enérgicamente, argumentando que la motocicleta es su único medio de transporte accesible y económico para regresar seguros a sus hogares.",
-                    pregunta: "En esta situación descrita, ¿entre cuáles dimensiones o derechos se presenta una tensión fundamental?",
-                    opciones: [
-                        { id: 'A', texto: "Entre la seguridad pública ciudadana y los derechos al trabajo y a la libre locomoción de un sector de la población." },
-                        { id: 'B', texto: "Entre el derecho al medio ambiente sano y el fomento económico del gremio de ensambladoras de motocicletas." },
-                        { id: 'C', texto: "Entre la autonomía judicial de la Fiscalía y las facultades tributarias del Concejo Municipal." },
-                        { id: 'D', texto: "Entre la libertad de culto de las comunidades religiosas y el deber ciudadano de pagar impuestos municipales." }
-                    ],
-                    correcta: 'A',
-                    argumentacion: "Expone la clásica ponderación entre las facultades de policía para preservar el orden público y la seguridad ciudadana general frente a los derechos fundamentales al trabajo digno y la libre locomoción de sectores vulnerables."
-                },
-                {
-                    id: 18,
-                    titulo: "18. Frenos y Contrapesos del Estado",
-                    contexto: "El artículo 113 de la Constitución Política de Colombia establece que son ramas del poder público: la legislativa, la ejecutiva y la judicial. Además de los órganos que las integran existen otros, autónomos e independientes, para el cumplimiento de las demás funciones del Estado.",
-                    pregunta: "¿Cuál es el propósito principal de dividir el poder del Estado en ramas independientes con funciones de control recíproco (frenos y contrapesos)?",
-                    opciones: [
-                        { id: 'A', texto: "Permitir que el Presidente de la República pueda modificar libremente la Constitución cuando el Congreso rechace sus leyes." },
-                        { id: 'B', texto: "Evitar la concentración excesiva de poder en una sola entidad o persona, protegiendo así los derechos ciudadanos y la democracia." },
-                        { id: 'C', texto: "Garantizar que las decisiones del Estado sean tomadas de manera exclusiva por los jueces de las altas cortes judiciales." },
-                        { id: 'D', texto: "Acelerar los trámites administrativos impidiendo que los ciudadanos puedan interponer acciones legales o tutelas." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "Basado en la doctrina republicana clásica (Montesquieu), la distribución horizontal del poder evita que una rama abuse de sus potestades o degenere en tiranía autoritaria, salvaguardando las libertades ciudadanas."
-                },
-                {
-                    id: 19,
-                    titulo: "19. Derechos Colectivos y Acción Popular",
-                    contexto: "Un líder comunal observa que una empresa privada de curtiembres está vertiendo residuos químicos directamente a la quebrada que abastece de agua a su vereda, ocasionando olores nauseabundos, la muerte de peces y enfermedades gastrointestinales en varios niños del sector. El líder ha acudido a la empresa, pero sus directivos afirman que cuentan con un permiso provisional y se niegan a detener los vertimientos.",
-                    pregunta: "De acuerdo con el ordenamiento jurídico colombiano, ¿cuál es el mecanismo constitucional más idóneo para defender el derecho colectivo al medio ambiente sano de esta comunidad?",
-                    opciones: [
-                        { id: 'A', texto: "El recurso de Habeas Corpus." },
-                        { id: 'B', texto: "La Acción Popular." },
-                        { id: 'C', texto: "La Acción de Tutela para reclamar indemnización patrimonial." },
-                        { id: 'D', texto: "El Derecho de Petición ante el Congreso de la República." }
-                    ],
-                    correcta: 'B',
-                    argumentacion: "El artículo 88 de la Carta y la Ley 472 de 1998 establecen las Acciones Populares como la vía jurídica idónea para la defensa y protección preventiva o restaurativa de derechos e intereses colectivos (medio ambiente sano, salubridad y espacio público)."
-                },
-                {
-                    id: 20,
-                    titulo: "20. Estado Laico y Pluralista",
-                    contexto: "La Constitución de 1886 definía a Colombia como un Estado centralizado bajo el lema de 'Regeneración o Catástrofe', reconociendo a la religión católica como elemento esencial del orden social. En contraste, la Constitución de 1991 proclamó a Colombia como un Estado social de derecho, organizado en forma de república unitaria pero descentralizada, participativa y pluralista, fundada en el respeto de la dignidad humana y la diversidad étnica.",
-                    pregunta: "¿Cuál de las siguientes situaciones cotidianas refleja la aplicación práctica del cambio constitucional introducido en 1991 frente al modelo de 1886?",
-                    opciones: [
-                        { id: 'A', texto: "Una institución educativa pública que impone de forma obligatoria la asistencia a misas católicas para poder graduar a los estudiantes." },
-                        { id: 'B', texto: "Un tribunal de justicia que rechaza la validez del matrimonio civil argumentando la supremacía de las normas eclesiásticas." },
-                        { id: 'C', texto: "Un colegio oficial que permite que un estudiante profese una religión distinta a la mayoritaria y respeta su derecho a no ser discriminado." },
-                        { id: 'D', texto: "Un gobernador departamental que nombra a los alcaldes municipales de manera directa sin convocar a elecciones populares." }
-                    ],
-                    correcta: 'C',
-                    argumentacion: "Evidencia el principio de laicidad y libertad de cultos del artículo 19 de la Constitución de 1991: el Estado no adopta credo oficial alguno y garantiza un trato igualitario a todas las confesiones sin discriminación en espacios públicos."
-                }
-            ]
-        };
 
+        // Estructura de pestañas con el orden solicitado
         const estructuraMaterias = [
-            { id: 'sociales', nombre: '📘 Sociales y Ciudadanas', materiaDb: 'Ciencias Sociales', pruebas: [{ id: 1, nombre: 'Simulacro 1' }, { id: 2, nombre: 'Simulacro 2' }] },
-            { id: 'lectura', nombre: '📕 Lectura Crítica', materiaDb: 'Lectura Crítica', pruebas: [{ id: 3, nombre: 'Simulacro 1' }] },
-            { id: 'matematicas', nombre: '📐 Matemáticas', materiaDb: 'Matemáticas', pruebas: [{ id: 4, nombre: 'Simulacro 1' }] },
-            { id: 'naturales', nombre: '🧪 Ciencias Naturales', materiaDb: 'Ciencias Naturales', pruebas: [{ id: 5, nombre: 'Simulacro 1' }] },
-            { id: 'ingles', nombre: '🗣️ Inglés', materiaDb: 'Inglés', pruebas: [{ id: 6, nombre: 'Simulacro 1' }] }
+            { id: 'sociales', nombre: '📘 Sociales y Ciudadanas', materiaDb: 'Ciencias Sociales', prefijoArchivo: 'sociales', pruebas: [{ id: 1, nombre: 'Simulacro 1' }, { id: 2, nombre: 'Simulacro 2' }] },
+            { id: 'matematicas', nombre: '📐 Matemáticas', materiaDb: 'Matemáticas', prefijoArchivo: 'matematicas', pruebas: [{ id: 4, nombre: 'Simulacro 1' }] },
+            { id: 'ingles', nombre: '🗣️ Inglés', materiaDb: 'Inglés', prefijoArchivo: 'ingles', pruebas: [{ id: 6, nombre: 'Simulacro 1' }] },
+            { id: 'naturales', nombre: '🧪 Ciencias Naturales', materiaDb: 'Ciencias Naturales', prefijoArchivo: 'ciencias', pruebas: [{ id: 5, nombre: 'Simulacro 1' }] },
+            { id: 'lectura', nombre: '📕 Lectura Crítica', materiaDb: 'Lectura Crítica', prefijoArchivo: 'lecturacritica', pruebas: [{ id: 3, nombre: 'Simulacro 1' }] }
         ];
 
         let materiaActiva = 'sociales';
@@ -835,7 +268,6 @@
             inputMeet.value = "";
 
             try {
-                // 1. Cargar grabación del simulacro puntual
                 const { data: grabacionData } = await sbClient
                     .from('grabaciones_simulacros')
                     .select('link_grabacion')
@@ -846,7 +278,6 @@
                     inputDrive.value = grabacionData.link_grabacion;
                 }
 
-                // 2. Cargar Meet y estado general de la materia
                 const { data: claseData } = await sbClient
                     .from('clases_en_vivo')
                     .select('*')
@@ -862,7 +293,6 @@
             }
         }
 
-        // GUARDA EL DRIVE ASOCIADO AL SIMULACRO Y EL MEET A LA MATERIA
         async function guardarDatosClase(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-guardar-clase');
@@ -878,7 +308,6 @@
             btn.disabled = true;
 
             try {
-                // 1. Guardar la grabación asociada a este simulacro específico
                 const { error: errGrab } = await sbClient
                     .from('grabaciones_simulacros')
                     .upsert({
@@ -890,7 +319,6 @@
 
                 if (errGrab) throw errGrab;
 
-                // 2. Actualizar el link de Meet y estado de la materia
                 const { error: errClase } = await sbClient
                     .from('clases_en_vivo')
                     .update({
@@ -929,63 +357,101 @@
             }
         }
 
-        function renderizarVisorPreguntas() {
+        // MOTOR AUTOMÁTICO DE LECTURA DE CUADERNILLOS
+        async function renderizarVisorPreguntas() {
             const simulacroId = parseInt(document.getElementById('select-simulacro').value);
             const contenedor = document.getElementById('contenedor-items-docente');
             const tituloVisor = document.getElementById('visor-titulo-materia');
             
             const materiaInfo = estructuraMaterias.find(m => m.id === materiaActiva);
             const pruebaInfo = materiaInfo.pruebas.find(p => p.id === simulacroId);
+            const numSimulacro = pruebaInfo ? (pruebaInfo.nombre.match(/\d+/) ? pruebaInfo.nombre.match(/\d+/)[0] : 1) : 1;
+            
             tituloVisor.innerText = `${materiaInfo.nombre} — ${pruebaInfo ? pruebaInfo.nombre : 'Simulacro'}`;
+            contenedor.innerHTML = `<div class="p-8 text-center text-blue-600 font-bold bg-blue-50 rounded-2xl border border-blue-100">Cargando cuadernillo oficial de ${materiaInfo.materiaDb}...</div>`;
 
-            const preguntas = bancoPreguntasDocente[simulacroId];
+            // Calcular el nombre estándar del archivo HTML
+            const nombreArchivo = `${materiaInfo.prefijoArchivo}${numSimulacro}.html`;
 
-            if (!preguntas || preguntas.length === 0) {
+            try {
+                const resp = await fetch(nombreArchivo);
+                if (!resp.ok) throw new Error("No se pudo cargar el archivo " + nombreArchivo);
+                const htmlTexto = await resp.text();
+
+                // Extraer el bloque 'const questions = [...]' del HTML del examen
+                const matchQuestions = htmlTexto.match(/const\s+questions\s*=\s*(\[\s*[\s\S]*?\n\s*\]);/);
+                if (!matchQuestions) throw new Error("No se encontró el banco de preguntas en " + nombreArchivo);
+
+                // Evaluar de forma segura el arreglo extraído
+                const preguntas = new Function(`return ${matchQuestions[1]};`)();
+
+                if (!preguntas || preguntas.length === 0) {
+                    throw new Error("El arreglo de preguntas está vacío");
+                }
+
+                contenedor.innerHTML = preguntas.map((q, idx) => {
+                    const titulo = q.title || `Ítem ${idx + 1}`;
+                    const textoContexto = q.text || q.contexto || "";
+                    const promptPregunta = q.prompt || q.question || q.pregunta || "";
+                    const correcta = q.correct || q.correcta || "";
+                    const opciones = q.options || q.opciones || [];
+                    const imagenSrc = q.image || null;
+
+                    return `
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-4">
+                            <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                                <span class="text-xs font-black uppercase text-blue-700">Ítem ${idx + 1} de ${preguntas.length}</span>
+                                <span class="text-xs font-bold text-slate-500">${titulo}</span>
+                            </div>
+
+                            ${imagenSrc ? `
+                                <div class="my-4 flex flex-col items-center">
+                                    <img src="${imagenSrc}" alt="Apoyo gráfico" class="rounded-2xl max-w-full md:max-w-md shadow-md border border-slate-200">
+                                </div>
+                            ` : ''}
+
+                            ${textoContexto ? `<div class="bg-white p-4 rounded-xl border border-slate-200 text-xs md:text-sm text-slate-700 context-docente whitespace-pre-wrap">${textoContexto}</div>` : ''}
+
+                            <p class="text-sm md:text-base font-bold text-slate-900 leading-snug">${promptPregunta}</p>
+
+                            <div class="grid gap-2 pt-2">
+                                ${opciones.map(opt => {
+                                    const optId = opt.id;
+                                    const optTexto = opt.text || opt.texto || "";
+                                    const esCorrecta = optId === correcta;
+                                    return `
+                                        <div class="p-3.5 rounded-xl border text-xs md:text-sm flex items-start gap-3 transition-colors ${esCorrecta ? 'bg-emerald-50 border-emerald-300 text-emerald-950 font-semibold' : 'bg-white border-slate-200 text-slate-700'}">
+                                            <span class="w-6 h-6 rounded-lg flex items-center justify-center font-black shrink-0 text-xs ${esCorrecta ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">
+                                                ${optId}
+                                            </span>
+                                            <span class="pt-0.5 leading-relaxed">${optTexto}</span>${esCorrecta ? '<span class="ml-auto text-emerald-700 font-black text-xs uppercase tracking-wider shrink-0">Clave Oficial ✓</span>' : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <!-- Argumentación Pedagógica Docente -->
+                            ${q.argumentacion ? `
+                                <div class="mt-4 p-4 rounded-xl bg-amber-50/80 border border-amber-200/90 text-xs md:text-sm text-amber-950 space-y-1">
+                                    <div class="flex items-center gap-2 font-bold text-amber-900">
+                                        <span>💡</span>
+                                        <span class="uppercase tracking-wider text-[11px]">Justificación Pedagógica (Clave ${correcta})</span>
+                                    </div>
+                                    <p class="text-slate-700 leading-relaxed pl-6 text-justify">${q.argumentacion}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error("Fallo al leer cuadernillo:", err);
                 contenedor.innerHTML = `
                     <div class="p-8 text-center text-slate-400 font-semibold bg-slate-50 rounded-2xl border border-slate-200">
-                        Los ítems de esta prueba se habilitarán con la carga del cuadernillo oficial de esta materia.
+                        Los ítems de esta prueba se habilitarán con la carga del archivo <strong>${nombreArchivo}</strong>.
                     </div>
                 `;
-                return;
             }
-
-            contenedor.innerHTML = preguntas.map((q, idx) => `
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-200 pb-2">
-                        <span class="text-xs font-black uppercase text-blue-700">Ítem ${idx + 1} de ${preguntas.length}</span>
-                        <span class="text-xs font-bold text-slate-500">${q.titulo}</span>
-                    </div>
-
-                    ${q.contexto ? `<div class="bg-white p-4 rounded-xl border border-slate-200 text-xs md:text-sm text-slate-700 context-docente whitespace-pre-wrap">${q.contexto}</div>` : ''}
-
-                    <p class="text-sm md:text-base font-bold text-slate-900 leading-snug">${q.pregunta}</p>
-
-                    <div class="grid gap-2 pt-2">
-                        ${q.opciones.map(opt => {
-                            const esCorrecta = opt.id === q.correcta;
-                            return `
-                                <div class="p-3.5 rounded-xl border text-xs md:text-sm flex items-start gap-3 transition-colors ${esCorrecta ? 'bg-emerald-50 border-emerald-300 text-emerald-950 font-semibold' : 'bg-white border-slate-200 text-slate-700'}">
-                                    <span class="w-6 h-6 rounded-lg flex items-center justify-center font-black shrink-0 text-xs ${esCorrecta ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">
-                                        ${opt.id}
-                                    </span>
-                                    <span class="pt-0.5 leading-relaxed">${opt.texto}</span>${esCorrecta ? '<span class="ml-auto text-emerald-700 font-black text-xs uppercase tracking-wider shrink-0">Clave Oficial ✓</span>' : ''}
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-
-                    <!-- RECUADRO DE ARGUMENTACIÓN PEDAGÓGICA DOCENTE -->
-                    ${q.argumentacion ? `
-                        <div class="mt-4 p-4 rounded-xl bg-amber-50/80 border border-amber-200/90 text-xs md:text-sm text-amber-950 space-y-1">
-                            <div class="flex items-center gap-2 font-bold text-amber-900">
-                                <span>💡</span>
-                                <span class="uppercase tracking-wider text-[11px]">Justificación Pedagógica (Clave ${q.correcta})</span>
-                            </div>
-                            <p class="text-slate-700 leading-relaxed pl-6 text-justify">${q.argumentacion}</p>
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
         }
 
         async function cargarEstadisticas() {
