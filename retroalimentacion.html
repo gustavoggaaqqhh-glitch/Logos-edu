@@ -6,13 +6,11 @@
     <title>Logos Edu | Informe Diagnóstico Saber 11</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Librería para renderizar títulos, negritas y viñetas de la retroalimentación -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; }
         
-        /* Estilos para el texto pedagógico formateado en Markdown */
         .prose-docente h3 { font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.35rem; }
         .prose-docente h4 { font-size: 1rem; font-weight: 700; color: #1e293b; margin-top: 1rem; margin-bottom: 0.35rem; }
         .prose-docente p { margin-bottom: 0.75rem; line-height: 1.65; text-align: justify; color: #334155; }
@@ -29,12 +27,12 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- Encabezado Oficial (No imprimible) -->
+  <!-- Encabezado Oficial -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm no-print">
     <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <a href="modulos.html" class="flex items-center space-x-3">
-          <img src="logo.png" alt="Logos Edu" class="h-10 w-auto object-contain">
+          <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-10 w-auto object-contain">
           <div>
             <span class="font-bold text-lg text-slate-900 tracking-tight">Logos <span class="text-blue-600">Edu</span></span>
             <span class="text-[10px] block text-slate-400 font-bold tracking-wider uppercase">Saber 11 • Formación Rural y Equidad</span>
@@ -60,11 +58,11 @@
       <!-- Membrete Oficial -->
       <div class="border-b-2 border-slate-900 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div class="flex items-center gap-4">
-          <img src="logo.png" alt="Logos Edu" class="h-16 w-auto object-contain">
+          <img src="logo.png" onerror="this.onerror=null; this.src='../logo.png';" alt="Logos Edu" class="h-16 w-auto object-contain">
           <div>
             <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Logos Edu</h1>
             <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Ecosistema Pedagógico de Evaluación Saber 11</p>
-            <p class="text-[11px] text-blue-700 font-semibold" id="txt-nombre-simulacro">Simulacro Evaluativo</p>
+            <p class="text-sm text-blue-700 font-extrabold mt-1" id="txt-nombre-simulacro">Cargando materia...</p>
           </div>
         </div>
         <div class="text-left sm:text-right text-xs text-slate-500 space-y-0.5">
@@ -78,7 +76,7 @@
         <div class="sm:col-span-2 space-y-1">
           <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Estudiante Evaluado</span>
           <p id="txt-estudiante" class="text-base font-extrabold text-slate-900 uppercase">Cargando...</p>
-          <p id="txt-documento" class="text-slate-500 font-medium">Documento: --</p>
+          <p id="txt-materia-sub" class="text-slate-600 font-bold">Materia: Identificando área...</p>
         </div>
         <div class="flex sm:flex-col justify-around sm:justify-center items-center sm:items-end border-t sm:border-t-0 sm:border-l border-slate-200 pt-3 sm:pt-0">
           <div class="text-center sm:text-right">
@@ -92,7 +90,7 @@
         </div>
       </div>
 
-      <!-- Dictamen Pedagógico / Retroalimentación IA -->
+      <!-- Dictamen Pedagógico -->
       <div class="space-y-4">
         <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
           <span class="text-lg">🧭</span>
@@ -102,11 +100,11 @@
         </div>
 
         <div id="caja-informe" class="text-slate-700 text-sm md:text-base leading-relaxed prose-docente bg-blue-50/40 p-6 md:p-8 rounded-2xl border border-blue-100">
-          <p class="text-slate-400 italic">Cargando el informe pedagógico oficial...</p>
+          <p class="text-slate-400 italic">Cargando informe...</p>
         </div>
       </div>
 
-      <!-- Firmas Institucionales para Soporte en Físico -->
+      <!-- Firmas Institucionales -->
       <div class="pt-12 grid grid-cols-2 gap-8 text-center text-xs text-slate-500">
         <div>
           <div class="border-t border-slate-400 pt-2 w-48 mx-auto font-semibold uppercase text-[10px]">
@@ -134,51 +132,63 @@
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const urlParams = new URLSearchParams(window.location.search);
-    const SIMULACRO_ID = parseInt(urlParams.get('id')) || 1;
+    const INTENTO_ID = urlParams.get('intento_id');
+    const MATERIA_PARAM = urlParams.get('materia');
+
+    function formatearNombreMateria(materia, simNum) {
+      const m = (materia || '').toLowerCase();
+      let nombreBase = "Entrenamiento Saber 11";
+      if (m.includes('lectura') || m.includes('critica')) nombreBase = "Lectura Crítica";
+      else if (m.includes('social')) nombreBase = "Ciencias Sociales y Ciudadanas";
+      else if (m.includes('matematica')) nombreBase = "Matemáticas";
+      else if (m.includes('ingles')) nombreBase = "Inglés";
+      else if (m.includes('ciencia') || m.includes('natural')) nombreBase = "Ciencias Naturales";
+      return `Simulacro ${simNum || 1} • ${nombreBase}`;
+    }
 
     async function cargarInforme() {
       const { data: { session } } = await sbClient.auth.getSession();
-      if (!session || !session.user) {
-        window.location.href = "index.html";
-        return;
-      }
-
-      const user = session.user;
-      const meta = user.user_metadata || {};
-      const nombreEstudiante = meta.full_name || meta.documento || user.email.split('@')[0];
-      const documento = meta.documento || "No registrado";
+      const user = session?.user || null;
+      const meta = user?.user_metadata || {};
+      const nombreEstudiante = meta.full_name || meta.documento || localStorage.getItem('nombre_estudiante') || "Estudiante";
 
       document.getElementById('txt-estudiante').textContent = nombreEstudiante;
-      document.getElementById('txt-documento').textContent = `Documento: ${documento}`;
       document.getElementById('txt-fecha-emision').textContent = `Emisión: ${new Date().toLocaleDateString('es-CO')}`;
 
-      // 1. Obtener datos del simulacro
-      const { data: sim } = await sbClient
-        .from('simulacros')
-        .select('nombre, descripcion')
-        .eq('id', SIMULACRO_ID)
-        .maybeSingle();
+      let intento = null;
 
-      if (sim) {
-        document.getElementById('txt-nombre-simulacro').textContent = sim.nombre;
+      // 1. Buscar intento por su ID único si viene en la URL
+      if (INTENTO_ID) {
+        const { data } = await sbClient.from('intentos').select('*').eq('id', INTENTO_ID).maybeSingle();
+        intento = data;
       }
 
-      // 2. Obtener el intento guardado
-      const { data: intento } = await sbClient
-        .from('intentos')
-        .select('*')
-        .eq('simulacro_id', SIMULACRO_ID)
-        .eq('user_id', user.id)
-        .maybeSingle();
+      // 2. Si no viene por ID o no lo halla, buscar por la materia solicitada
+      if (!intento && user && MATERIA_PARAM) {
+        const { data } = await sbClient.from('intentos')
+          .select('*')
+          .eq('user_id', user.id)
+          .ilike('materia', `%${MATERIA_PARAM}%`)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        intento = data;
+      }
 
       const caja = document.getElementById('caja-informe');
 
       if (!intento) {
-        caja.innerHTML = `<p class="text-rose-600 font-bold">No se encontró ningún intento registrado para este simulacro.</p>`;
+        caja.innerHTML = `<p class="text-rose-600 font-bold">No se encontró el intento específico de esta materia. Regresa a la ruta de módulos para seleccionarlo.</p>`;
         return;
       }
 
-      // Soporta tanto puntaje_global como aciertos
+      // Identificar y rotular la materia con exactitud
+      const materiaNombre = intento.materia || MATERIA_PARAM || "Área Saber 11";
+      const tituloOficial = formatearNombreMateria(materiaNombre, intento.simulacro_id);
+      document.getElementById('txt-nombre-simulacro').textContent = tituloOficial;
+      document.getElementById('txt-materia-sub').textContent = `Materia: ${materiaNombre.toUpperCase()} (Simulacro ${intento.simulacro_id || 1})`;
+
+      // Cálculos de desempeño
       const aciertos = (intento.puntaje_global !== null && intento.puntaje_global !== undefined) 
                         ? intento.puntaje_global 
                         : (intento.aciertos || 0);
@@ -188,9 +198,8 @@
       document.getElementById('txt-aciertos').textContent = `${aciertos}/${total}`;
       document.getElementById('txt-porcentaje').textContent = `${pct}%`;
 
-      // 3. Renderizar el informe (soporta Markdown enriquecido)
+      // Renderizado del análisis pedagógico
       const textoInforme = intento.retroalimentacion_ia || intento.informe_ia;
-
       if (textoInforme) {
         if (typeof marked !== 'undefined') {
           caja.innerHTML = marked.parse(textoInforme);
@@ -200,8 +209,8 @@
       } else {
         caja.innerHTML = `
           <p><strong>Informe de Desempeño:</strong></p>
-          <p>Has alcanzado ${aciertos} aciertos sobre un total de ${total} preguntas evaluadas (${pct}% de efectividad).</p>
-          <p>Continúa fortaleciendo la lectura rigurosa de enunciados y la identificación de distractores en las preguntas tipo Saber 11.</p>
+          <p>Has alcanzado ${aciertos} aciertos sobre un total de ${total} preguntas evaluadas en ${materiaNombre} (${pct}% de efectividad).</p>
+          <p>La síntesis cualitativa detallada se encuentra registrada en el sistema de seguimiento docente.</p>
         `;
       }
     }
